@@ -1,3 +1,6 @@
+GoDMC pipeline
+==============
+
 # Requirements
 
 ## R packages
@@ -11,4 +14,3 @@ reshape2
 knitr
 rmarkdown
 markdown
-
