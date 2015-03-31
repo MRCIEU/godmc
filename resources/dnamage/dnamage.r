@@ -16,17 +16,13 @@ require(WGCNA)
 
 arguments <- commandArgs(T)
 
-
 betafile <- arguments[1]
-dnamage.probeAnnotation21kdatMethUsed.file <- arguments[2]
-dnamage.probeAnnotation27k.file <- arguments[3]
-dnamage.datClock.file <- arguments[4]
-phenfile <- arguments[5]
-outfile <- arguments[6]
+phenfile <- arguments[2]
+outfile <- arguments[3]
 
-dnamage.probeAnnotation21kdatMethUsed=read.csv(dnamage.probeAnnotation21kdatMethUsed.file)
-dnamage.probeAnnotation27k=read.csv(dnamage.probeAnnotation27k.file)
-dnamage.datClock=read.csv(dnamage.datClock.file)
+dnamage.probeAnnotation21kdatMethUsed=read.csv("resources/dnamage/probeAnnotation21kdatMethUsed.csv.gz")
+dnamage.probeAnnotation27k=read.csv("resources/dnamage/datMiniAnnotation27k.csv.gz")
+dnamage.datClock=read.csv("resources/dnamage/AdditionalFile3.csv.gz")
 
 phen <- read.table(phenfile, header=T, stringsAsFactors=FALSE)
 
@@ -833,7 +829,7 @@ generate.aar <- function(agepred, phen)
 }
 
 
-agepred <- dnamage(beta)
+agepred <- dnamage(mbeta)
 
 phen <- generate.aar(agepred, phen)
 
