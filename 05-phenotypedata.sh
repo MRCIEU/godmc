@@ -14,10 +14,12 @@
 
 # Normalise height and BMI
 
+
 # Generate age acceleration residuals
 Rscript resources/dnamage/dnamage.r ${beta_27k} ${phenfile} ${outfile}
 
 # Generate smoking predictor
 Rscript resources/smoking_predictor.R ${beta} ${phenfile} ${outfile}
+
 
 # Generate cell counts

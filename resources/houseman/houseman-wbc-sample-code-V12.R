@@ -11,16 +11,24 @@
 ################################################
 
 # Define wbcInference functions and load required libraries
-source("wbcInference-V112.R")
+source("resources/houseman/wbcInference-V112.R")
 library(nlme)
 
 # Load sample data [*Footnote 1*]
-load("Houseman-WBC-Data-V110.RData")
+load("resources/houseman/Houseman-WBC-Data-V110.Rdata")
+
+load(methylation_data)
+
+phen <- data.frame(1, ncol(mbeta)))
+rownames(phen) <- colnames(mbeta)
+
 
 ##############################################
 ##### ##### Step 1: Fit Validation Model (S0)
 ##### #####        (Required for all examples)
 ##############################################
+
+validationData_Assay <- validationData_Assay[rownames(validationData_Assay) %in% rownames(mbeta), ]
 
 validEst = validationWBC(
               validationData_Assay,             # Validation methylation (CpGs x subjects)
@@ -38,7 +46,7 @@ validEst
 DMRselection = rownames(validEst$coefEsts[validEst$orderFstat[1:100],])
 
 # Check to make sure CpG names match!
-all(rownames(validEst$coefEsts[DMRselection,]) == rownames(targetDataHNSCC_Assay[DMRselection,]))
+all(rownames(validEst$coefEsts[DMRselection,]) == rownames(mbeta[DMRselection,]))
 
 # Reporter matrix for PanT rearrangement [*Footnote 4*]
 Lwbc = diag(8)[-(1:2),] 
@@ -49,8 +57,8 @@ colnames(Lwbc) = colnames(validEst$coefEsts)
 Lwbc # View reporter matrix
 
 targetEst = inferWBCbyLme(
-  targetDataHNSCC_Assay[DMRselection,],     # Target methylation (CpGs x subjects)
-  targetDataHNSCC_Covariates,               # Target phenotype frame (subjects x covariates)
+  mbeta[DMRselection,],     # Target methylation (CpGs x subjects)
+  phen,               # Target phenotype frame (subjects x covariates)
   y~case+gender+ageCtr,                     # Target model (fixed effects) [*Footnote 2*]
   ~1|BeadChip,                              # Target batch adjustment (random effects) [*Footnote 3*]
   validEst$coefEsts[DMRselection,],         # Raw coefficient estimates for WBC 
@@ -62,7 +70,7 @@ targetEst # View model estimates
 ### Get bootstraps [*Footnote 3*]
 # Warning:  this can take a long time
 targetBoot = bootInferWBCbyLme( 
-  targetDataHNSCC_Assay[DMRselection,],     # Target methylation (CpGs x subjects)
+  mbeta[DMRselection,],     # Target methylation (CpGs x subjects)
   targetDataHNSCC_Covariates,               # Target phenotype frame (subjects x covariates)
   y~case+gender+ageCtr,                     # Target model (fixed effects) [*Footnote 2*]
   ~1|BeadChip,                              # Target adjustment (random effects) [*Footnote 5*] 
@@ -88,7 +96,7 @@ summary(targetEst, targetBoot)
 ########################################################
 
 OmegaEst = projectWBC( #Impute WBC by projection
-  targetDataHNSCC_Assay[DMRselection,],
+  mbeta[DMRselection,],
   validEst$coefEsts[DMRselection,],    
   Lwbc)
 
@@ -115,7 +123,7 @@ NPERMS = 1000
 GammaPvalCasePerms = matrix(NA, NPERMS, length(GammaPvalCase0))
 for(r in 1:NPERMS){
   OmegaBoot = projectWBC( #Impute WBC by projection
-    targetDataHNSCC_Assay[DMRselection,],
+    mbeta[DMRselection,],
     bootSampleValidation(initParamBoot), # Parm bootstrap for validation data
     Lwbc)
   phenoPerm = targetDataHNSCC_Covariates
@@ -133,12 +141,12 @@ mean(min(GammaPvalCase0)>=apply(GammaPvalCasePerms,1,min))
 ####### Projections for HNSCC data
 
 unconstrainedCoefs = projectWBC(
-  targetDataHNSCC_Assay[DMRselection,],
+  mbeta[DMRselection,],
   validEst$coefEsts[DMRselection,],    
   Lwbc, nonnegative = FALSE)
 
 constrainedCoefs = projectWBC(
-  targetDataHNSCC_Assay[DMRselection,],
+  mbeta[DMRselection,],
   validEst$coefEsts[DMRselection,],    
   Lwbc)
 
