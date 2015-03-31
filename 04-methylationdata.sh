@@ -1,12 +1,25 @@
-# Use R-GADA to generate structural variant data from methylation intensities
-# Normalise methylation intensity data and adjust each probe for batch (fit as random effects or fixed effects ok?)
+#!/bin/bash
+
+set -e
+source config
+
+
+# Use output from meffil to normalise data and generate betas in RData format
+
+
+# Adjust betas to rank transform and adjust for cell counts
+Rscript resources/houseman/houseman.R ${beta} ${rnbeta} ${ccrnbeta} ${cellcounts} ${nthreads}
+
 # For family data adjust methylation data for relatedness (take residuals after fitting pedigree matrix, i.e. GRAMMAR method)
-# Use Houseman reference method to predict cell counts
-# Use Zeilinger et al (2013) smoking associations to predict smoking status to be used as covariate in further analysis
-# Create methylation relationship matrix for each chromosome and for all methylation probes in LDAK
-# Adjust methylation data to remove outliers (rank normalisation)
+if [ "${family}" -eq "yes" ]
+then
+	Rscript resources/methylation_relateds.R ${ccrnbeta} ${grmfile_all} ${ccrnfambeta} 0.05
+fi
+
+# Use R-GADA to generate structural variant data from methylation intensities
+
+
 # Filter methylation data on Naeem et al list (categories) and non-variant probes (threshold) and non-unique positions
-# Create age predictor using 20 different methods provided by Steve Horvath
 
 
 save

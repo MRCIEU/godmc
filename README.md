@@ -14,3 +14,9 @@ reshape2
 knitr
 rmarkdown
 markdown
+matrixStats
+parallel
+limma
+nlme
+quadprog
+GenABEL

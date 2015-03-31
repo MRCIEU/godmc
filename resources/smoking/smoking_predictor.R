@@ -57,6 +57,7 @@ smok <- predict.smoking(Illig_data, mbeta)
 phen <- read.table(phenfile, header=T)
 phen$index <- 1:nrow(phen)
 phen <- merge(phen, smok, by="IID", all.x=T)
+phen <- phen[order(phen$index),]
 phen <- subset(phen, select=-c(index))
 
 write.table(phen, file=outfile, row=F, col=T, qu=F)

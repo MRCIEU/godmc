@@ -1,11 +1,9 @@
 #!/bin/bash
 
 set -e
+source config
 
 # Provision for having dosage data and convert to best guess if the analyst doesn't have this
-
-
-source config
 
 
 # Make GRMs and calculate PCs
@@ -37,6 +35,9 @@ then
 		--pca 10 \
 		--out ${genetic_pcs} \
 		--thread-num ${nthreads}
+else 
+	echo "Error: Set family flag in config to yes or no"
+	exit 1
 fi
 
 

@@ -1,3 +1,8 @@
+#!/bin/bash
+
+set -e
+source config
+
 # Create covariate file (age, sex, predicted smoking, predicted cell counts
 # Estimate first 10 principal components using GCTA
 
