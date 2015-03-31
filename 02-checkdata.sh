@@ -7,3 +7,5 @@
 ## etc
 
 # Make sure that chromosome and position info is in the bim file
+# Make sure position is hg19
+
