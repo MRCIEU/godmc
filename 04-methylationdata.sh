@@ -8,12 +8,12 @@ source config
 
 
 # Adjust betas to rank transform and adjust for cell counts
-Rscript resources/houseman/houseman.R ${beta} ${rnbeta} ${ccrnbeta} ${cellcounts} ${nthreads}
+Rscript resources/cellcounts/houseman.R ${beta} ${rnbeta} ${ccrnbeta} ${cellcounts} ${nthreads}
 
 # For family data adjust methylation data for relatedness (take residuals after fitting pedigree matrix, i.e. GRAMMAR method)
 if [ "${family}" -eq "yes" ]
 then
-	Rscript resources/methylation_relateds.R ${ccrnbeta} ${grmfile_all} ${ccrnfambeta} 0.05
+	Rscript resources/relateds/methylation_relateds.R ${ccrnbeta} ${grmfile_all} ${ccrnfambeta} 0.05
 fi
 
 # Use R-GADA to generate structural variant data from methylation intensities

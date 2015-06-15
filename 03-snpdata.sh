@@ -6,6 +6,14 @@ source config
 # Provision for having dosage data and convert to best guess if the analyst doesn't have this
 
 
+# Extract the probe SNPs
+${plink1.90} \
+	--bfile ${bfile} \
+	--extract resources/qc/probesnps.txt \
+	--recode A \
+	--out ${bfile}_probesnps
+
+
 # Make GRMs and calculate PCs
 
 gunzip -f resources/hapmap3_autosome.snplist.gz
@@ -42,7 +50,7 @@ fi
 
 
 
-# Change SNPs to chr:position
+# Change SNPs to chr:position:snp
 
 cp ${bfile}.bim ${bfile}.bim.original
 awk ${bfile}.bim.original '{ print $1, "chr"$1":"${4}, $3, $4, $5, $6 }' > ${bfile}.bim
@@ -50,7 +58,7 @@ awk ${bfile}.bim.original '{ print $1, "chr"$1":"${4}, $3, $4, $5, $6 }' > ${bfi
 
 # Generate meQTL format
 
-${plink1.90} --bfile ${bfile} --recode A --out ${bfile}
+${plink1.90} --bfile ${bfile} --recode A --out ${bfile} --fill-missing-a2
 ./resources/make_meqtl_format.py ${bfile}
 
 
