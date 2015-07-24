@@ -6,7 +6,7 @@ GoDMC pipeline
 ## Genotype data
 
 Imputed data to 1000 genomes version 1 phase 3
-Alternative reference panels should be OK too.
+Alternative reference panels should be OK too. `rnorm(1000)`
 
 Filtering:
 - HWE < 1e-6
