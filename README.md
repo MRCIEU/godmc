@@ -13,9 +13,12 @@ Filtering:
 - MAF < 0.01
 - Quality score < 0.8
 
+
+cfgfg this is some code
+
     a <- rmorm(1000)
 
-
+sdfsd
 
 
 Format:
