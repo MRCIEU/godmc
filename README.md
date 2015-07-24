@@ -13,6 +13,11 @@ Filtering:
 - MAF < 0.01
 - Quality score < 0.8
 
+    a <- rmorm(1000)
+
+
+
+
 Format:
 - Best guess genotypes (not dosages)
 - Single binary plink format file (not separate chromosomes)
