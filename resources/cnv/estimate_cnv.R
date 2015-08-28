@@ -96,7 +96,7 @@ samplesheet$Slide <- as.numeric(samplesheet$Slide)
 if(!is.na(jid))
 {
 	i1 <- (jid - 1) * splitsize + 1
-	i2 <- min(jid * splitsize, nrow(samplesheet)
+	i2 <- min(jid * splitsize, nrow(samplesheet))
 	samplesheet <- samplesheet[i1:i2, ]
 }
 
@@ -104,7 +104,7 @@ if(!is.na(jid))
 data(RGcontrolSetEx)
 
 # Get CNVs
-cnv <- get_cnvs(samplesheet[1:3,], RGcontrolSetEx, ncores)
+cnv <- get_cnvs(samplesheet, RGcontrolSetEx, ncores)
 
 # Save
 if(!is.na(jid))
