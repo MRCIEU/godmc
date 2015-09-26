@@ -4,6 +4,22 @@
 
 # Computer
 
+# Input data files
+methylation_data=""
+geno_data=""
+covariates_data=""
+
+
+# Created files
+
+grmfile_all=
+
+
+# Options
+unrelated="TRUE"
+
+
+
 
 idat file name
 bplink file name
