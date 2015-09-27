@@ -186,9 +186,6 @@ load(methylationfile)
 dat <- inverse.rank.transform(dat, nthreads)
 save(dat, file=rnmethdatafile)
 
-# Get squared z values
-dat <- dat^2
-save(dat, file=rnsquaredmethdatafile)
 
 # Get cell counts 
 dat <- adjust.beta(dat, mc.cores=nthreads)
@@ -199,3 +196,7 @@ write.table(cellcounts, file=cellcountfile, row=F, col=F, qu=F)
 # and rank transformed data of cell countadjusted betas
 dat <- inverse.rank.transform(dat$adj.mbeta)
 save(dat, file=ccrnmethdatafile)
+
+# Get squared z values of cell count adjusted data
+dat <- dat^2
+save(dat, file=rnsquaredmethdatafile)
