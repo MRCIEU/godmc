@@ -3,48 +3,44 @@
 set -e
 source config
 
+
 # Provision for having dosage data and convert to best guess if the analyst doesn't have this
 
 #I think we do this post-hoc and we can remove this.
 # Extract the probe SNPs
 ${plink1.90} \
 	--bfile ${bfile} \
-	--extract resources/qc/probesnps.txt \
+	--extract ${ilmn_probesnps} \
 	--recode A \
-	--out ${bfile}_probesnps
+	--out ${bfile_probesnps}
 
 
 # Make GRMs and calculate PCs
 
-gunzip -f resources/hapmap3_autosome.snplist.gz
+gunzip -c ${hm3_snps} > temp_hm3snps.txt
 
 ${plink1.90} \
 	--bfile ${bfile} \
-	--extract resources/hapmap3_autosome.snplist \
-	--maf 0.01 \
+	--extract temp_hm3snps.txt \
+	--maf ${grm_maf_cutoff} \
+	--pca ${npcs} \
 	--make-grm-bin \
 	--out ${grmfile_all}
 
-gzip -f resources/hapmap3_autosome.snplist
+rm temp_hm3snps.txt
 
-if [ "${family}" -eq "yes" ]
+if [ "${unrelated}" -eq "no" ]
 then
-	Rscript resources/grm_relateds.R ${grmfile_all} ${grmfile_relateds} 0.125
-elif [ "${family}" -eq "no" ]
+	Rscript resources/grm_relateds.R ${grmfile_all} ${grmfile_relateds} ${rel_cutoff}
+elif [ "${unrelated}" -eq "yes" ]
 then
 	${plink1.90} \
 		--grm-bin ${grmfile_all} \
-		--rel-cutoff 0.125 \
+		--rel-cutoff ${rel_cutoff} \
 		--make-grm-bin \
-		--out ${grmfile_all}
-
-	${gcta64} \
-		--grm ${grmfile_all} \
-		--pca 10 \
-		--out ${genetic_pcs} \
-		--thread-num ${nthreads}
+		--out ${grmfile_unrelateds}
 else 
-	echo "Error: Set family flag in config to yes or no"
+	echo "Error: Set unrelated flag in config to yes or no"
 	exit 1
 fi
 
@@ -53,7 +49,7 @@ fi
 # Change SNVids to chr:position:{SNP/INDEL}
 
 cp ${bfile}.bim ${bfile}.bim.original
-awk '{if (length($5) == "1" && length($6) == "1") print $1, "chr"$1":"$4":SNP", $3, $4, $5, $6;else print $1, "chr"$1":"$4":INDEL", $3, $4, $5, $6;}' <${bfile}.bim.original > ${bfile}.bim
+awk '{if (length($5) == "1" && length($6) == "1") print $1, $1":"$4":SNP", $3, $4, $5, $6;else print $1, $1":"$4":INDEL", $3, $4, $5, $6;}' <${bfile}.bim.original > ${bfile}.bim
 
 
 # Generate meQTL format
@@ -86,9 +82,10 @@ ${plink1.90} --bfile ${bfile} --recode A --out ${bfile} --freq
 #snp1 chr1 1
 #snp2 chr1 5
 
-./resources/make_meqtl_format.py ${bfile}
+./resources/make_meqtl_format.py ${bfile} ${bfile_chunksize}
 
-
+# This will make the files
+# ${bfile}.1.tab, ${bfile}.2.tab, ${bfile}.3.tab etc
 
 # make GRM from hm3 SNPs
 # if family data then make pedigree matrix

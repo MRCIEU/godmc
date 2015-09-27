@@ -72,7 +72,7 @@ if __name__ == '__main__':
         count = 0
         pb = ProgressBar("cyan")
         for record in H:
-            ALN  = record[:-1].split(" ")[0]
+            ALN  = record[:-1].split(" ")[1]
             data = record[:-1].split(" ")[6:]
             # print_progress(count, nid, "")
             pb.print_progress(count, nid, ALN)

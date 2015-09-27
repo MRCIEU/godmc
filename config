@@ -4,25 +4,82 @@
 
 # Computer
 
-# Input data files
-methylation_data=""
-geno_data=""
-covariates_data=""
+# Please put the full path to this directory
+# e.g. you can find this by using the pwd command in the terminal
+home_directory=""
 
+# Input data files
+betas="${home_directory}/input_data/methylation_betas/FILENAME"
+bfile="${home_directory}/input_data/plink_files/FILENAME"
+covariates="${home_directory}/input_data/covariates/FILENAME"
 
 # Created files
-
-grmfile_all=
-
+grmfile_all="${home_directory}/input_data/kinships/"
 
 # Options
-unrelated="TRUE"
+unrelated="yes"
 
 
 
 
-idat file name
 bplink file name
 covariates filename
 phenotypes filename
 family or unrelated
+
+kinship file
+kinship file - relateds only
+
+genetic principal components
+smoking prediction
+age prediction
+
+cell count reference
+cell counts
+
+cnv file
+
+
+
+# Kinship files
+grmfile_all="${home_directory}/input_data/kinships/data_all"
+grmfile_relateds="${home_directory}/input_data/kinships/data_relateds"
+grmfile_unrelateds="${home_directory}/input_data/kinships/data_unrelateds"
+
+# PCA files
+pcs_all="${grmfile_all}.eigenvec"
+
+# SNP list files
+hm3_snps="${home_directory}/resources/hapmap3_autosome.snplist.gz"
+ilmn_probesnps="${home_directory}/resources/qc/probesnps.txt"
+
+# Sample mixup checks
+bfile_probesnps="${bfile}_probesnps"
+
+# GRM parameters
+rel_cutoff=0.125
+grm_maf_cutoff=0.01
+
+# PCA paramaters
+npcs=20
+
+# Matrixeqtl parameters
+bfile_chunksize=10000
+soft_threshold="1e-7"
+soft_threshold_cnv="1e-3"
+
+
+# logfiles
+
+
+
+
+# scripts and binaries
+
+plink1.90="${home_directory}/bin/plink1.90"
+gcta64="${home_directory}/bin/gcta64"
+
+
+matrixeqtl_run_r="${home_directory}/resources/genetics/matrixeqtl.R"
+
+

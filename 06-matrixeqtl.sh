@@ -1,16 +1,25 @@
+#!/bin/bash
+
 # create batch scripts
-# run
+# e.g to run:
 
-geno=
-phen=
-threshold=
-out=
+# $ ./scriptname 1
 
-R --no-save --args ${geno} ${phen} ${threshold} ${out}
+set -e
+source config
 
+batch_number=${1}
+re='^[0-9]+$'
+if ! [[ $batch_number =~ $re ]] ; then
+   echo "error: Batch variable is not a number"
+   exit 1
+fi
 
-# do this for mean and var meqtl
+geno="${bfile}.${batch_number}.tab"
+phen="${}"
+threshold=${soft_threshold}
+out="${}.${batch_number}.RData"
 
-
+R --no-save --args ${geno} ${phen} ${cov} ${threshold} ${out} < ${matrixeqtl_run_r}
 
 

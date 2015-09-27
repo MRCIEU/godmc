@@ -5,8 +5,9 @@ main <- function()
 	arguments <- commandArgs(T)
 	geno_file <- arguments[1]
 	phen_file <- arguments[2]
-	threshold <- as.numeric(arguments[3])
-	out_file <- arguments[4]
+	cov_file <- arguments[3]
+	threshold <- as.numeric(arguments[4])
+	out_file <- arguments[5]
 
 	useModel = modelLINEAR
 	errorCovariance = numeric()
@@ -27,10 +28,18 @@ main <- function()
 	gene$fileSliceSize = 2000
 	gene$LoadFile( phen_file )
 
+	cvrt <- SlicedData$new()
+	cvrt$fileDelimiter = "\t"
+	cvrt$fileOmitCharacters = "NA"
+	cvrt$fileSkipRows = 1
+	cvrt$fileSkipColumns = 1
+	cvrt$fileSliceSize = 2000
+	cvrt$LoadFile( cov_file )
+
 	me <- Matrix_eQTL_engine(
 		snps = snps,
 		gene = gene,
-		cvrt = character(),
+		cvrt = cvrt,
 		output_file_name = out_file,
 		pvOutputThreshold = threshold,
 		useModel = useModel, 
@@ -40,7 +49,7 @@ main <- function()
 		min.pv.by.genesnp = FALSE,
 		noFDRsaveMemory = FALSE
 	)
-	save(me, file=paste(out_file, ".RData", sep=""))
+	save(me, file=out_file)
 }
 
 
