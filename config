@@ -10,7 +10,7 @@ home_directory=""
 
 # Input data files
 betas="${home_directory}/input_data/methylation_betas/FILENAME"
-bfile="${home_directory}/input_data/plink_files/FILENAME"
+bfile_raw="${home_directory}/input_data/plink_files/FILENAME"
 covariates="${home_directory}/input_data/covariates/FILENAME"
 
 # Created files
@@ -19,7 +19,8 @@ grmfile_all="${home_directory}/input_data/kinships/"
 # Options
 unrelated="yes"
 
-
+# Number of threads to use per node
+nthreads="16"
 
 
 bplink file name
@@ -40,9 +41,11 @@ cell counts
 cnv file
 
 
+# Clean genetic data
+bfile="${home_directory}/input_data/plink_files/data"
 
 # Kinship files
-grmfile_all="${home_directory}/input_data/kinships/data_all"
+grmfile_all="${home_directory}/input_data/kinships/data"
 grmfile_relateds="${home_directory}/input_data/kinships/data_relateds"
 grmfile_unrelateds="${home_directory}/input_data/kinships/data_unrelateds"
 
@@ -61,12 +64,23 @@ rel_cutoff=0.125
 grm_maf_cutoff=0.01
 
 # PCA paramaters
-npcs=20
+n_pcs=10
+pca_sd=3
 
 # Matrixeqtl parameters
 bfile_chunksize=10000
 soft_threshold="1e-7"
 soft_threshold_cnv="1e-3"
+
+# ID lists
+genetic_outlier_ids="${home_directory}/input_data/plink_files/genetic_outliers.txt"
+methylation_ids="${home_directory}/input_data/plink_files/methylation_ids.txt"
+
+# Methylation files
+methylation_rt="${home_directory}/input_data/methylation_betas/methylation_rt.txt"
+methylation_rt_cc="${home_directory}/input_data/methylation_betas/methylation_rt_cc.txt"
+methylation_rt_cc_sq="${home_directory}/input_data/methylation_betas/methylation_rt_cc_sq.txt"
+methylation_rt_poly="${home_directory}/input_data/methylation_betas/methylation_rt_poly.txt"
 
 
 # logfiles

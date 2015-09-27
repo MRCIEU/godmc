@@ -9,6 +9,8 @@ main <- function()
 	threshold <- as.numeric(arguments[4])
 	out_file <- arguments[5]
 
+	slicesize <- 500
+
 	useModel = modelLINEAR
 	errorCovariance = numeric()
 
@@ -17,7 +19,7 @@ main <- function()
 	snps$fileOmitCharacters = "NA"
 	snps$fileSkipRows = 1
 	snps$fileSkipColumns = 1
-	snps$fileSliceSize = 2000
+	snps$fileSliceSize = slicesize
 	snps$LoadFile( geno_file )
 
 	gene <- SlicedData$new()
@@ -25,7 +27,7 @@ main <- function()
 	gene$fileOmitCharacters = "NA"
 	gene$fileSkipRows = 1
 	gene$fileSkipColumns = 1
-	gene$fileSliceSize = 2000
+	gene$fileSliceSize = slicesize
 	gene$LoadFile( phen_file )
 
 	cvrt <- SlicedData$new()
@@ -33,8 +35,17 @@ main <- function()
 	cvrt$fileOmitCharacters = "NA"
 	cvrt$fileSkipRows = 1
 	cvrt$fileSkipColumns = 1
-	cvrt$fileSliceSize = 2000
+	cvrt$fileSliceSize = slicesize
 	cvrt$LoadFile( cov_file )
+
+	ids <- Reduce(intersect, list(snps$columnNames, gene$columnNames, cvrt$columnNames))
+
+	snps$ColumnSubsample(match(ids, snps$columnNames))
+	gene$ColumnSubsample(match(ids, gene$columnNames))
+	cvrt$ColumnSubsample(match(ids, cvrt$columnNames))
+
+	stopifnot(all(snps$columnNames==gene$columnNames))
+	stopifnot(all(snps$columnNames==cvrt$columnNames))
 
 	me <- Matrix_eQTL_engine(
 		snps = snps,

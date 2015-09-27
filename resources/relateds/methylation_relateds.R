@@ -35,7 +35,7 @@ readGRM <- function(rootname)
 	return(ret)
 }
 
-makeGRMmatrix <- function(grm)
+makeGRMmatrix <- function(grm, ids)
 {
 	mat <- diag(nrow(grm$id))
 	mat[upper.tri(mat, diag=TRUE)] <- grm$grm$grm
@@ -44,13 +44,14 @@ makeGRMmatrix <- function(grm)
 	mat[upper.tri(mat, diag=FALSE)] <- nsnpvec
 	rownames(mat) <- grm$id$V2
 	colnames(mat) <- grm$id$V2
+	mat <- mat[match(ids, rownames(mat)), match(ids, colnames(mat))]
 	return(mat)
 }
 
 adjust.relatedness.1 <- function(x, kin, quiet=TRUE)
 {
 	d <- data.frame(x)
-	rntransform(polygenic(x, d, kin, quiet=quiet))
+	rntransform(polygenic(x, d, kin, quiet=quiet)$pgresidualY)
 }
 
 rntransform <- function(x)
@@ -59,7 +60,7 @@ rntransform <- function(x)
 	out[is.na(x)] <- NA
 	mP <- 0.5/max(out, na.rm = T)
 	out <- out/(max(out, na.rm = T) + 0.5)
-	out <- qnorm(out)
+	out <- scale(qnorm(out))
 	out
 }
 
@@ -67,7 +68,7 @@ adjust.relatedness <- function(B, kin, mc.cores=mc.cores)
 {
 	tmpList = lapply(1:mc.cores, function(i){ seq(from=i, to=nrow(B), by=mc.cores) })
 
-	message("Adjusting data for polygenic effects, may take a few minutes...")
+	message("Adjusting data for polygenic effects, may take some time minutes...")
 	tmpAdj = mclapply(tmpList, function(ix){ apply(B[ix,], 1, function(x) adjust.relatedness.1(x, kin)) }, mc.cores=mc.cores)
 
 	message("Reducing results...")
@@ -79,7 +80,7 @@ adjust.relatedness <- function(B, kin, mc.cores=mc.cores)
 }
 
 
-##
+
 
 
 arguments <- commandArgs(T)
@@ -89,10 +90,11 @@ grmfile <- arguments[2]
 ccrnfammethdatafile <- arguments[3]
 nthreads <- as.numeric(arguments[4])
 
-load(ccrnmethdatafile)
+mbeta <- read.table(ccrnfammethdatafile, he=T)
 
+ids <- colnames(mbeta)
 grm <- readGRM(grmfile)
-kin <- makeGRMmatrix(grm)
+kin <- makeGRMmatrix(grm, ids)
 
 mbeta <- adjust.relatedness(mbeta, kin, nthreads)
 

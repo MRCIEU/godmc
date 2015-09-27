@@ -49,3 +49,29 @@ limma
 nlme
 quadprog
 GenABEL
+
+
+
+
+
+check data
+- rename all SNPs to be chr_pos_a1_a2
+- get allele frequencies of all SNPs
+
+covariates
+- create covariate dataset
+- principal components
+- cell counts
+- smoking
+- age
+- sex
+
+
+methylation
+- normal betas
+- rank transformed betas
+- rank transformed and cell count adjusted betas
+- methylation variance dataset
+
+cnvs
+- create cnv dataset

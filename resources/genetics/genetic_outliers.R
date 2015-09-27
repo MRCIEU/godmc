@@ -58,3 +58,7 @@ index <- apply(pca2, 1, function(x) any(is.na(x)))
 genetic_outliers <- pca[index,1:2]
 
 write.table(genetic_outliers, file=out_file, row=F, col=F, qu=F)
+if(length(genetic_outliers) > 0)
+{
+	write.table(subset(pca, !V2 %in% genetic_outliers), file=pcafile, row=F, col=F, qu=F)	
+}

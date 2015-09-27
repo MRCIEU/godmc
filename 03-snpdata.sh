@@ -6,19 +6,13 @@ source config
 
 # Provision for having dosage data and convert to best guess if the analyst doesn't have this
 
-#I think we do this post-hoc and we can remove this.
-# Extract the probe SNPs
-${plink1.90} \
-	--bfile ${bfile} \
-	--extract ${ilmn_probesnps} \
-	--recode A \
-	--out ${bfile_probesnps}
-
+# Copy raw data to 
+cp ${bfile_raw}.bed ${bfile}.bed
+cp ${bfile_raw}.bim ${bfile}.bim
+cp ${bfile_raw}.fam ${bfile}.fam
 
 # Make GRMs and calculate PCs
-
 gunzip -c ${hm3_snps} > temp_hm3snps.txt
-
 ${plink1.90} \
 	--bfile ${bfile} \
 	--extract temp_hm3snps.txt \
@@ -26,9 +20,25 @@ ${plink1.90} \
 	--pca ${npcs} \
 	--make-grm-bin \
 	--out ${grmfile_all}
-
 rm temp_hm3snps.txt
 
+# Get genetic outliers
+R --no-save --args ${pcs_all} ${pca_sd} ${n_pcs} ${genetic_outlier_ids} < resources/genetics/genetic_outliers.R
+
+# Remove genetic outliers from data
+${plink1.90} \
+	--bfile ${bfile} \
+	--remove ${genetic_outlier_ids} \
+	--make-bed \
+	--out ${bfile}
+
+${gcta64} \
+	--grm ${grmfile_all} \
+	--remove ${genetic_outlier_ids} \
+	--make-grm-bin \
+	--out ${grmfile_all}
+
+# Create kinship matrix if family data, otherwise remove related individuals
 if [ "${unrelated}" -eq "no" ]
 then
 	Rscript resources/grm_relateds.R ${grmfile_all} ${grmfile_relateds} ${rel_cutoff}
@@ -39,6 +49,12 @@ then
 		--rel-cutoff ${rel_cutoff} \
 		--make-grm-bin \
 		--out ${grmfile_unrelateds}
+
+	${plink1.90}  \
+		--bfile ${bfile} \
+		--keep ${grmfile_unrelateds}.grm.id \
+		--make-bed \
+		--out ${bfile}
 else 
 	echo "Error: Set unrelated flag in config to yes or no"
 	exit 1
@@ -46,10 +62,13 @@ fi
 
 
 
-# Change SNVids to chr:position:{SNP/INDEL}
+# Change SNP ids to chr:position:{SNP/INDEL}
 
 cp ${bfile}.bim ${bfile}.bim.original
 awk '{if (length($5) == "1" && length($6) == "1") print $1, $1":"$4":SNP", $3, $4, $5, $6;else print $1, $1":"$4":INDEL", $3, $4, $5, $6;}' <${bfile}.bim.original > ${bfile}.bim
+
+
+
 
 
 # Generate meQTL format

@@ -9,7 +9,7 @@ library(parallel)
 library(limma)
 library(nlme)
 
-source('resources/houseman/wbcInference-V112.R')
+source('resources/cellcounts/wbcInference-V112.R')
 
 
 ilogit <- function(M)
@@ -81,7 +81,7 @@ rntransform <- function(x)
 	out[is.na(x)] <- NA
 	mP <- 0.5/max(out, na.rm = T)
 	out <- out/(max(out, na.rm = T) + 0.5)
-	out <- qnorm(out)
+	out <- scale(qnorm(out))
 	out
 }
 
@@ -97,17 +97,18 @@ inverse.rank.transform <- function(B, mc.cores=mc.cores)
 	for (i in 1:length(tmpList)){
 			adjBeta[tmpList[[i]],] = t(tmpAdj[[i]])
 	}
+	rownames(adjBeta) <- rownames(B)
+	colnames(adjBeta) <- colnames(B)
 	return(adjBeta)
 }
 
 
 
-adjust.beta <- function(B, top_n=500, mc.cores=24, cell.coefs="resources/houseman/houseman-dmrs.txt", est.only=FALSE)
+adjust.beta <- function(B, top_n=500, mc.cores=24, cell.coefs="resources/cellcounts/houseman-dmrs.txt", est.only=FALSE)
 {
 	if (! all(B > 0, na.rm=TRUE)){
 			message("performing inverse logit to get values from 0 to 1")
 			B = ilogit(B)
-			print(dim(B))
 			do.logit = TRUE
 	} else { do.logit = FALSE }
 	stopifnot(all((B > 0) & (B < 1), na.rm=TRUE))
@@ -177,26 +178,28 @@ rnmethdatafile <- arguments[2]
 rnsquaredmethdatafile <- arguments[3]
 ccrnmethdatafile <- arguments[4]
 cellcountfile <- arguments[5]
-nthreads <- as.numeric(arguments[6])
+idlist <- arguments[6]
+nthreads <- as.numeric(arguments[7])
 
 message("Reading methylation data...")
 load(methylationfile)
 
 # Get inverse rank transformed data, no cell count adjustment
 dat <- inverse.rank.transform(dat, nthreads)
-save(dat, file=rnmethdatafile)
-
+write.table(dat, file=rnmethdatafile, row=TRUE, col=TRUE, qu=FALSE, sep="\t")
 
 # Get cell counts 
-dat <- adjust.beta(dat, mc.cores=nthreads)
-cellcounts <- dat$cell.counts
-cellcounts <- data.frame(colnames(dat), cellcounts)
+dat3 <- adjust.beta(norm.beta, mc.cores=nthreads, est.only=TRUE)
+cellcounts <- data.frame(IID=colnames(dat$cell.counts), dat$cell.counts)
 write.table(cellcounts, file=cellcountfile, row=F, col=F, qu=F)
 
 # and rank transformed data of cell countadjusted betas
 dat <- inverse.rank.transform(dat$adj.mbeta)
-save(dat, file=ccrnmethdatafile)
+write.table(dat, file=ccrnmethdatafile, row=TRUE, col=TRUE, qu=FALSE, sep="\t")
 
 # Get squared z values of cell count adjusted data
 dat <- dat^2
-save(dat, file=rnsquaredmethdatafile)
+write.table(dat, file=rnsquaredmethdatafile, row=TRUE, col=TRUE, qu=FALSE, sep="\t")
+
+# Write id list
+write.table(colnames(dat), file=idlist, row=F, col=F, qu=F)

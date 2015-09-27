@@ -17,6 +17,7 @@ fi
 
 geno="${bfile}.${batch_number}.tab"
 phen="${}"
+cov="${}"
 threshold=${soft_threshold}
 out="${}.${batch_number}.RData"
 
