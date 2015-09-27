@@ -139,7 +139,7 @@ adjust.beta <- function(B, top_n=500, mc.cores=24, cell.coefs="resources/housema
 
 
 	omega.mix = (1 / apply(omega.mix, 1, sum)) * omega.mix
-	if(est.only){ return(omega.mix) }
+	if(est.only){ return(list(cell.counts=omega.mix)) }
 	#write.table(omega.mix, sep="\t", row.names=T, quote=F, file="tmp/omega.mix.txt")
 	#message("WROTE")
 
@@ -174,20 +174,28 @@ arguments <- commandArgs(T)
 
 methylationfile <- arguments[1]
 rnmethdatafile <- arguments[2]
-ccrnmethdatafile <- arguments[3]
-cellcountfile <- arguments[4]
-nthreads <- as.numeric(arguments[5])
+rnsquaredmethdatafile <- arguments[3]
+ccrnmethdatafile <- arguments[4]
+cellcountfile <- arguments[5]
+nthreads <- as.numeric(arguments[6])
 
-
+message("Reading methylation data...")
 load(methylationfile)
 
+# Get inverse rank transformed data, no cell count adjustment
+dat <- inverse.rank.transform(dat, nthreads)
+save(dat, file=rnmethdatafile)
 
-mbeta <- inverse.rank.transform(mbeta, nthreads)
-save(mbeta, file=rnmethdatafile)
+# Get squared z values
+dat <- dat^2
+save(dat, file=rnsquaredmethdatafile)
 
+# Get cell counts 
+dat <- adjust.beta(dat, mc.cores=nthreads)
+cellcounts <- dat$cell.counts
+cellcounts <- data.frame(colnames(dat), cellcounts)
+write.table(cellcounts, file=cellcountfile, row=F, col=F, qu=F)
 
-a <- adjust.beta(mbeta, mc.cores=nthreads)
-mbeta <- inverse.rank.transform(a$adj.mbeta)
-cellcounts <- a$cell.counts
-save(mbeta, file=ccrnmethdatafile)
-save(cellcounts, file=cellcountfile)
+# and rank transformed data of cell countadjusted betas
+dat <- inverse.rank.transform(dat$adj.mbeta)
+save(dat, file=ccrnmethdatafile)
