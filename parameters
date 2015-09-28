@@ -2,6 +2,8 @@
 
 # Clean genetic data
 bfile="${home_directory}/processed_data/genetic_data/data"
+tabfile="${home_directory}/processed_data/genetic_data/tabfile/data"
+allele_ref="${home_directory}/processed_data/genetic_data/data.allele_codes"
 
 # Kinship files
 grmfile_all="${home_directory}/processed_data/genetic_data/data"

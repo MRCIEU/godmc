@@ -1,5 +1,8 @@
 User needs to provide three datasets in this directory:
 
+ids
+- no underscores allowed in IDs, please make sure they are alphanumeric if possible
+
 genetic data in binary plink format
 - This should be for all variants in a single dataset (i.e. not a separate file set for each chromosome)
 - The second column of the .fam file is going to be used as the individual identifier, therefore it must be unique, and it must match the IDs used in the other datasets.

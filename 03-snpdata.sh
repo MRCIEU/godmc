@@ -43,18 +43,18 @@ ${plink} \
 	--make-bed \
 	--out ${bfile}
 
-${gcta64} \
+${gcta} \
 	--grm ${grmfile_all} \
 	--remove ${genetic_outlier_ids} \
 	--make-grm-bin \
 	--out ${grmfile_all}
 
 # Create pedigree matrix if family data, otherwise remove related individuals from existing kinship and data file
-if [ "${unrelated}" -eq "no" ]
+if [ "${unrelated}" = "no" ]
 then
 	echo "Creating pedigree GRM"
-	Rscript resources/grm_relateds.R ${grmfile_all} ${grmfile_relateds} ${rel_cutoff}
-elif [ "${unrelated}" -eq "yes" ]
+	Rscript resources/relateds/grm_relateds.R ${grmfile_all} ${grmfile_relateds} ${rel_cutoff}
+elif [ "${unrelated}" = "yes" ]
 then
 	echo "Removing any cryptic relateds"
 	${plink} \
@@ -83,8 +83,33 @@ fi
 # Generate meQTL format
 
 #Generate plink.raw / plink.frq #freq files are required to determine effect allele
-echo "Converting plink files to raw"
-${plink} --bfile ${bfile} --recode A --out ${bfile} --freq
+echo "Converting plink files to transposed raw format"
+${plink} --bfile ${bfile} --recode A-transpose --out ${bfile} --freq
+
+echo "Generating matrixeqtl format genetic data"
+cut -f 2,5,6 ${bfile}.traw > ${allele_ref}
+
+head -n 1 ${bfile}.traw | cut -f 7- | tr '\t' '\n' | tr '_' '\t' | cut -f 2 | tr '\n' '\t' | awk '{ printf ("snpid\t%s\n", $0) }' > traw.header
+
+sed 1d ${bfile}.traw | cut -f 2,7- > ${bfile}.traw2
+mv ${bfile}.traw2 ${bfile}.traw
+
+echo "Splitting data into ${bfile_chunksize} SNP subsets"
+split -d -a 10 -l ${bfile_chunksize} ${bfile}.traw ${tabfile}.tab.
+
+i=1
+for file in ${tabfile}.tab.*
+do
+	echo ${file}
+	cat traw.header ${file} > ${tabfile}.tab.${i}
+	rm ${file}
+	i=$(($i+1))
+done
+
+rm traw.header
+
+
+echo "Done!"
 
 #covariates file #ID COV1 COV2
 
@@ -111,8 +136,9 @@ ${plink} --bfile ${bfile} --recode A --out ${bfile} --freq
 #snp1 chr1 1
 #snp2 chr1 5
 
-echo "Generating matrixeqtl format genetic data"
-./resources/make_meqtl_format.py ${bfile} ${bfile_chunksize}
+
+
+# ./resources/genetics/make_matrixeqtl_format.py ${bfile} ${bfile_chunksize}
 
 # This will make the files
 # ${bfile}.1.tab, ${bfile}.2.tab, ${bfile}.3.tab etc
