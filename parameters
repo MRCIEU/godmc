@@ -12,7 +12,7 @@ grmfile_unrelateds="${home_directory}/processed_data/genetic_data/data_unrelated
 pcs_all="${grmfile_all}.eigenvec"
 
 # SNP list files
-hm3_snps="${home_directory}/resources/hapmap3_autosome.snplist.gz"
+hm3_snps="${home_directory}/resources/genetics/hapmap3_autosome.snplist.gz"
 ilmn_probesnps="${home_directory}/resources/qc/probesnps.txt"
 
 # Sample mixup checks
