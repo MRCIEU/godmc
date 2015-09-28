@@ -6,7 +6,7 @@ source config
 
 # Provision for having dosage data and convert to best guess if the analyst doesn't have this
 
-# Copy raw data to 
+# Copy raw data to modifiable data
 cp ${bfile_raw}.bed ${bfile}.bed
 cp ${bfile_raw}.bim ${bfile}.bim
 cp ${bfile_raw}.fam ${bfile}.fam
@@ -38,7 +38,7 @@ ${gcta64} \
 	--make-grm-bin \
 	--out ${grmfile_all}
 
-# Create kinship matrix if family data, otherwise remove related individuals
+# Create pedigree matrix if family data, otherwise remove related individuals from existing kinship and data file
 if [ "${unrelated}" -eq "no" ]
 then
 	Rscript resources/grm_relateds.R ${grmfile_all} ${grmfile_relateds} ${rel_cutoff}

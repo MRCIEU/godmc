@@ -14,19 +14,6 @@ require(sqldf)
 require(impute) ## from bioconductor
 require(WGCNA)
 
-arguments <- commandArgs(T)
-
-betafile <- arguments[1]
-phenfile <- arguments[2]
-outfile <- arguments[3]
-
-dnamage.probeAnnotation21kdatMethUsed=read.csv("resources/dnamage/probeAnnotation21kdatMethUsed.csv.gz")
-dnamage.probeAnnotation27k=read.csv("resources/dnamage/datMiniAnnotation27k.csv.gz")
-dnamage.datClock=read.csv("resources/dnamage/AdditionalFile3.csv.gz")
-
-phen <- read.table(phenfile, header=T, stringsAsFactors=FALSE)
-
-read.table(phenfile, header=TRUE)
 
 ### Normalisation functions
 ### ORIGINAL AUTHOR: Andrew Teschendorff
@@ -48,6 +35,41 @@ read.table(phenfile, header=TRUE)
 
 
 library(RPMM)
+
+main <- function()
+{
+    # Args
+    arguments <- commandArgs(T)
+    beta_file <- arguments[1]
+    cov_file <- arguments[2]
+    fam_file <- arguments[3]
+    out_file <- arguments[4]
+
+    message("Getting probe paramaters")
+    dnamage.probeAnnotation21kdatMethUsed=read.csv("resources/dnamage/probeAnnotation21kdatMethUsed.csv.gz")
+    dnamage.probeAnnotation27k=read.csv("resources/dnamage/datMiniAnnotation27k.csv.gz")
+    dnamage.datClock=read.csv("resources/dnamage/AdditionalFile3.csv.gz")
+
+    message("Reading in data")
+    covs <- read.table(cov_file, header=T, stringsAsFactors=FALSE)
+    index <- grep("^age$", names(covs), ignore.case=TRUE)
+    if(length(index) != 1)
+    {
+        stop("There should be only one column in the covariate file called 'Age', regardless of case.")
+    }
+    names(covs)[index] <- "Age"
+    mbeta <- read.table(beta_file, header=TRUE)
+
+    message("Predicting age")
+    agepred <- dnamage(mbeta, normalizeData=FALSE)
+
+
+    message("Generating age accelerated residuals")
+    phen <- generate.aar(agepred, covs)
+
+    write.table(phen, file=out_file, row=F, col=T, qu=F)
+
+}
 
 
 
@@ -822,6 +844,9 @@ generate.aar <- function(agepred, phen)
     phen$index <- 1:nrow(phen)
     agepred <- subset(agepred, select=c(SampleID, DNAmAge))
     phen <- merge(phen, agepred, by.x="IID", by.y="SampleID", all.x=TRUE)
+
+    print(paste("The correlation between predicted age and actual age is", cor(phen$Age, phen$DNAmAge, use="pair")))
+
     phen$AAR <- residuals(lm(Age ~ DNAmAge, phen, na.action=na.exclude))
     phen <- phen[order(phen$index), ]
     phen <- subset(phen, select=-c(index))
@@ -829,12 +854,7 @@ generate.aar <- function(agepred, phen)
 }
 
 
-agepred <- dnamage(mbeta)
-
-phen <- generate.aar(agepred, phen)
-
-write.table(phen, file=outfile, row=F, col=T, qu=F)
+##
 
 
-
-
+main()
