@@ -13,7 +13,7 @@ cp ${bfile_raw}.fam ${bfile}.fam
 
 # Make GRMs and calculate PCs
 gunzip -c ${hm3_snps} > temp_hm3snps.txt
-${plink1.90} \
+${plink} \
 	--bfile ${bfile} \
 	--extract temp_hm3snps.txt \
 	--maf ${grm_maf_cutoff} \
@@ -26,7 +26,7 @@ rm temp_hm3snps.txt
 R --no-save --args ${pcs_all} ${pca_sd} ${n_pcs} ${genetic_outlier_ids} < resources/genetics/genetic_outliers.R
 
 # Remove genetic outliers from data
-${plink1.90} \
+${plink} \
 	--bfile ${bfile} \
 	--remove ${genetic_outlier_ids} \
 	--make-bed \
@@ -44,13 +44,13 @@ then
 	Rscript resources/grm_relateds.R ${grmfile_all} ${grmfile_relateds} ${rel_cutoff}
 elif [ "${unrelated}" -eq "yes" ]
 then
-	${plink1.90} \
+	${plink} \
 		--grm-bin ${grmfile_all} \
 		--rel-cutoff ${rel_cutoff} \
 		--make-grm-bin \
 		--out ${grmfile_unrelateds}
 
-	${plink1.90}  \
+	${plink}  \
 		--bfile ${bfile} \
 		--keep ${grmfile_unrelateds}.grm.id \
 		--make-bed \
@@ -74,7 +74,7 @@ awk '{if (length($5) == "1" && length($6) == "1") print $1, $1":"$4":SNP", $3, $
 # Generate meQTL format
 
 #Generate plink.raw / plink.frq #freq files are required to determine effect allele
-${plink1.90} --bfile ${bfile} --recode A --out ${bfile} --freq
+${plink} --bfile ${bfile} --recode A --out ${bfile} --freq
 
 #covariates file #ID COV1 COV2
 
