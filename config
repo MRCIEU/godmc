@@ -6,40 +6,18 @@
 
 # Please put the full path to this directory
 # e.g. you can find this by using the pwd command in the terminal
-home_directory=""
+home_directory="/PATH_TO_DIR"
 
 # Input data files
 betas="${home_directory}/input_data/methylation_betas/FILENAME"
 bfile_raw="${home_directory}/input_data/plink_files/FILENAME"
 covariates="${home_directory}/input_data/covariates/FILENAME"
 
-# Created files
-grmfile_all="${home_directory}/input_data/kinships/"
-
 # Options
 unrelated="yes"
 
 # Number of threads to use per node
 nthreads="16"
-
-
-bplink file name
-covariates filename
-phenotypes filename
-family or unrelated
-
-kinship file
-kinship file - relateds only
-
-genetic principal components
-smoking prediction
-age prediction
-
-cell count reference
-cell counts
-
-cnv file
-
 
 # Clean genetic data
 bfile="${home_directory}/input_data/plink_files/data"
@@ -97,3 +75,22 @@ gcta64="${home_directory}/bin/gcta64"
 matrixeqtl_run_r="${home_directory}/resources/genetics/matrixeqtl.R"
 
 
+
+
+
+bplink file name
+covariates filename
+phenotypes filename
+family or unrelated
+
+kinship file
+kinship file - relateds only
+
+genetic principal components
+smoking prediction
+age prediction
+
+cell count reference
+cell counts
+
+cnv file
