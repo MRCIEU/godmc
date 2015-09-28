@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
 # Clean genetic data
-bfile="${home_directory}/input_data/genetic_data/data"
+bfile="${home_directory}/processed_data/genetic_data/data"
 
 # Kinship files
-grmfile_all="${home_directory}/input_data/genetic_data/data"
-grmfile_relateds="${home_directory}/input_data/genetic_data/data_relateds"
-grmfile_unrelateds="${home_directory}/input_data/genetic_data/data_unrelateds"
+grmfile_all="${home_directory}/processed_data/genetic_data/data"
+grmfile_relateds="${home_directory}/processed_data/genetic_data/data_relateds"
+grmfile_unrelateds="${home_directory}/processed_data/genetic_data/data_unrelateds"
 
 # PCA files
 pcs_all="${grmfile_all}.eigenvec"
@@ -32,14 +32,14 @@ soft_threshold="1e-7"
 soft_threshold_cnv="1e-3"
 
 # ID lists
-genetic_outlier_ids="${home_directory}/input_data/genetic_data/genetic_outliers.txt"
-methylation_ids="${home_directory}/input_data/genetic_data/methylation_ids.txt"
+genetic_outlier_ids="${home_directory}/processed_data/genetic_data/genetic_outliers.txt"
+methylation_ids="${home_directory}/processed_data/genetic_data/methylation_ids.txt"
 
 # Methylation files
-methylation_rt="${home_directory}/input_data/methylation_data/methylation_rt.txt"
-methylation_rt_cc="${home_directory}/input_data/methylation_data/methylation_rt_cc.txt"
-methylation_rt_cc_sq="${home_directory}/input_data/methylation_data/methylation_rt_cc_sq.txt"
-methylation_rt_poly="${home_directory}/input_data/methylation_data/methylation_rt_poly.txt"
+methylation_rt="${home_directory}/processed_data/methylation_data/methylation_rt.txt"
+methylation_rt_cc="${home_directory}/processed_data/methylation_data/methylation_rt_cc.txt"
+methylation_rt_cc_sq="${home_directory}/processed_data/methylation_data/methylation_rt_cc_sq.txt"
+methylation_rt_poly="${home_directory}/processed_data/methylation_data/methylation_rt_poly.txt"
 
 
 # logfiles
