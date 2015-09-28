@@ -175,31 +175,27 @@ arguments <- commandArgs(T)
 
 methylationfile <- arguments[1]
 rnmethdatafile <- arguments[2]
-rnsquaredmethdatafile <- arguments[3]
-ccrnmethdatafile <- arguments[4]
+ccrnmethdatafile <- arguments[3]
+ccrnsquaredmethdatafile <- arguments[4]
 cellcountfile <- arguments[5]
-idlist <- arguments[6]
-nthreads <- as.numeric(arguments[7])
+nthreads <- as.numeric(arguments[6])
 
 message("Reading methylation data...")
 load(methylationfile)
 
 # Get inverse rank transformed data, no cell count adjustment
-dat <- inverse.rank.transform(dat, nthreads)
-write.table(dat, file=rnmethdatafile, row=TRUE, col=TRUE, qu=FALSE, sep="\t")
+dat <- inverse.rank.transform(norm.beta, nthreads)
+write.table(round(dat, 3), file=rnmethdatafile, row=TRUE, col=TRUE, qu=FALSE, sep="\t")
 
 # Get cell counts 
-dat3 <- adjust.beta(norm.beta, mc.cores=nthreads, est.only=TRUE)
-cellcounts <- data.frame(IID=colnames(dat$cell.counts), dat$cell.counts)
+dat <- adjust.beta(norm.beta, mc.cores=nthreads, est.only=FALSE)
+cellcounts <- data.frame(IID=rownames(dat$cell.counts), dat$cell.counts)
 write.table(cellcounts, file=cellcountfile, row=F, col=F, qu=F)
 
 # and rank transformed data of cell countadjusted betas
-dat <- inverse.rank.transform(dat$adj.mbeta)
-write.table(dat, file=ccrnmethdatafile, row=TRUE, col=TRUE, qu=FALSE, sep="\t")
+dat <- inverse.rank.transform(dat$adj.mbeta, nthreads)
+write.table(round(dat, 3), file=ccrnmethdatafile, row=TRUE, col=TRUE, qu=FALSE, sep="\t")
 
 # Get squared z values of cell count adjusted data
 dat <- dat^2
-write.table(dat, file=rnsquaredmethdatafile, row=TRUE, col=TRUE, qu=FALSE, sep="\t")
-
-# Write id list
-write.table(colnames(dat), file=idlist, row=F, col=F, qu=F)
+write.table(round(dat, 3), file=ccrnsquaredmethdatafile, row=TRUE, col=TRUE, qu=FALSE, sep="\t")

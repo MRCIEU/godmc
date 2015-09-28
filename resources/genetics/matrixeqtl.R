@@ -9,7 +9,7 @@ main <- function()
 	threshold <- as.numeric(arguments[4])
 	out_file <- arguments[5]
 
-	slicesize <- 500
+	slicesize <- 1000
 
 	useModel = modelLINEAR
 	errorCovariance = numeric()
