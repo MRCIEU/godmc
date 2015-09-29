@@ -9,7 +9,7 @@ main <- function()
 	threshold <- as.numeric(arguments[4])
 	out_file <- arguments[5]
 
-	slicesize <- 500
+	slicesize <- 1000
 
 	useModel = modelLINEAR
 	errorCovariance = numeric()
@@ -22,14 +22,6 @@ main <- function()
 	snps$fileSliceSize = slicesize
 	snps$LoadFile( geno_file )
 
-	gene <- SlicedData$new()
-	gene$fileDelimiter = "\t"
-	gene$fileOmitCharacters = "NA"
-	gene$fileSkipRows = 1
-	gene$fileSkipColumns = 1
-	gene$fileSliceSize = slicesize
-	gene$LoadFile( phen_file )
-
 	cvrt <- SlicedData$new()
 	cvrt$fileDelimiter = "\t"
 	cvrt$fileOmitCharacters = "NA"
@@ -37,6 +29,14 @@ main <- function()
 	cvrt$fileSkipColumns = 1
 	cvrt$fileSliceSize = slicesize
 	cvrt$LoadFile( cov_file )
+
+	gene <- SlicedData$new()
+	gene$fileDelimiter = "\t"
+	gene$fileOmitCharacters = "NA"
+	gene$fileSkipRows = 1
+	gene$fileSkipColumns = 1
+	gene$fileSliceSize = slicesize
+	gene$LoadFile( phen_file )
 
 	ids <- Reduce(intersect, list(snps$columnNames, gene$columnNames, cvrt$columnNames))
 
@@ -51,7 +51,7 @@ main <- function()
 		snps = snps,
 		gene = gene,
 		cvrt = cvrt,
-		output_file_name = out_file,
+		output_file_name = NULL,
 		pvOutputThreshold = threshold,
 		useModel = useModel, 
 		errorCovariance = errorCovariance, 

@@ -27,19 +27,16 @@ remRec <- function(x, thresh, iterations)
 }
 
 
-removeOutliersFromData <- function(tbetas, thresh, iterations)
+
+removeOutliersFromData <- function(X, thresh, iterations)
 {
-	n <- nrow(tbetas)
-	res <- array(0, c(n, iterations+1))
+	n <- ncol(X)
 	for(i in 1:n)
 	{
 		cat(i, "\n")
-		res[i,1] <- sum(!is.na(tbetas[i, ]))
-		a <- remRec(tbetas[i, ], thresh, iterations)
-		res[i, ] <- a$its
-		tbetas[i, ] <- a$x
+		X[,i] <- remRec(X[,i], thresh, iterations)$x
 	}
-	return(list(tbetas=tbetas, res=res))
+	return(X)
 }
 
 
@@ -60,5 +57,5 @@ genetic_outliers <- pca[index,1:2]
 write.table(genetic_outliers, file=out_file, row=F, col=F, qu=F)
 if(length(genetic_outliers) > 0)
 {
-	write.table(subset(pca, !V2 %in% genetic_outliers), file=pcafile, row=F, col=F, qu=F)	
+	write.table(subset(pca, !V2 %in% genetic_outliers[,2]), file=pcafile, row=F, col=F, qu=F)	
 }

@@ -4,25 +4,25 @@ set -e
 source config
 
 
-# Use output from meffil to normalise data and generate betas in RData format
-
-
-# Adjust betas to rank transform and adjust for cell counts
-Rscript resources/cellcounts/houseman.R ${beta} ${rnbeta} ${ccrnbeta} ${cellcounts} ${nthreads}
-
-# For family data adjust methylation data for relatedness (take residuals after fitting pedigree matrix, i.e. GRAMMAR method)
-if [ "${family}" -eq "yes" ]
+# Estimate cell counts
+if [ "${cellcounts_required}" = "yes" ]
 then
-	Rscript resources/relateds/methylation_relateds.R ${ccrnbeta} ${grmfile_all} ${ccrnfambeta} 0.05
+	R --no-save --args ${betas} ${cellcounts} < resources/cellcounts/estimate_cellcounts.R
+elif [ "${cellcounts_required}" = "no" ]
+then
+	cellcounts="NULL"
+else
+	echo "'cellcounts_required' should be set to yes or no"
+	exit 1
 fi
 
-# Use R-GADA to generate structural variant data from methylation intensities
+# Adjust betas to rank transform and adjust for cell counts
+R --no-save --args ${betas} ${cellcounts} ${methylation_rt} ${methylation_rt_cc} ${methylation_rt_cc_sq} ${nthreads} < resources/cellcounts/houseman.R
 
 
-# Filter methylation data on Naeem et al list (categories) and non-variant probes (threshold) and non-unique positions
+# For family data adjust methylation data for relatedness (take residuals after fitting pedigree matrix, i.e. GRAMMAR method)
+if [ "${unrelated}" = "no" ]
+then
+	R --no-save --args ${betas} ${grmfile_relateds} ${methylation_rt_poly} ${nthreads} < resources/relateds/methylation_relateds.R
+fi
 
-
-save
- structural variants in processed_data
- normalised methylation in processed_data
- 

@@ -1,18 +1,24 @@
 # Thanks to Hannah Elliott for sending the original version of this script
 
-arguments <- commandArgs(T)
 
-methylationfile <- arguments[1]
-phenfile <- arguments[2]
-outfile <- arguments[3]
+main <- function()
+{
+	arguments <- commandArgs(T)
 
-# Dataframe of Illig data (supplementary table 2) http://www.ncbi.nlm.nih.gov/pubmed/23691101
-load("resources/illig.RData")
+	methylationfile <- arguments[1]
+	out_file <- arguments[2]
 
-# Load methylation data - this contains the object "mbeta"
-# This is an ncpg (rows) x nid (cols) matrix
-# Columns and rows labelled with ID and CPG respectively
-load(methylationfile)
+	# Dataframe of Illig data (supplementary table 2) http://www.ncbi.nlm.nih.gov/pubmed/23691101
+	load("resources/smoking/illig.RData")
+
+	# Load methylation data - this contains the object "norm.beta"
+	# This is an ncpg (rows) x nid (cols) matrix
+	# Columns and rows labelled with ID and CPG respectively
+	load(methylationfile)
+	smok <- predict.smoking(Illig_data, norm.beta)
+	write.table(smok, file=out_file, row=F, col=T, qu=F)
+}
+
 
 
 predict.smoking <- function(Illig_data, mbeta)
@@ -48,17 +54,9 @@ predict.smoking <- function(Illig_data, mbeta)
 	# Combine scores
 	scores_combined <- scores_up + scores_down
 
-	dat <- data.frame(IID = rownames(mbeta), Smoking = scores_combined)
+	dat <- data.frame(IID = colnames(mbeta), Smoking = scores_combined)
 	return(dat)
 }
 
-smok <- predict.smoking(Illig_data, mbeta)
 
-phen <- read.table(phenfile, header=T)
-phen$index <- 1:nrow(phen)
-phen <- merge(phen, smok, by="IID", all.x=T)
-phen <- phen[order(phen$index),]
-phen <- subset(phen, select=-c(index))
-
-write.table(phen, file=outfile, row=F, col=T, qu=F)
-
+main()

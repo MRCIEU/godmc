@@ -1,0 +1,20 @@
+User needs to provide three datasets in this directory:
+
+ids
+- no underscores allowed in IDs, please make sure they are alphanumeric if possible
+
+genetic data in binary plink format
+- This should be for all variants in a single dataset (i.e. not a separate file set for each chromosome)
+- The second column of the .fam file is going to be used as the individual identifier, therefore it must be unique, and it must match the IDs used in the other datasets.
+
+methylation betas
+- Normalised methylation betas. Ideally this should be in a .RData file, and the output from the normalisation from R/meffil
+- If in an RData file then the data object should be called "norm.beta", and it should be a numeric matrix of size ncpg x nid. The rownames should be labelled by the cg identifier and colnames labelled by the sample ID
+
+covariate data
+- This should be a file with a minimum of Age and Sex data. Other covariates can also be included.
+- The structure of the file should have the following case-sensitive column names:
+	- IID
+	- Age
+	- Sex
+
