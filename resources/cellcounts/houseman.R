@@ -21,19 +21,27 @@ nthreads <- as.numeric(arguments[6])
 
 message("Reading methylation data...")
 load(methylationfile)
-cellcounts <- read.table(cellcountfile, he=T)
-cellcounts <- subset(cellcounts, select=-c(IID))
+
+if(cellcounts != "NULL")
+{
+	cellcounts <- read.table(cellcountfile, he=T)
+	cellcounts <- subset(cellcounts, select=-c(IID))
+}
 
 # Get inverse rank transformed data, no cell count adjustment
 dat <- inverse.rank.transform(norm.beta, nthreads)
 write.table(round(dat, 3), file=rnmethdatafile, row=TRUE, col=TRUE, qu=FALSE, sep="\t")
 
 # adjust for cell counts
-dat <- adjust.beta(norm.beta, cellcounts, mc.cores=nthreads)
-
-# and rank transformed data of cell countadjusted betas
-dat <- inverse.rank.transform(dat)
-write.table(round(dat, 3), file=ccrnmethdatafile, row=TRUE, col=TRUE, qu=FALSE, sep="\t")
+if(cellcounts != "NULL")
+{
+	dat <- adjust.beta(norm.beta, cellcounts, mc.cores=nthreads)
+	# and rank transformed data of cell countadjusted betas
+	dat <- inverse.rank.transform(dat)
+	write.table(round(dat, 3), file=ccrnmethdatafile, row=TRUE, col=TRUE, qu=FALSE, sep="\t")
+} else {
+	system(paste("cp -v", rnmethdatafile, ccrnmethdatafile))
+}
 
 # Get squared z values of cell count adjusted data
 dat <- dat^2
