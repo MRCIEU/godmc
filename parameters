@@ -5,6 +5,9 @@ bfile="${home_directory}/processed_data/genetic_data/data"
 tabfile="${home_directory}/processed_data/genetic_data/tabfile/data"
 allele_ref="${home_directory}/processed_data/genetic_data/data.allele_codes"
 
+# cnv file
+tabcnv="${home_directory}/processed_data/cnv_data/tabfile/data"
+
 # Kinship files
 grmfile_all="${home_directory}/processed_data/genetic_data/data"
 grmfile_relateds="${home_directory}/processed_data/genetic_data/data_relateds"
@@ -37,7 +40,7 @@ pca_sd=3
 # Matrixeqtl parameters
 bfile_chunksize=10000
 soft_threshold="1e-7"
-soft_threshold_cnv="1e-3"
+soft_threshold_cnv="1e-7"
 
 # ID lists
 genetic_outlier_ids="${home_directory}/processed_data/genetic_data/genetic_outliers.txt"
@@ -49,6 +52,19 @@ methylation_rt_cc="${home_directory}/processed_data/methylation_data/methylation
 methylation_rt_cc_sq="${home_directory}/processed_data/methylation_data/methylation_rt_cc_sq.txt"
 methylation_rt_poly="${home_directory}/processed_data/methylation_data/methylation_rt_poly.txt"
 
+# Smoking prediction
+smoking_pred="${home_directory}/processed_data/methylation_data/smoking_prediction.txt"
+
+# Results locations
+ewas_bmi_dir="${home_directory}/results/ewas_bmi"
+ewas_height_dir="${home_directory}/results/ewas_height"
+gwas_aar_dir="${home_directory}/results/gwas_aar"
+gwas_cellcounts_dir="${home_directory}/results/gwas_cellcounts"
+gwas_smoking_dir="${home_directory}/results/gwas_smoking"
+matrixeqtl_mcnv_dir="${home_directory}/results/matrixeqtl_mcnv"
+matrixeqtl_mqtl_dir="${home_directory}/results/matrixeqtl_mqtl"
+matrixeqtl_vmqtl_dir="${home_directory}/results/matrixeqtl_vmqtl"
+resname="res"
 
 # logfiles
 
@@ -82,4 +98,4 @@ matrixeqtl_run_r="${home_directory}/resources/genetics/matrixeqtl.R"
 # cell count reference
 # cell counts
 
-# cnv file
+

@@ -22,14 +22,6 @@ main <- function()
 	snps$fileSliceSize = slicesize
 	snps$LoadFile( geno_file )
 
-	gene <- SlicedData$new()
-	gene$fileDelimiter = "\t"
-	gene$fileOmitCharacters = "NA"
-	gene$fileSkipRows = 1
-	gene$fileSkipColumns = 1
-	gene$fileSliceSize = slicesize
-	gene$LoadFile( phen_file )
-
 	cvrt <- SlicedData$new()
 	cvrt$fileDelimiter = "\t"
 	cvrt$fileOmitCharacters = "NA"
@@ -37,6 +29,14 @@ main <- function()
 	cvrt$fileSkipColumns = 1
 	cvrt$fileSliceSize = slicesize
 	cvrt$LoadFile( cov_file )
+
+	gene <- SlicedData$new()
+	gene$fileDelimiter = "\t"
+	gene$fileOmitCharacters = "NA"
+	gene$fileSkipRows = 1
+	gene$fileSkipColumns = 1
+	gene$fileSliceSize = slicesize
+	gene$LoadFile( "temp.meth" )
 
 	ids <- Reduce(intersect, list(snps$columnNames, gene$columnNames, cvrt$columnNames))
 
@@ -51,7 +51,7 @@ main <- function()
 		snps = snps,
 		gene = gene,
 		cvrt = cvrt,
-		output_file_name = out_file,
+		output_file_name = NULL,
 		pvOutputThreshold = threshold,
 		useModel = useModel, 
 		errorCovariance = errorCovariance, 

@@ -21,6 +21,8 @@ if(cov_file=="NULL")
 	covs <- read.table(cov_file, header=TRUE)
 }
 
+if("FID" %in% names(covs)) covs <- subset(covs, select=-c(FID))
+
 cellcount <- read.table(cellcount_file, header=TRUE)
 
 allcovs <- merge(cellcount, pca, by="IID", all=TRUE)

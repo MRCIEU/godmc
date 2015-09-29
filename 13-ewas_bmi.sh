@@ -8,6 +8,3 @@
 # smoking (predicted)
 # sex
 # first 10 genetic principal components
-
-# Use GCTA to estimate variances of height and BMI explained by each chromosome and whole methylome
-# Only use unrelated individuals for this analysis
