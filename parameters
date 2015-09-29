@@ -55,6 +55,9 @@ methylation_rt_poly="${home_directory}/processed_data/methylation_data/methylati
 # Smoking prediction
 smoking_pred="${home_directory}/processed_data/methylation_data/smoking_prediction.txt"
 
+# Age prediction
+age_pred="${home_directory}/processed_data/methylation_data/age_prediction.txt"
+
 # Results locations
 ewas_bmi_dir="${home_directory}/results/ewas_bmi"
 ewas_height_dir="${home_directory}/results/ewas_height"

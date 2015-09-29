@@ -22,7 +22,7 @@ R --no-save --args ${covariates} ${pcs_all} ${cellcounts} ${covariates_combined}
 
 
 # Estimate age accelerated residuals
-
+R --no-save --args ${betas} ${covariates} ${age_pred} < resources/dnamage/dnamage.R
 
 # Predict smoking
 R --no-save --args ${betas} ${smoking_pred} < resources/smoking/smoking_predictor.R
