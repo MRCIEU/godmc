@@ -109,7 +109,7 @@ adjust.relatedness <- function(B, kin, mc.cores=mc.cores)
 
 	message("Adjusting data for polygenic effects, may take some time...")	
 
-	tmpAdj <- mclapply.safe(tmpList, function(ix)
+	tmpAdj <- mclapply(tmpList, function(ix)
 	{ 
 		apply(B[ix,], 1, function(x) adjust.relatedness.1(x, kin))
 	}, mc.cores=mc.cores)
@@ -128,14 +128,14 @@ adjust.relatedness <- function(B, kin, mc.cores=mc.cores)
 
 adjust.relatedness.serial <- function(B, kin)
 {
-	# for(i in 1:nrow(B))
-	# {
-	# 	cat(i, "\n")
-	# 	B[i, ] <- adjust.relatedness.1(B[i,], kin)
-	# }
-	# return(B)
+	for(i in 1:nrow(B))
+	{
+		cat(i, "\n")
+		B[i, ] <- adjust.relatedness.1(B[i,], kin)
+	}
+	return(B)
 
-	apply(B, 1, function(x) adjust.relatedness.1(x, kin))
+	# apply(B, 1, function(x) adjust.relatedness.1(x, kin))
 }
 
 
@@ -157,5 +157,36 @@ norm.beta <- norm.beta[,index]
 stopifnot(all(rownames(kin) == colnames(norm.beta)))
 
 norm.beta <- adjust.relatedness(norm.beta, kin, nthreads)
-
 write.table(round(norm.beta, 3), file=ccrnfammethdatafile, row=TRUE, col=TRUE, qu=FALSE, sep="\t")
+
+
+
+# normalizeMatrix <- function(intMatrix, newQuantiles) {
+# 	## normMatrix <- matrix(NA, nrow(intMatrix), ncol(intMatrix)) 
+# 	n <- nrow(newQuantiles)
+# 	normMatrix <- sapply(1:ncol(intMatrix), function(i) {
+# 		message(i)
+# 		crtColumn <- intMatrix[ , i]
+# 		crtColumn.reduced <- crtColumn[!is.na(crtColumn)]
+# 		## Generation of the corrected intensities:
+# 		target <- sapply(1:(n-1), function(j) {
+# 			start <- newQuantiles[j,i]
+# 			end <- newQuantiles[j+1,i]
+# 			sequence <- seq(start, end,( end-start)/n)[-(n+1)]
+# 			return(sequence)
+# 		})
+# 		target <- unlist(target)
+# 		result <- preprocessCore::normalize.quantiles.use.target(matrix(crtColumn.reduced), target)
+# 		return(result)
+# 	})
+# 	return(normMatrix)
+# }
+
+
+# norm.beta.quantiles <- apply(norm.beta, 2, quantile, probs=seq(0,1,length.out=500))
+# norm.beta.quantiles.adj <- adjust.relatedness(norm.beta.quantiles, kin, nthreads)
+# n <- normalizeMatrix(norm.beta[1:100,], norm.beta.quantiles.adj)
+# n1 <- adjust.relatedness(norm.beta[1:100,], kin, nthreads)
+
+# cor(n[50,], n1[50,])
+# cor(n[,1], n1[,1])
