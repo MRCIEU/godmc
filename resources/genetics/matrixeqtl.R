@@ -36,7 +36,7 @@ main <- function()
 	gene$fileSkipRows = 1
 	gene$fileSkipColumns = 1
 	gene$fileSliceSize = slicesize
-	gene$LoadFile( "temp.meth" )
+	gene$LoadFile( phen_file )
 
 	ids <- Reduce(intersect, list(snps$columnNames, gene$columnNames, cvrt$columnNames))
 

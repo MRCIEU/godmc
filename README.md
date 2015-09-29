@@ -50,6 +50,8 @@ nlme
 quadprog
 GenABEL
 
+meffil maybe also
+
 
 
 
@@ -75,3 +77,31 @@ methylation
 
 cnvs
 - create cnv dataset
+
+
+
+
+
+
+
+
+
+
+# Instructions
+
+Clone the repository
+
+	git clone git@scmv-ieugit.epi.bris.ac.uk:gh13047/godmc.git
+
+Copy config.example to config and fill it in
+
+run 01-runtest
+ run 02-checkdata
+
+
+
+
+
+
+
+add chr to snp list

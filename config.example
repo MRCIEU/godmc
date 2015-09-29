@@ -9,6 +9,14 @@ betas="${home_directory}/input_data/data.RData"
 bfile_raw="${home_directory}/input_data/data"
 covariates="${home_directory}/input_data/covariates.txt"
 
+# Cellcounts
+# If you have purified cell types then set this to no
+cellcounts_required="yes"
+
+# Set this to the file name if you have measured or predicted cell counts already
+# Otherwise leave it empty
+provided_cellcounts=""
+
 # Are the samples unrelated? If so (even if there is possible cryptic relatedness) set this to "yes"
 # If there are relationships in the data then set this to "no"
 unrelated="no"
@@ -16,5 +24,21 @@ unrelated="no"
 # Number of threads to use per node
 nthreads="16"
 
+# GRM parameters
+rel_cutoff=0.125
+grm_maf_cutoff=0.01
+
+# PCA paramaters
+n_pcs=20
+pca_sd=3
+
+# Matrixeqtl parameters
+bfile_chunksize=10000
+soft_threshold="1e-7"
+soft_threshold_cnv="1e-7"
+
+
 
 source ${home_directory}/parameters
+
+

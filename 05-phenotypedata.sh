@@ -3,28 +3,23 @@
 set -e
 source config
 
-# Create covariate file (age, sex, predicted smoking, predicted cell counts
-# Estimate first 10 principal components using GCTA
 
-# split into males and females
-# transform each sex using inverse normal
-# recombine scaled to population mean and variance
+# Use output from meffil to normalise data and generate betas in RData format
+if [ -z "${provided_cellcounts}" ]
+then
+	R --no-save --args 
+else 
+	cp ${provided_cellcounts} ${cellcounts}
+fi
 
-# Decide on a format
-# probably easiest to use plink format but check with Hash if this is good for matrixexqtl
+# Predict smoking
+R --no-save --args ${betas} ${smoking_pred} < resources/smoking/smoking_predictor.R
 
+# Organise covariates
+# ADD SMOKING PREDICTION TO COVARIATES
+R --no-save --args ${covariates} ${pcs_all} ${cellcounts} ${smoking_pred} ${covariates_combined} < resources/genetics/covariates.R
 
+# Estimate age accelerated residuals
+R --no-save --args ${betas} ${covariates} ${age_pred} < resources/dnamage/dnamage.R
 
-
-
-# Normalise height and BMI
-
-
-# Generate age acceleration residuals
-Rscript resources/dnamage/dnamage.r ${beta_27k} ${phenfile} ${outfile}
-
-# Generate smoking predictor
-Rscript resources/smoking_predictor.R ${beta} ${phenfile} ${outfile}
-
-
-# Generate cell counts
+# Height and BMI adjustments

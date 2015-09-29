@@ -14,7 +14,6 @@ methylation betas
 covariate data
 - This should be a file with a minimum of Age and Sex data. Other covariates can also be included.
 - The structure of the file should have the following case-sensitive column names:
-	- FID
 	- IID
 	- Age
 	- Sex

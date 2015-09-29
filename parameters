@@ -29,19 +29,6 @@ ilmn_probesnps="${home_directory}/resources/qc/probesnps.txt"
 # Sample mixup checks
 bfile_probesnps="${bfile}_probesnps"
 
-# GRM parameters
-rel_cutoff=0.125
-grm_maf_cutoff=0.01
-
-# PCA paramaters
-n_pcs=10
-pca_sd=3
-
-# Matrixeqtl parameters
-bfile_chunksize=10000
-soft_threshold="1e-7"
-soft_threshold_cnv="1e-7"
-
 # ID lists
 genetic_outlier_ids="${home_directory}/processed_data/genetic_data/genetic_outliers.txt"
 methylation_ids="${home_directory}/processed_data/genetic_data/methylation_ids.txt"
@@ -73,32 +60,6 @@ resname="res"
 
 
 
-
 # scripts and binaries
-
 plink="${home_directory}/bin/plink1.90"
 gcta="${home_directory}/bin/gcta64"
-
-
-matrixeqtl_run_r="${home_directory}/resources/genetics/matrixeqtl.R"
-
-
-
-
-
-# bplink file name
-# covariates filename
-# phenotypes filename
-# family or unrelated
-
-# kinship file
-# kinship file - relateds only
-
-# genetic principal components
-# smoking prediction
-# age prediction
-
-# cell count reference
-# cell counts
-
-
