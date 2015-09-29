@@ -190,7 +190,7 @@ write.table(round(dat, 3), file=rnmethdatafile, row=TRUE, col=TRUE, qu=FALSE, se
 # Get cell counts 
 dat <- adjust.beta(norm.beta, mc.cores=nthreads, est.only=FALSE)
 cellcounts <- data.frame(IID=rownames(dat$cell.counts), dat$cell.counts)
-write.table(cellcounts, file=cellcountfile, row=F, col=F, qu=F)
+write.table(cellcounts, file=cellcountfile, row=F, col=TRUE, qu=F)
 
 # and rank transformed data of cell countadjusted betas
 dat <- inverse.rank.transform(dat$adj.mbeta, nthreads)

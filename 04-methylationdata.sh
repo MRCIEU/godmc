@@ -18,4 +18,4 @@ then
 fi
 
 # Organise covariates
-R --no-save --args ${covariates} ${pcs_all} ${cellcounts} ${covariates_combined} < resources/genetic/covariates.R
+R --no-save --args ${covariates} ${pcs_all} ${cellcounts} ${covariates_combined} < resources/genetics/covariates.R

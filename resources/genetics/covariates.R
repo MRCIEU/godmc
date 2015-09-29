@@ -27,5 +27,5 @@ allcovs <- merge(cellcount, pca, by="IID", all=TRUE)
 allcovs <- merge(allcovs, covs, by="IID", all=TRUE)
 
 mat <- t(as.matrix(allcovs))
-write.table(mat, file=out_file, row=TRUE, col=TRUE, qu=FALSE, sep="\t")
+write.table(mat, file=out_file, row=TRUE, col=FALSE, qu=FALSE, sep="\t")
 

@@ -16,6 +16,9 @@ pcs_all="${grmfile_all}.eigenvec"
 # Cell count
 cellcounts="${home_directory}/processed_data/methylation_data/cellcounts.txt"
 
+# Covariates
+covariates_combined="${home_directory}/processed_data/methylation_data/all_covaraites.txt"
+
 # SNP list files
 hm3_snps="${home_directory}/resources/genetics/hapmap3_autosome.snplist.gz"
 ilmn_probesnps="${home_directory}/resources/qc/probesnps.txt"
