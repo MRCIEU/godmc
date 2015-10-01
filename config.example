@@ -1,5 +1,12 @@
 #!/usr/bin/env bash
 
+
+# General details
+study_name=""
+analyst_name=""
+analyst_email=""
+
+
 # Please put the full path to this directory
 # e.g. you can find this by using the pwd command in the terminal
 home_directory="/panfs/panasas01/sscm/gh13047/sandpit/godmc/relateds"
@@ -24,6 +31,13 @@ unrelated="no"
 # Number of threads to use per node
 nthreads="16"
 
+# SNP filtering
+# HWE threshold, minor allele frequency, SNP missingness, individual missingness
+snp_hwe="1e-6"
+snp_maf="0.01"
+snp_miss="0.05"
+snp_imiss="0.05"
+
 # GRM parameters
 rel_cutoff=0.125
 grm_maf_cutoff=0.01
@@ -39,6 +53,5 @@ soft_threshold_cnv="1e-7"
 
 
 
+# DO NOT MODIFY
 source ${home_directory}/parameters
-
-

@@ -11,9 +11,19 @@ source config
 
 # rewrite this to use keep ids in common with meth
 echo "Copying genetic data to processing folder"
-cp ${bfile_raw}.bed ${bfile}.bed
-cp ${bfile_raw}.bim ${bfile}.bim
-cp ${bfile_raw}.fam ${bfile}.fam
+# cp ${bfile_raw}.bed ${bfile}.bed
+# cp ${bfile_raw}.bim ${bfile}.bim
+# cp ${bfile_raw}.fam ${bfile}.fam
+${plink} \
+	--bfile ${bfile_raw} \
+	--keep ${intersect_ids_plink} \
+	--maf ${snp_maf} \
+	--hwe ${snp_hwe} \
+	--geno ${snp_miss} \
+	--mind ${snp_imiss} \
+	--make-bed \
+	--out ${bfile}
+
 
 # Change SNP ids to chr:position:{SNP/INDEL}
 echo "Updating SNP ID coding"

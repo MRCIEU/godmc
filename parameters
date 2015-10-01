@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+# ID lists
+intersect_ids_plink="${home_directory}/processed_data/ids/intersect_ids_plink.txt"
+intersect_ids="${home_directory}/processed_data/ids/intersect_ids.txt"
+
 # Clean genetic data
 bfile="${home_directory}/processed_data/genetic_data/data"
 tabfile="${home_directory}/processed_data/genetic_data/tabfile/data"
