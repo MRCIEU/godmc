@@ -21,8 +21,8 @@ covariates="${home_directory}/input_data/covariates.txt"
 cellcounts_required="yes"
 
 # Set this to the file name if you have measured or predicted cell counts already
-# Otherwise leave it empty
-provided_cellcounts=""
+# Otherwise leave it as NULL
+provided_cellcounts="NULL"
 
 # Are the samples unrelated? If so (even if there is possible cryptic relatedness) set this to "yes"
 # If there are relationships in the data then set this to "no"
