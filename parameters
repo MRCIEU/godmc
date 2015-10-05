@@ -22,6 +22,7 @@ pcs_all="${grmfile_all}.eigenvec"
 
 # Cell count
 cellcounts="${home_directory}/processed_data/methylation_data/cellcounts.txt"
+cellcount_reference="${home_directory}/resources/cellcounts/houseman-dmrs.txt"
 
 # Covariates
 covariates_combined="${home_directory}/processed_data/methylation_data/all_covaraites.txt"
@@ -38,10 +39,10 @@ genetic_outlier_ids="${home_directory}/processed_data/genetic_data/genetic_outli
 methylation_ids="${home_directory}/processed_data/genetic_data/methylation_ids.txt"
 
 # Methylation files
-methylation_rt="${home_directory}/processed_data/methylation_data/methylation_rt.txt"
-methylation_rt_cc="${home_directory}/processed_data/methylation_data/methylation_rt_cc.txt"
-methylation_rt_cc_sq="${home_directory}/processed_data/methylation_data/methylation_rt_cc_sq.txt"
-methylation_rt_poly="${home_directory}/processed_data/methylation_data/methylation_rt_poly.txt"
+methylation_rt="${home_directory}/processed_data/methylation_data/methylation_rt"
+methylation_rt_cc="${home_directory}/processed_data/methylation_data/methylation_rt_cc"
+methylation_rt_cc_poly="${home_directory}/processed_data/methylation_data/methylation_rt_poly"
+methylation_rt_cc_poly_sq="${home_directory}/processed_data/methylation_data/methylation_rt_cc_poly_sq"
 
 # Smoking prediction
 smoking_pred="${home_directory}/processed_data/methylation_data/smoking_prediction.txt"

@@ -28,8 +28,12 @@ provided_cellcounts="NULL"
 # If there are relationships in the data then set this to "no"
 unrelated="no"
 
+# Parallelisation parameters
 # Number of threads to use per node
 nthreads="16"
+
+# Number of chunks to split methylation data
+meth_chunks="100"
 
 # SNP filtering
 # HWE threshold, minor allele frequency, SNP missingness, individual missingness
@@ -50,7 +54,6 @@ pca_sd=3
 bfile_chunksize=10000
 soft_threshold="1e-7"
 soft_threshold_cnv="1e-7"
-
 
 
 # DO NOT MODIFY

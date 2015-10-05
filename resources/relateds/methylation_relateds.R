@@ -142,13 +142,28 @@ adjust.relatedness.serial <- function(B, kin)
 
 arguments <- commandArgs(T)
 
-beta_file <- arguments[1]
+methylationfile <- arguments[1]
 grmfile <- arguments[2]
 ccrnfammethdatafile <- arguments[3]
 nthreads <- as.numeric(arguments[4])
-options(mc.cores=nthreads)
+chunks <- as.numeric(arguments[5])
+jid <- as.numeric(arguments[6])
 
-load(beta_file)
+
+message("Reading methylation data...")
+load(methylationfile)
+
+if(!is.na(jid))
+{
+	i1 <- chunks * (jid-1) + 1
+	i2 <- min(nrow(norm.beta), chunk * jid)
+	norm.beta <- norm.beta[i1:i2,]
+	ccrnfammethdatafile <- paste0(ccrnfammethdatafile, ".", jid, ".RData")
+} else {
+	ccrnfammethdatafile <- paste0(ccrnfammethdatafile, ".RData")
+}
+
+
 grm <- readGRM(grmfile)
 kin <- makeGRMmatrix(grm)
 kin <- kin[rownames(kin) %in% colnames(norm.beta), colnames(kin) %in% colnames(norm.beta)]
@@ -157,36 +172,4 @@ norm.beta <- norm.beta[,index]
 stopifnot(all(rownames(kin) == colnames(norm.beta)))
 
 norm.beta <- adjust.relatedness(norm.beta, kin, nthreads)
-write.table(round(norm.beta, 3), file=ccrnfammethdatafile, row=TRUE, col=TRUE, qu=FALSE, sep="\t")
-
-
-
-# normalizeMatrix <- function(intMatrix, newQuantiles) {
-# 	## normMatrix <- matrix(NA, nrow(intMatrix), ncol(intMatrix)) 
-# 	n <- nrow(newQuantiles)
-# 	normMatrix <- sapply(1:ncol(intMatrix), function(i) {
-# 		message(i)
-# 		crtColumn <- intMatrix[ , i]
-# 		crtColumn.reduced <- crtColumn[!is.na(crtColumn)]
-# 		## Generation of the corrected intensities:
-# 		target <- sapply(1:(n-1), function(j) {
-# 			start <- newQuantiles[j,i]
-# 			end <- newQuantiles[j+1,i]
-# 			sequence <- seq(start, end,( end-start)/n)[-(n+1)]
-# 			return(sequence)
-# 		})
-# 		target <- unlist(target)
-# 		result <- preprocessCore::normalize.quantiles.use.target(matrix(crtColumn.reduced), target)
-# 		return(result)
-# 	})
-# 	return(normMatrix)
-# }
-
-
-# norm.beta.quantiles <- apply(norm.beta, 2, quantile, probs=seq(0,1,length.out=500))
-# norm.beta.quantiles.adj <- adjust.relatedness(norm.beta.quantiles, kin, nthreads)
-# n <- normalizeMatrix(norm.beta[1:100,], norm.beta.quantiles.adj)
-# n1 <- adjust.relatedness(norm.beta[1:100,], kin, nthreads)
-
-# cor(n[50,], n1[50,])
-# cor(n[,1], n1[,1])
+save(norm.bet, file=ccrnfammethdatafile)

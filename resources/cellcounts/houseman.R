@@ -19,13 +19,17 @@ ccrnmethdatafile <- arguments[4]
 ccrnsquaredmethdatafile <- arguments[5]
 nthreads <- as.numeric(arguments[6])
 
+
+
 message("Reading methylation data...")
 load(methylationfile)
 
-if(cellcounts != "NULL")
+if(cellcountfile != "NULL")
 {
 	cellcounts <- read.table(cellcountfile, he=T)
-	cellcounts <- subset(cellcounts, select=-c(IID))
+	stopifnot(all(cellcounts$IID == colnames(norm.beta)))
+	cellcounts <- as.matrix(subset(cellcounts, select=-c(IID)))
+
 }
 
 # Get inverse rank transformed data, no cell count adjustment

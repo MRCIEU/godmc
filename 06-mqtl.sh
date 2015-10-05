@@ -11,8 +11,8 @@ source config
 batch_number=${1}
 re='^[0-9]+$'
 if ! [[ $batch_number =~ $re ]] ; then
-   echo "error: Batch variable is not a number"
-   exit 1
+	echo "error: Batch variable is not a number"
+	exit 1
 fi
 
 geno="${tabfile}.tab.${batch_number}"

@@ -132,7 +132,7 @@ inverse.rank.transform <- function(B, mc.cores=mc.cores)
 
 
 
-estimate.cellcounts <- function(B, top_n=500, cell.coefs="resources/cellcounts/houseman-dmrs.txt")
+estimate.cellcounts <- function(B, top_n=500, cell.coefs)
 {
   if (! all(B > 0, na.rm=TRUE)){
       message("performing inverse logit to get values from 0 to 1")
@@ -173,7 +173,7 @@ estimate.cellcounts <- function(B, top_n=500, cell.coefs="resources/cellcounts/h
 
 
 
-adjust.beta <- function(B, cellcounts, mc.cores=24)
+adjust.beta <- function(B, omega.mix, mc.cores=24)
 {
   if (! all(B > 0, na.rm=TRUE)){
       message("performing inverse logit to get values from 0 to 1")
@@ -181,6 +181,10 @@ adjust.beta <- function(B, cellcounts, mc.cores=24)
       do.logit = TRUE
   } else { do.logit = FALSE }
   stopifnot(all((B > 0) & (B < 1), na.rm=TRUE))
+
+  # after adjusting, set values < 0 or > 1 to the smallest observed value
+  epsilon.min = min(B)
+  epsilon.max = min(1 - B)
 
   message("adjusting beta (this will take a while)...")
   tmpList = lapply(1:mc.cores, function(i){ seq(from=i, to=nrow(B), by=mc.cores) })
