@@ -41,7 +41,7 @@ methylation_ids="${home_directory}/processed_data/genetic_data/methylation_ids.t
 # Methylation files
 methylation_rt="${home_directory}/processed_data/methylation_data/methylation_rt"
 methylation_rt_cc="${home_directory}/processed_data/methylation_data/methylation_rt_cc"
-methylation_rt_cc_poly="${home_directory}/processed_data/methylation_data/methylation_rt_poly"
+methylation_rt_cc_poly="${home_directory}/processed_data/methylation_data/methylation_rt_cc_poly"
 methylation_rt_cc_poly_sq="${home_directory}/processed_data/methylation_data/methylation_rt_cc_poly_sq"
 
 # Smoking prediction

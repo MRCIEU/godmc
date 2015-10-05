@@ -22,19 +22,22 @@ cellcounts <- as.matrix(subset(cellcounts, select=-c(IID)))
 
 if(!is.na(jid))
 {
-	i1 <- chunks * (jid-1) + 1
-	i2 <- min(nrow(norm.beta), chunk * jid)
+	chunksize <- ceiling(nrow(norm.beta) / chunks)
+	i1 <- chunksize * (jid-1) + 1
+	i2 <- min(nrow(norm.beta), chunksize * jid)
 	norm.beta <- norm.beta[i1:i2,]
 	ccrnmethdatafile <- paste0(ccrnmethdatafile, ".", jid, ".RData")
 } else {
 	ccrnmethdatafile <- paste0(ccrnmethdatafile, ".RData")
 }
 
+message("Data size: ", ncol(norm.beta), " individuals and ", nrow(norm.beta), " CpGs.")
+
 # adjust for cell counts
 norm.beta <- adjust.beta(norm.beta, cellcounts, mc.cores=nthreads)
 
 # and rank transformed data of cell countadjusted betas
-norm.beta <- inverse.rank.transform(norm.beta)
+norm.beta <- inverse.rank.transform(norm.beta, nthreads)
 
 # Save results
 save(norm.beta, file=ccrnmethdatafile)

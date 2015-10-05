@@ -1,6 +1,47 @@
 library(parallel)
 library(GenABEL)
 
+main <- function()
+{
+	arguments <- commandArgs(T)
+
+	methylationfile <- arguments[1]
+	grmfile <- arguments[2]
+	ccrnfammethdatafile <- arguments[3]
+	nthreads <- as.numeric(arguments[4])
+	chunks <- as.numeric(arguments[5])
+	jid <- as.numeric(arguments[6])
+
+
+	message("Reading methylation data...")
+	load(paste0(methylationfile, ".RData"))
+
+	if(!is.na(jid))
+	{
+		chunksize <- ceiling(nrow(norm.beta) / chunks)
+		i1 <- chunksize * (jid-1) + 1
+		i2 <- min(nrow(norm.beta), chunksize * jid)
+		norm.beta <- norm.beta[i1:i2,]
+		ccrnfammethdatafile <- paste0(ccrnfammethdatafile, ".", jid, ".RData")
+	} else {
+		ccrnfammethdatafile <- paste0(ccrnfammethdatafile, ".RData")
+	}
+
+	message("Data size: ", ncol(norm.beta), " individuals and ", nrow(norm.beta), " CpGs.")
+
+
+	grm <- readGRM(grmfile)
+	kin <- makeGRMmatrix(grm)
+	kin <- kin[rownames(kin) %in% colnames(norm.beta), colnames(kin) %in% colnames(norm.beta)]
+	index <- match(rownames(kin), colnames(norm.beta))
+	norm.beta <- norm.beta[,index]
+	stopifnot(all(rownames(kin) == colnames(norm.beta)))
+
+	norm.beta <- adjust.relatedness(norm.beta, kin, nthreads)
+	save(norm.beta, file=ccrnfammethdatafile)
+}
+
+
 readGRM <- function(rootname)
 {
 	bin.file.name <- paste(rootname, ".grm.bin", sep="")
@@ -139,37 +180,4 @@ adjust.relatedness.serial <- function(B, kin)
 }
 
 
-
-arguments <- commandArgs(T)
-
-methylationfile <- arguments[1]
-grmfile <- arguments[2]
-ccrnfammethdatafile <- arguments[3]
-nthreads <- as.numeric(arguments[4])
-chunks <- as.numeric(arguments[5])
-jid <- as.numeric(arguments[6])
-
-
-message("Reading methylation data...")
-load(methylationfile)
-
-if(!is.na(jid))
-{
-	i1 <- chunks * (jid-1) + 1
-	i2 <- min(nrow(norm.beta), chunk * jid)
-	norm.beta <- norm.beta[i1:i2,]
-	ccrnfammethdatafile <- paste0(ccrnfammethdatafile, ".", jid, ".RData")
-} else {
-	ccrnfammethdatafile <- paste0(ccrnfammethdatafile, ".RData")
-}
-
-
-grm <- readGRM(grmfile)
-kin <- makeGRMmatrix(grm)
-kin <- kin[rownames(kin) %in% colnames(norm.beta), colnames(kin) %in% colnames(norm.beta)]
-index <- match(rownames(kin), colnames(norm.beta))
-norm.beta <- norm.beta[,index]
-stopifnot(all(rownames(kin) == colnames(norm.beta)))
-
-norm.beta <- adjust.relatedness(norm.beta, kin, nthreads)
-save(norm.bet, file=ccrnfammethdatafile)
+main()

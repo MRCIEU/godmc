@@ -16,4 +16,4 @@ load(methylationfile)
 
 # Get inverse rank transformed data
 norm.beta <- inverse.rank.transform(norm.beta, nthreads)
-save(norm.beta, file=paste(rnmethdatafile, ".RData"))
+save(norm.beta, file=paste0(rnmethdatafile, ".RData"))

@@ -12,7 +12,7 @@ then
 fi
 
 
-if [ -n ${1} ]
+if [ -n "${1}" ]
 then
 	re='^[0-9]+$'
 	if ! [[ $batch_number =~ $re ]] ; then
@@ -20,8 +20,10 @@ then
 		exit 1
 	fi
 	i=${1}
+	echo "Running batch ${i} of ${meth_chunks}"
 else
 	i="NA"
+	echo "Running entire set on a single node using ${nthreads} threads."
 fi
 
 # Adjust for cell counts and rank transform

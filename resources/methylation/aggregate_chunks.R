@@ -14,7 +14,9 @@ load(fs[1])
 
 alldat <- matrix(NA, nrow(norm.beta) * n_chunks, ncol(norm.beta))
 alldat[1:nrow(norm.beta),] <- norm.beta
-
+colnames(alldat) <- colnames(norm.beta)
+cpg <- list()
+cpg[[1]] <- rownames(norm.beta)
 j <- nrow(norm.beta)
 for(i in 2:n_chunks)
 {
@@ -23,8 +25,10 @@ for(i in 2:n_chunks)
 	i1 <- j + 1
 	i2 <- j + nrow(norm.beta)
 	alldat[i1:i2, ] <- norm.beta
+	cpg[[i]] <- rownames(norm.beta)
 	j <- i2
 }
 
 norm.beta <- alldat[1:j,]
+rownames(norm.beta) <- unlist(cpg)
 save(norm.beta, file=paste0(rootname, ".RData"))
