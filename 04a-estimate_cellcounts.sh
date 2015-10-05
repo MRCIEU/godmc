@@ -7,13 +7,13 @@ source config
 # Estimate cell counts
 if [ "${cellcounts_required}" = "yes" ]
 then
-
-	if [ ! "${provided_cellcounts}" = "NULL" ]
+	if [ "${provided_cellcounts}" = "NULL" ]
 	then
 		R --no-save --args ${betas} ${cellcounts} ${cellcount_reference} < resources/cellcounts/estimate_cellcounts.R
 	elif [ -f "${provided_cellcounts}" ]
 	then
 		echo "Using the cellcounts provided in ${provided_cellcounts}."
+		cp ${provided_cellcounts} ${cellcounts}
 	else
 		echo "Error: The file ${provided_cellcounts} doesn't exist. You have specified that cell counts are required. Please set 'provided_cellcounts' to NULL if you want them to be estimated now, or specify a path to a file with the pre-specified cell counts."
 	fi

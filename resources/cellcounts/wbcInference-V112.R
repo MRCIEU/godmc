@@ -132,7 +132,7 @@ inverse.rank.transform <- function(B, mc.cores=mc.cores)
 
 
 
-estimate.cellcounts <- function(B, top_n=500, cell.coefs)
+estimate.cellcounts <- function(B, cell.coefs, top_n=500)
 {
   if (! all(B > 0, na.rm=TRUE)){
       message("performing inverse logit to get values from 0 to 1")
