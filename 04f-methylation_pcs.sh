@@ -9,4 +9,4 @@ R --no-save --args ${methylation_rt}.RData ${n_meth_pcs} ${meth_pcs} < resources
 
 # Perform matrixeqtl on meth_pcs
 
-R --no-save --args ${tabfile_hm3} ${meth_pcs} ${nongenetic_meth_pcs} ${meth_pc_threshold} < resources/methylation/genetic_meth_pcs.R
+R --no-save --args ${tabfile_hm3} ${meth_pcs} ${nongenetic_meth_pcs} ${meth_pc_threshold} ${nthreads} < resources/methylation/genetic_meth_pcs.R

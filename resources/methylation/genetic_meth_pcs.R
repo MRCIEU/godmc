@@ -8,6 +8,8 @@ main <- function()
 	phen_file <- arguments[2]
 	out_file <- arguments[3]
 	threshold <- as.numeric(arguments[4])
+	mc.cores <- as.numeric(arguments[5])
+
 
 	slicesize <- 1000
 
@@ -23,8 +25,17 @@ main <- function()
 	dn <- dirname(geno_root)
 	geno_file <- list.files(dn, pattern=paste0("^", bn))
 
-	l <- list()
+	l <- run_all_chunks(geno_file, gene, threshold, slicesize, mc.cores)
 
+	l1 <- unique(unlist(l))
+	load(paste0(phen_file, ".RData"))
+	pc <- pc[,!colnames(pc) %in% l1]
+	save(pc, file=paste0(out_file, ".RData"))
+}
+
+run_all_chunks_serial <- function(geno_file, gene, threshold, slicesize)
+{
+	l <- list()
 	for(i in 1:length(geno_file))
 	{
 		message(i, " of ", length(geno_file))
@@ -37,13 +48,34 @@ main <- function()
 		snps$LoadFile( file.path(dn, geno_file[i]) )
 		l[[i]] <- run_chunk(snps, gene, threshold, slicesize)
 	}
-	l1 <- unique(unlist(l))
-	load(paste0(phen_file, ".RData"))
-	pc <- pc[,!colnames(pc) %in% l1]
-	save(pc, file=paste0(out_file, ".RData"))
+	return(l)
 }
 
+run_all_chunks <- function(geno_file, gene, threshold, slicesize, mc.cores)
+{
+	tmpList = lapply(1:mc.cores, function(i){ seq(from=i, to=length(geno_file), by=mc.cores) })
 
+	snps <- list()
+
+	message("Inverse rank transforming data, may take a few minutes...")
+	snps <- list()
+	tmpAdj = mclapply(tmpList, function(ix)
+	{
+		l <- list()
+		for(i in ix)
+		{
+			snps[[ix[1]]] = SlicedData$new()
+			snps[[ix[1]]]$fileDelimiter = "\t"
+			snps[[ix[1]]]$fileOmitCharacters = "NA"
+			snps[[ix[1]]]$fileSkipRows = 1
+			snps[[ix[1]]]$fileSkipColumns = 1
+			snps[[ix[1]]]$fileSliceSize = slicesize
+			snps[[ix[1]]]$LoadFile( file.path(dn, geno_file[i]) )
+			l[[i]] <- run_chunk(snps[[ix[1]]], gene, threshold, slicesize)
+		}
+		return(l)
+	}, mc.cores=mc.cores)
+}
 
 
 run_chunk <- function(snps, gene, threshold, slicesize)
