@@ -8,6 +8,9 @@ intersect_ids="${home_directory}/processed_data/ids/intersect_ids.txt"
 bfile="${home_directory}/processed_data/genetic_data/data"
 tabfile="${home_directory}/processed_data/genetic_data/tabfile/data"
 allele_ref="${home_directory}/processed_data/genetic_data/data.allele_codes"
+bfile_hm3="${home_directory}/processed_data/genetic_data/data_hm3"
+tabfile_hm3="${home_directory}/processed_data/genetic_data/tabfile_hm3/data"
+allele_ref_hm3="${home_directory}/processed_data/genetic_data/data_hm3.allele_codes"
 
 # cnv file
 tabcnv="${home_directory}/processed_data/cnv_data/tabfile/data"
@@ -25,7 +28,9 @@ cellcounts="${home_directory}/processed_data/methylation_data/cellcounts.txt"
 cellcount_reference="${home_directory}/resources/cellcounts/houseman-dmrs.txt"
 
 # Covariates
-covariates_combined="${home_directory}/processed_data/methylation_data/all_covaraites.txt"
+covariates_combined="${home_directory}/processed_data/methylation_data/all_covariates.txt"
+meth_pcs="${home_directory}/processed_data/methylation_data/meth_pcs"
+nongenetic_meth_pcs="${home_directory}/processed_data/methylation_data/meth_pcs_nongenetic"
 
 # SNP list files
 hm3_snps="${home_directory}/resources/genetics/hapmap3_autosome.snplist.gz"

@@ -50,6 +50,10 @@ grm_maf_cutoff=0.01
 n_pcs=20
 pca_sd=3
 
+# Methylation PCs
+n_meth_pcs=50
+meth_pc_threshold="1e-8"
+
 # Matrixeqtl parameters
 bfile_chunksize=10000
 soft_threshold="1e-7"

@@ -23,12 +23,15 @@ main <- function()
 	snps$LoadFile( geno_file )
 
 	cvrt <- SlicedData$new()
-	cvrt$fileDelimiter = "\t"
-	cvrt$fileOmitCharacters = "NA"
-	cvrt$fileSkipRows = 1
-	cvrt$fileSkipColumns = 1
-	cvrt$fileSliceSize = slicesize
-	cvrt$LoadFile( cov_file )
+	if(cov_file!="NULL")
+	{
+		cvrt$fileDelimiter = "\t"
+		cvrt$fileOmitCharacters = "NA"
+		cvrt$fileSkipRows = 1
+		cvrt$fileSkipColumns = 1
+		cvrt$fileSliceSize = slicesize
+		cvrt$LoadFile( cov_file )
+	}
 
 	gene <- SlicedData$new()
 	gene$fileDelimiter = "\t"
