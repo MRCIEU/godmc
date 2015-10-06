@@ -27,4 +27,4 @@ else
 fi
 
 # Adjust for cell counts and rank transform
-R --no-save --args ${betas} ${cellcounts} ${methylation_rt_cc} ${nthreads} ${meth_chunks} ${i} < resources/cellcounts/adjust_cellcounts.R
+R --no-save --args ${methylation_rt}.RData ${cellcounts} ${nongenetic_meth_pcs}.RData ${methylation_rt_cc} ${nthreads} ${meth_chunks} ${i} < resources/cellcounts/adjust_cellcounts.R

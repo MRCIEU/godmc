@@ -1,5 +1,5 @@
 library(MatrixEQTL)
-
+library(parallel)
 
 main <- function()
 {
@@ -25,15 +25,16 @@ main <- function()
 	dn <- dirname(geno_root)
 	geno_file <- list.files(dn, pattern=paste0("^", bn))
 
-	l <- run_all_chunks(geno_file, gene, threshold, slicesize, mc.cores)
+	l <- run_all_chunks(dn, geno_file, gene, threshold, slicesize, mc.cores)
 
 	l1 <- unique(unlist(l))
 	load(paste0(phen_file, ".RData"))
 	pc <- pc[,!colnames(pc) %in% l1]
+	message("Keeping ", ncol(pc), " non-genetic PCs.")
 	save(pc, file=paste0(out_file, ".RData"))
 }
 
-run_all_chunks_serial <- function(geno_file, gene, threshold, slicesize)
+run_all_chunks_serial <- function(dn, geno_file, gene, threshold, slicesize)
 {
 	l <- list()
 	for(i in 1:length(geno_file))
@@ -51,13 +52,13 @@ run_all_chunks_serial <- function(geno_file, gene, threshold, slicesize)
 	return(l)
 }
 
-run_all_chunks <- function(geno_file, gene, threshold, slicesize, mc.cores)
+run_all_chunks <- function(dn, geno_file, gene, threshold, slicesize, mc.cores)
 {
 	tmpList = lapply(1:mc.cores, function(i){ seq(from=i, to=length(geno_file), by=mc.cores) })
 
 	snps <- list()
 
-	message("Inverse rank transforming data, may take a few minutes...")
+	message("Performing GWAS on ", nrow(gene), " methylation PCs using ", mc.cores, " threads.")
 	snps <- list()
 	tmpAdj = mclapply(tmpList, function(ix)
 	{

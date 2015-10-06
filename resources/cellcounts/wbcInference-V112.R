@@ -56,14 +56,22 @@ logit <- function(b)
   res
 }
 
-penFitOne <- function(y, Zmat)
+penFitOne <- function(y, Xmat, Zmat)
 {
   adj = y
   is.obs = !is.na(y)
   Z = Zmat[is.obs,,drop=FALSE]
   y = y[is.obs]
   id = rep(1,length(y))
-  lmod = try(lme(y~1, random=list(id=pdIdent(~Z-1))), silent=TRUE)
+  if(is.matrix(Xmat))
+  {
+    Xmat <- Xmat[is.obs,]
+    form <- as.formula("y ~ Xmat")
+  } else {
+    form <- as.formula("y ~ 1")
+  }
+  
+  lmod = try(lme(form, random=list(id=pdIdent(~Z-1))), silent=TRUE)
   if(!inherits(lmod,"try-error")){
     adj[is.obs] = resid(lmod) + lmod$coef$fixed[1]
   }# else {
@@ -72,7 +80,7 @@ penFitOne <- function(y, Zmat)
   list(modelFit=lmod, adjusted=adj)
 }
 
-penFitAll <- function(Ymat, Zmat)
+penFitAll <- function(Ymat, Xmat, Zmat)
 {
   nFeature = dim(Ymat)[1]
 
@@ -81,7 +89,7 @@ penFitAll <- function(Ymat, Zmat)
   adjusted = matrix(NA, nFeature, dim(Ymat)[2])
   nbad = 0
   for(i in 1:nFeature){
-    pf = penFitOne(Ymat[i,], Zmat)
+    pf = penFitOne(Ymat[i,], Xmat, Zmat)
 
     if(inherits(pf$modelFit,"try-error")){
       nbad = nbad + 1
@@ -173,7 +181,7 @@ estimate.cellcounts <- function(B, cell.coefs, top_n=500)
 
 
 
-adjust.beta <- function(B, omega.mix, mc.cores=24)
+adjust.beta <- function(B, Xmat, omega.mix, mc.cores=24)
 {
   if (! all(B > 0, na.rm=TRUE)){
       message("performing inverse logit to get values from 0 to 1")
@@ -188,7 +196,7 @@ adjust.beta <- function(B, omega.mix, mc.cores=24)
 
   message("adjusting beta (this will take a while)...")
   tmpList = lapply(1:mc.cores, function(i){ seq(from=i, to=nrow(B), by=mc.cores) })
-  tmpAdj = mclapply(tmpList, function(ix){ penFitAll(B[ix,], omega.mix) }, mc.cores=mc.cores)
+  tmpAdj = mclapply(tmpList, function(ix){ penFitAll(B[ix,], Xmat, omega.mix) }, mc.cores=mc.cores)
 
   adjBeta = matrix(NA, nrow(B), ncol(B))
   for (i in 1:length(tmpList)){
