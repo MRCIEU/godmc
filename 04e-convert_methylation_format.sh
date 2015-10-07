@@ -3,5 +3,5 @@
 set -e
 source config
 
-R --no-save --args ${methylation_rt_cc_poly} ${methylation_rt_cc_poly_sq} < resources/cellcounts/square_methdata.R
+R --no-save --args ${methylation_adjusted_pcs} ${methylation_adjusted_pcs_sq} < resources/methylation/methylation_matrixeqtl_format.R
 
