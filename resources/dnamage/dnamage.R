@@ -41,7 +41,8 @@ main <- function()
 	arguments <- commandArgs(T)
 	beta_file <- arguments[1]
 	cov_file <- arguments[2]
-	out_file <- arguments[3]
+	fam_file <- arguments[3]
+	out_file <- arguments[4]
 
 	message("Getting probe paramaters")
 	dnamage.probeAnnotation21kdatMethUsed=read.csv("resources/dnamage/probeAnnotation21kdatMethUsed.csv.gz")
@@ -66,8 +67,13 @@ main <- function()
 
 	message("Generating age accelerated residuals")
 	phen <- generate.aar(agepred, covs)
+	write.table(phen, file=paste0(out_file, ".txt"), row=F, col=T, qu=F)
 
-	write.table(phen, file=out_file, row=F, col=T, qu=F)
+	nom <- names(phen)
+	fam <- read.table(fam_file, stringsAsFactors=FALSE)
+	phen <- merge(phen, fam, by.x="IID", by.y="V2")
+	phen <- subset(phen, select=c(V1, IID, AAR))
+	write.table(phen, file=paste0(out_file, ".aar.plink"), row=F, col=F, qu=F)
 
 }
 

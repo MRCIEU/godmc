@@ -25,3 +25,11 @@ else
 	exit 1
 fi
 
+# Estimate age accelerated residuals
+R --no-save --args ${betas} ${covariates} ${bfile}.fam ${age_pred} < resources/dnamage/dnamage.R
+
+# Predict smoking
+R --no-save --args ${betas} ${bfile}.fam ${smoking_pred} < resources/smoking/smoking_predictor.R
+
+# Organise covariates
+R --no-save --args ${covariates} ${pcs_all} ${cellcounts} ${smoking_pred}.txt ${bfile}.fam ${covariates_combined} < resources/genetics/covariates.R

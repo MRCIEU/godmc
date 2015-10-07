@@ -28,7 +28,7 @@ cellcounts="${home_directory}/processed_data/methylation_data/cellcounts.txt"
 cellcount_reference="${home_directory}/resources/cellcounts/houseman-dmrs.txt"
 
 # Covariates
-covariates_combined="${home_directory}/processed_data/methylation_data/all_covariates.txt"
+covariates_combined="${home_directory}/processed_data/methylation_data/all_covariates"
 meth_pcs="${home_directory}/processed_data/methylation_data/meth_pcs"
 nongenetic_meth_pcs="${home_directory}/processed_data/methylation_data/meth_pcs_nongenetic"
 
@@ -44,16 +44,14 @@ genetic_outlier_ids="${home_directory}/processed_data/genetic_data/genetic_outli
 methylation_ids="${home_directory}/processed_data/genetic_data/methylation_ids.txt"
 
 # Methylation files
-methylation_rt="${home_directory}/processed_data/methylation_data/methylation_rt"
-methylation_rt_cc="${home_directory}/processed_data/methylation_data/methylation_rt_cc"
-methylation_rt_cc_poly="${home_directory}/processed_data/methylation_data/methylation_rt_cc_poly"
-methylation_rt_cc_poly_sq="${home_directory}/processed_data/methylation_data/methylation_rt_cc_poly_sq"
+methylation_adjusted="${home_directory}/processed_data/methylation_data/methylation_adjusted"
+methylation_adjusted_pcs="${home_directory}/processed_data/methylation_data/methylation_adjusted_pcs"
 
 # Smoking prediction
-smoking_pred="${home_directory}/processed_data/methylation_data/smoking_prediction.txt"
+smoking_pred="${home_directory}/processed_data/methylation_data/smoking_prediction"
 
 # Age prediction
-age_pred="${home_directory}/processed_data/methylation_data/age_prediction.txt"
+age_pred="${home_directory}/processed_data/methylation_data/age_prediction"
 
 # Results locations
 ewas_bmi_dir="${home_directory}/results/ewas_bmi"

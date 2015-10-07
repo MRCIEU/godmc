@@ -7,14 +7,15 @@ main <- function()
 
 	methylationfile <- arguments[1]
 	grmfile <- arguments[2]
-	ccrnfammethdatafile <- arguments[3]
-	nthreads <- as.numeric(arguments[4])
-	chunks <- as.numeric(arguments[5])
-	jid <- as.numeric(arguments[6])
+	cov_file <- arguments[3]
+	out_file <- arguments[4]
+	nthreads <- as.numeric(arguments[5])
+	chunks <- as.numeric(arguments[6])
+	jid <- as.numeric(arguments[7])
 
 
 	message("Reading methylation data...")
-	load(paste0(methylationfile, ".RData"))
+	load(methylationfile)
 
 	if(!is.na(jid))
 	{
@@ -22,23 +23,37 @@ main <- function()
 		i1 <- chunksize * (jid-1) + 1
 		i2 <- min(nrow(norm.beta), chunksize * jid)
 		norm.beta <- norm.beta[i1:i2,]
-		ccrnfammethdatafile <- paste0(ccrnfammethdatafile, ".", jid, ".RData")
+		out_file <- paste0(out_file, ".", jid, ".RData")
 	} else {
-		ccrnfammethdatafile <- paste0(ccrnfammethdatafile, ".RData")
+		out_file <- paste0(out_file, ".RData")
 	}
 
-	message("Data size: ", ncol(norm.beta), " individuals and ", nrow(norm.beta), " CpGs.")
-
+	# Remove all IDs that have any NAs in the covariate file
+	covs <- read.table(cov_file, he=T)
+	index <- apply(covs, 1, function(x) any(is.na(x) | is.nan(x) | is.infinite(x)))
+	covs <- covs[!index, ]
+	rownames(covs) <- covs$IID
+	covs <- subset(covs, IID %in% colnames(norm.beta), select=-c(IID))
+	norm.beta <- norm.beta[, colnames(norm.beta) %in% rownames(covs)]
 
 	grm <- readGRM(grmfile)
 	kin <- makeGRMmatrix(grm)
 	kin <- kin[rownames(kin) %in% colnames(norm.beta), colnames(kin) %in% colnames(norm.beta)]
 	index <- match(rownames(kin), colnames(norm.beta))
 	norm.beta <- norm.beta[,index]
+	covs <- covs[match(colnames(norm.beta), rownames(covs)), ]
 	stopifnot(all(rownames(kin) == colnames(norm.beta)))
+	stopifnot(all(rownames(covs) == colnames(norm.beta)))
 
-	norm.beta <- adjust.relatedness(norm.beta, kin, nthreads)
-	save(norm.beta, file=ccrnfammethdatafile)
+	message("Data size: ", ncol(norm.beta), " individuals and ", nrow(norm.beta), " CpGs.")
+
+	if(is.na(nthreads) | nthreads == 1)
+	{
+		norm.beta <- adjust.relatedness.serial(norm.beta, covs, kin)
+	} else {
+		norm.beta <- adjust.relatedness(norm.beta, covs, kin, nthreads)
+	}
+	save(norm.beta, file=out_file)
 }
 
 
@@ -127,11 +142,12 @@ makeGRMmatrix <- function(grm)
 	return(mat)
 }
 
-adjust.relatedness.1 <- function(x, kin, quiet=TRUE)
+adjust.relatedness.1 <- function(x, covs, kin, quiet=TRUE)
 {
-	d <- data.frame(X=x)
+	d <- data.frame(X=rntransform(x), covs)
 	rownames(d) <- colnames(kin)
-	rntransform(polygenic(X, data=d, kinship.matrix=kin, quiet=quiet)$pgresidualY)
+	form <- as.formula(paste0("X ~ ", paste(names(d)[-1], collapse=" + ")))
+	rntransform(polygenic(form, data=d, kinship.matrix=kin, quiet=quiet)$grresidualY)
 }
 
 rntransform <- function(x)
@@ -144,7 +160,7 @@ rntransform <- function(x)
 	out
 }
 
-adjust.relatedness <- function(B, kin, mc.cores=mc.cores)
+adjust.relatedness <- function(B, covs, kin, mc.cores=mc.cores)
 {
 	tmpList = lapply(1:mc.cores, function(i){ seq(from=i, to=nrow(B), by=mc.cores) })
 
@@ -152,7 +168,7 @@ adjust.relatedness <- function(B, kin, mc.cores=mc.cores)
 
 	tmpAdj <- mclapply(tmpList, function(ix)
 	{ 
-		apply(B[ix,], 1, function(x) adjust.relatedness.1(x, kin))
+		apply(B[ix,], 1, function(x) adjust.relatedness.1(x, covs, kin))
 	}, mc.cores=mc.cores)
 
 	message("Reducing results...")
@@ -167,12 +183,12 @@ adjust.relatedness <- function(B, kin, mc.cores=mc.cores)
 
 
 
-adjust.relatedness.serial <- function(B, kin)
+adjust.relatedness.serial <- function(B, covs, kin)
 {
 	for(i in 1:nrow(B))
 	{
 		cat(i, "\n")
-		B[i, ] <- adjust.relatedness.1(B[i,], kin)
+		B[i, ] <- adjust.relatedness.1(B[i,], covs, kin)
 	}
 	return(B)
 

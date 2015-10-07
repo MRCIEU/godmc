@@ -6,7 +6,8 @@ main <- function()
 	arguments <- commandArgs(T)
 
 	methylationfile <- arguments[1]
-	out_file <- arguments[2]
+	fam_file <- arguments[2]
+	out_file <- arguments[3]
 
 	# Dataframe of Illig data (supplementary table 2) http://www.ncbi.nlm.nih.gov/pubmed/23691101
 	load("resources/smoking/illig.RData")
@@ -16,7 +17,12 @@ main <- function()
 	# Columns and rows labelled with ID and CPG respectively
 	load(methylationfile)
 	smok <- predict.smoking(Illig_data, norm.beta)
-	write.table(smok, file=out_file, row=F, col=T, qu=F)
+	fam <- read.table(fam_file, stringsAsFactors=FALSE)[,1:2]
+	nom <- names(smok)
+	smok <- merge(smok, fam, by.x="IID", by.y="V2")
+	smok <- subset(smok, select=c("V1", nom))
+	write.table(subset(smok, select=-c(V1)), file=paste0(out_file, ".txt"), row=F, col=T, qu=F)
+	write.table(smok, file=paste0(out_file, ".plink"), row=F, col=F, qu=F)
 }
 
 

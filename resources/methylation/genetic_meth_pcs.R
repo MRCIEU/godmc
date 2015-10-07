@@ -31,7 +31,8 @@ main <- function()
 	load(paste0(phen_file, ".RData"))
 	pc <- pc[,!colnames(pc) %in% l1]
 	message("Keeping ", ncol(pc), " non-genetic PCs.")
-	save(pc, file=paste0(out_file, ".RData"))
+	pc <- data.frame(IID=rownames(pc), pc)
+	write.table(pc, file=paste0(out_file, ".txt"), row=F, col=T, qu=F)
 }
 
 run_all_chunks_serial <- function(dn, geno_file, gene, threshold, slicesize)
