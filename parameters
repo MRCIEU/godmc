@@ -55,6 +55,7 @@ smoking_pred="${home_directory}/processed_data/methylation_data/smoking_predicti
 age_pred="${home_directory}/processed_data/methylation_data/age_prediction"
 
 # Results locations
+ewas_results="${home_directory}/results/ewas/results"
 ewas_bmi_dir="${home_directory}/results/ewas_bmi"
 ewas_height_dir="${home_directory}/results/ewas_height"
 gwas_aar_dir="${home_directory}/results/gwas_aar"
