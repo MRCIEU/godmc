@@ -55,4 +55,5 @@ ${plink} --bfile ${bfile} --recode A-transpose --out ${bfile_hm3} --extract temp
 rm temp.snplist
 make_tab_format ${plink} ${bfile_hm3} ${allele_ref_hm3} ${bfile_chunksize} ${tabfile_hm3}
 
-
+# Convert CNV data
+R --no-save --args ${cnvs} ${tabcnv} ${bfile_chunksize} < resources/genetics/cnv_tabfile.R

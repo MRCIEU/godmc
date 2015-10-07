@@ -1,0 +1,13 @@
+arguments <- commandArgs(T)
+
+cnvfile <- arguments[1]
+tabfile <- arguments[2]
+chunksize <- as.numeric(arguments[3])
+
+load(cnvfile)
+message("Splitting ", nrow(cnv), " CNV variables into ", chunksize, " row chunks.")
+chunks <- split(1:nrow(cnv), ceiling(1:nrow(cnv)/chunksize))
+for(i in 1:length(chunks))
+{
+	write.table(cnv[i, ], file=paste0(tabfile, ".tab.", i), row=T, col=T, qu=F, sep="\t")
+})
