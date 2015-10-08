@@ -70,4 +70,4 @@ soft_threshold_cnv="1e-7"
 
 
 # DO NOT MODIFY
-source ${home_directory}/parameters
+source ${home_directory}/resources/parameters
