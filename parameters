@@ -71,5 +71,5 @@ resname="res"
 
 
 # scripts and binaries
-plink="${home_directory}/bin/plink1.90"
-gcta="${home_directory}/bin/gcta64"
+plink="${home_directory}/resources/bin/plink1.90"
+gcta="${home_directory}/resources/bin/gcta64"
