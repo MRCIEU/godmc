@@ -17,6 +17,7 @@ then
 	else
 		echo "Error: The file ${provided_cellcounts} doesn't exist. You have specified that cell counts are required. Please set 'provided_cellcounts' to NULL if you want them to be estimated now, or specify a path to a file with the pre-specified cell counts."
 	fi
+	R --no-save --args ${cellcounts} ${bfile}.fam ${cellcounts_plink} < resources/genetics/create_cellcounts_plink.R
 elif [ "${cellcounts_required}" = "no" ]
 then
 	cellcounts="NULL"
@@ -33,3 +34,7 @@ R --no-save --args ${betas} ${bfile}.fam ${smoking_pred} < resources/smoking/smo
 
 # Organise covariates
 R --no-save --args ${covariates} ${pcs_all} ${cellcounts} ${smoking_pred}.txt ${bfile}.fam ${covariates_combined} < resources/genetics/covariates.R
+
+# GWAS Covariates
+R --no-save --args ${covariates_combined}.txt ${age_pred}.txt ${smoking_pred}.txt ${bfile}.fam
+ ${gwas_covariates} < resources/genetics/create_covariate_files.R

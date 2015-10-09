@@ -26,11 +26,13 @@ pcs_all="${grmfile_all}.eigenvec"
 # Cell count
 cellcounts="${home_directory}/processed_data/methylation_data/cellcounts.txt"
 cellcount_reference="${home_directory}/resources/cellcounts/houseman-dmrs.txt"
+cellcounts_plink="${home_directory}/processed_data/genetic_data/cellcounts.plink"
 
 # Covariates
 covariates_combined="${home_directory}/processed_data/methylation_data/all_covariates"
 meth_pcs="${home_directory}/processed_data/methylation_data/meth_pcs"
 nongenetic_meth_pcs="${home_directory}/processed_data/methylation_data/meth_pcs_nongenetic"
+gwas_covariates="${home_directory}/processed_data/genetic_data/gwas_covariates"
 
 # SNP list files
 hm3_snps="${home_directory}/resources/genetics/hapmap3_autosome.snplist.gz"
