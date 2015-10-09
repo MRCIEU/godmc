@@ -1,9 +1,10 @@
 args = (commandArgs(TRUE));
-phenofile= as.character(args[1]);
-pheno.plot=as.character(args[2])
-covfile= as.character(args[3]);
-transformed.phenotypes=as.character(args[4])
-SD=as.numeric(args[5])
+ids = as.character(args[1]);
+phenofile= as.character(args[2]);
+pheno.plot=as.character(args[3])
+covfile= as.character(args[4]);
+transformed.phenotypes=as.character(args[5])
+SD=as.numeric(args[6])
 
 library(lattice)
 
@@ -17,9 +18,8 @@ library(lattice)
 
 data<- read.table(phenofile, header=T,stringsAsFactors =F)
 traits<-names(data)[-1]
-IID<-data$IID
-outdata.all<-data$IID
-
+IID<-read.table(ids)
+outdata.all<-IID
 
 pdf(pheno.plot, width=12, height=8)
 par(mfrow=c(2,2))
@@ -94,7 +94,7 @@ nmiss<-which(!is.na(data[,"trait"]))
 data[nmiss,"trait"]<-(data[nmiss,"trait"]-mean(data[nmiss,"trait"]))/sd(data[nmiss,"trait"])
 
 outdata<-data.frame(IID=data$IID,trait=data$trait)
-m<-match(IID,outdata$IID)
+m<-match(IID[,2],outdata$IID)
 outdata<-data.frame(IID=IID,trait=outdata$trait[m])
 
 #### plot the distribution of transformed phenotypes
@@ -169,7 +169,7 @@ nmiss_female<-which(!is.na(female[,"trait"]))
 female[nmiss_female,"trait"]<-(female[nmiss_female,"trait"]-mean(female[nmiss_female,"trait"]))/sd(female[nmiss_female,"trait"])
 
 outdata<-rbind(male,female)
-m<-match(IID,outdata$IID)
+m<-match(IID[,2],outdata$IID)
 outdata<-data.frame(IID=IID,trait=outdata$trait[m])
 
 #after transformation

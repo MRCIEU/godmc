@@ -4,6 +4,16 @@
 intersect_ids_plink="${home_directory}/processed_data/ids/intersect_ids_plink.txt"
 intersect_ids="${home_directory}/processed_data/ids/intersect_ids.txt"
 
+#datacheck
+snpcheck="${home_directory}/processed_data/datacheck/no.snps.by.chr.txt" 
+snpplot="${home_directory}/processed_data/datacheck/no.snps.by.chr.plot"
+poscheck="${home_directory}/resources/genetics/snpsforbuildandposcheck.txt"
+
+#EWAS phenotypes
+EWASplot="${home_directory}/processed_data/phenotypes/EWAS.phenotypes.pdf"
+EWAStransformed="${home_directory}/processed_data/phenotypes/EWAS.transformed.txt"
+EWAS_SD="5"
+
 # Clean genetic data
 bfile="${home_directory}/processed_data/genetic_data/data"
 tabfile="${home_directory}/processed_data/genetic_data/tabfile/data"
@@ -25,8 +35,12 @@ pcs_all="${grmfile_all}.eigenvec"
 
 # Cell count
 cellcounts="${home_directory}/processed_data/methylation_data/cellcounts.txt"
+#cellcounts="${home_directory}/input_data/cellcounts.txt"
 cellcount_reference="${home_directory}/resources/cellcounts/houseman-dmrs.txt"
 cellcounts_plink="${home_directory}/processed_data/genetic_data/cellcounts.plink"
+cellcounts_plink_raw="${home_directory}/processed_data/genetic_data/cellcounts.plink.raw"
+cellcounts_plot="${home_directory}/processed_data/cellcounts/cellcounts.plot.pdf"
+cellcounts_SD="5"
 
 # Covariates
 covariates_combined="${home_directory}/processed_data/methylation_data/all_covariates"

@@ -6,7 +6,7 @@ covariates=as.character(args[4]);
 cellcounts=as.character(args[5]);
 ids=as.character(args[6]);
 ids_plink=as.character(args[7]);
-no.SNPs.bychr=as.character(args[8]);
+SNPsbychr=as.character(args[8]);
 no.SNPs.by.chr.plot=as.character(args[9]);
 snpsforpositioncheck=as.character(args[10]);
 EWASphenotypes=as.character(args[11]);
@@ -84,6 +84,8 @@ stop("ERROR:please change positions for chromosome ",i,"\n")
 pdf(paste(no.SNPs.by.chr.plot,".pdf",sep=""),height=6,width=6)
 barplot(no.SNPs.bychr, main="no of SNVs by chromosome",xlab="chromosome",names=c(1:22),cex.names=0.6,cex.axis=0.6)
 dev.off()
+
+write.table(no.SNPs.bychr,SNPsbychr,sep="\t",quote=F,row.names=F,col.names=F)
 ##
 #FAM file check
 
