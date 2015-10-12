@@ -105,3 +105,18 @@ run 01-runtest
 
 
 add chr to snp list
+
+
+
+
+1. rank transform predictor
+2. lower and upper deciles
+3. lower and upper quartiles
+4. thresholds - below 5 vs above 5
+5. thresholds - below 10 vs above 10
+6. thresholds - below 5 vs about 10
+7. k means into 2 groups
+
+
+1. 1 for each cell type (9?) - rank transform after removing outsliers (± 5sd)
+2. Diversity as predicted by shannon's entropy
