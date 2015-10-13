@@ -65,6 +65,15 @@ allele.out<-rbind(allele.out,bim[allele,])}}
 if(dim(allele.out)[1]>0){perc.miscoding<-dim(allele.out)[1]/dim(bim)[1]}
 if(perc.miscoding>0.01){stop("ERROR:more than 1% of miscoding alleles, please change allele coding to A,C,T,G","\n")}
 
+###
+id<-paste(bim[,1],bim[,4],nchar(as.character(bim[,5])),nchar(as.character(bim[,6])))
+l1<-length(id)
+l2<-length(unique(id))
+l<-(length(id)-length(unique(id)))/length(id)
+if(l>0){
+stop("ERROR:you have duplicated CHR:POS:{SNP/INDEL} positions","\n")  
+}
+
 #######################################################
 
 no.SNPs.bychr<-NULL
@@ -86,6 +95,8 @@ barplot(no.SNPs.bychr, main="no of SNVs by chromosome",xlab="chromosome",names=c
 dev.off()
 
 write.table(no.SNPs.bychr,SNPsbychr,sep="\t",quote=F,row.names=F,col.names=F)
+
+
 ##
 #FAM file check
 
@@ -242,7 +253,7 @@ if(length(w)<1){
 }
 if(length(w)>0){
 m1<-mean(ph[,w],na.rm=T)
-if(m1<100|m1>200){
+if(m1<10|m1>200){
 stop("ERROR:please convert height units to centimeters","\n")
 }
 }
