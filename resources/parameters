@@ -22,6 +22,8 @@ bfile_hm3="${home_directory}/processed_data/genetic_data/data_hm3"
 tabfile_hm3="${home_directory}/processed_data/genetic_data/tabfile_hm3/data"
 allele_ref_hm3="${home_directory}/processed_data/genetic_data/data_hm3.allele_codes"
 
+pcaplot="${home_directory}/processed_data/genetic_data/pcaplot.pdf"
+
 # cnv file
 tabcnv="${home_directory}/processed_data/cnv_data/tabfile/data"
 
