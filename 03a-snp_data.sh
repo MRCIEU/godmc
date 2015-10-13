@@ -22,6 +22,7 @@ ${plink} \
 	--geno ${snp_miss} \
 	--mind ${snp_imiss} \
 	--make-bed \
+	--autosome \
 	--out ${bfile}
 
 

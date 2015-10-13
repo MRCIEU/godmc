@@ -8,6 +8,7 @@ intersect_ids="${home_directory}/processed_data/ids/intersect_ids.txt"
 snpcheck="${home_directory}/processed_data/datacheck/no.snps.by.chr.txt" 
 snpplot="${home_directory}/processed_data/datacheck/no.snps.by.chr.plot"
 poscheck="${home_directory}/resources/genetics/snpsforbuildandposcheck.txt"
+log_directory="${home_directory}/log_files/datacheck"
 
 #EWAS phenotypes
 EWASplot="${home_directory}/processed_data/phenotypes/EWAS.phenotypes.pdf"
