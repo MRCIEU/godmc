@@ -31,7 +31,7 @@ w<-which(names(chrno)%in%as.character(c(1:22))==F)
 cat("check chromosome coding","\n")
 
 if(length(w)>0){
-stop("ERROR:please remove other chromosomes than 1-22","\n")
+message("Warning: There are some chromosomes other than 1-22, they will be removed","\n")
 }
 
 w<-which(names(chrno)%in%c(1:22)==T)
@@ -71,7 +71,7 @@ l1<-length(id)
 l2<-length(unique(id))
 l<-(length(id)-length(unique(id)))/length(id)
 if(l>0){
-stop("ERROR:you have duplicated CHR:POS:{SNP/INDEL} positions","\n")  
+stop("ERROR:you have duplicated CHR:POS:{SNP/INDEL} positions. See the wiki for info on how to handle this.","\n")  
 }
 
 #######################################################
@@ -86,7 +86,7 @@ w<-which(chr[,4]%in%controlsnps.chr$V3)
 pos.check<-length(w)/dim(controlsnps.chr)[1]
 cat(pos.check,"\n")
 no.SNPs.bychr<-append(no.SNPs.bychr,no.SNPs)
-if(pos.check<0.90){
+if(pos.check<0.80){
 stop("ERROR:please change positions for chromosome ",i,"\n")   
 }
 }
@@ -140,7 +140,7 @@ stop("ERROR:please save methylation matrix with the name norm.beta","\n")
 #is methylation data a matrix
 
 if(is.matrix(norm.beta)==F){
-stop("ERROR:please transform methylation matrix to a matrix","\n")	
+stop("ERROR:please transform methylation norm.beta to a matrix","\n")	
 }
 
 #are CpGs in rows?
@@ -154,7 +154,7 @@ stop("ERROR:please transpose methylation matrix (CpGs in rows; samples in column
 c1<-length(colnames(norm.beta))
 c2<-length(unique(colnames(norm.beta)))
 
-if(c1>c2){stop("ERROR:please remove duplicates from methylation data")}
+if(c1>c2){stop("ERROR:please remove duplicate samples from methylation data")}
 
 #check for NAs in beta matrix
 if(any(is.na(norm.beta))){stop("ERROR:please remove NAs from methylation matrix","\n")}
@@ -178,12 +178,14 @@ write.table(fam2[,1:2],ids_plink,sep="\t",quote=F,row.names=F,col.names=F)
 
 
 #CELLCOUNTS
-if(!is.na(cellcounts)){
+if(cellcounts != "NULL")){
 cc<-read.table(cellcounts,header=T)
 c1<-dim(cc)[1]
 c2<-dim(cc)[2]
 if(c1!=d2){
 stop("ERROR:number of samples in cell counts file is not the same as in beta matrix","\n")   
+} else {
+	message("No cell counts are provided, these will be estimated by the pipeline.")
 }
 
 w<-which(names(cc)[1]%in%c("IID"))
@@ -223,18 +225,57 @@ if(length(which(a>0.1*d2))){
 stop("ERROR:more than 10% of missingness in one of the covariates","\n")   
 }
 
+if(! "Sex" %in% names(covar))
+{
+	stop("ERROR: There is no Sex variable in the covariate file. Please provide M/F values, even if they are all the same sex.")
+}
+
+if(any(is.na(covar$Sex)))
+{
+	stop("ERROR: There are some values in the Sex column that are neither M nor F. Please make sure all individuals have data for this column.")
+}
+
+index <- covar$Sex == "M" | covar$sex == "F"
+if(any(!index))
+{
+	stop("ERROR: There are some values in the Sex column that are neither M nor F. Please make sure all individuals have data for this column.")
+}
+
+if(! "Age" %in% names(covar))
+{
+	stop("ERROR: There is no Age variable in the covariate file. Please provide age in years, even if they are all the same age.")
+}
+
+if(any(is.na(covar$Age)))
+{
+	stop("ERROR: Some individuals don't have ages. Please make sure there are no missing values.")
+}
+
+if(any(covar$Age < 0))
+{
+	stop("ERROR: Some negative values in the age column.")
+}
+
+if(mean(covar$Age, na.rm=T) > 100)
+{
+	stop("ERROR: Average age is above 100, please make sure age is provided in years.")
+}
+
+
+
+
 #EWAS phenotypes
 if(!is.na(EWASphenotypes)){
 ph<-read.table(EWASphenotypes,header=T)
 p1<-dim(ph)[1]
 p2<-dim(ph)[2]
 if(p1!=d2){
-stop("ERROR:number of samples in cell counts file is not the same as in beta matrix","\n")   
+stop("ERROR:number of samples in phenotype file is not the same as in beta matrix","\n")   
 }
 
 w<-which(names(ph)[1]%in%c("IID"))
 if(w!=1){
-stop("ERROR:first column from covariate file should be the sample identifier with the name IID","\n")
+stop("ERROR:first column from phenotype file should be the sample identifier with the name IID","\n")
 }
 
 if(p2<2){
@@ -246,29 +287,29 @@ if(length(which(a>0.1*d2))){
 stop("ERROR:more than 10% of missingness in one of the EWASphenotypes","\n")
 }
 
-if(!is.na(height)){
-w<-which(names(ph)%in%c("height"))
+if(height != "no")){
+w<-which(names(ph)%in%c("Height"))
 if(length(w)<1){
-    stop("ERROR:please change height variable to height","\n")
+    stop("ERROR:please change height variable to be called 'Height' (note capitalisation)","\n")
 }
 if(length(w)>0){
 m1<-mean(ph[,w],na.rm=T)
-if(m1<10|m1>200){
-stop("ERROR:please convert height units to centimeters","\n")
+if(m1<1.0|m1>2.5){
+stop("ERROR:please convert Height units to centimeters","\n")
 }
 }
 }
 
-if(!is.na(bmi)){
-w<-which(names(ph)%in%c("bmi"))
+if(bmi != "no")){
+w<-which(names(ph)%in%c("BMI"))
 if(length(w)<1){
-    stop("ERROR:please change bmi variable to bmi","\n")
+    stop("ERROR:please change BMI variable to 'BMI' (note capitalisation)","\n")
 }
 
 if(length(w)>0){
 m1<-mean(ph[,w],na.rm=T)
 if(m1<10|m1>35){
-stop("ERROR:please convert bmi units to kg/m2","\n")
+stop("ERROR:please convert BMI units to kg/m2","\n")
 }
 }
 }
@@ -298,7 +339,7 @@ if(length(w)<1){
 #is cnv data a matrix
 
 if(is.matrix(cnv)==F){
-    stop("ERROR:please transform cnv matrix to a matrix","\n")
+    stop("ERROR:please transform cnv object to a matrix","\n")
 }
 
 #are CpGs in rows?
@@ -312,7 +353,7 @@ if(d1<d2){
 c1<-length(colnames(cnv))
 c2<-length(unique(colnames(cnv)))
 
-if(c1>c2){stop("ERROR:please remove duplicates from cnv data")}
+if(c1>c2){stop("ERROR:please remove duplicate samples from cnv data")}
 
 #check for NAs in beta matrix
 if(any(is.na(cnv))){stop("ERROR:please remove NAs from cnv matrix","\n")}
