@@ -120,3 +120,17 @@ add chr to snp list
 
 1. 1 for each cell type (9?) - rank transform after removing outsliers (± 5sd)
 2. Diversity as predicted by shannon's entropy
+
+
+
+check analysis plan (update smoking part)
+update wiki
+make sure that everything is present for the meta analysis
+update smoking derived variables for smoking gwas
+create the smoking derived variables for gwas
+check that pipeline is working
+check that sex should be coded M/F or 1/2
+log files
+change genetic pc SD threshold in config.example
+
+
