@@ -167,8 +167,14 @@ adjust.relatedness <- function(B, covs, kin, mc.cores=mc.cores)
 	message("Adjusting data for polygenic effects, may take some time...")	
 
 	tmpAdj <- mclapply(tmpList, function(ix)
-	{ 
-		apply(B[ix,], 1, function(x) adjust.relatedness.1(x, covs, kin))
+	{
+		ret <- B[ix,]
+		for(i in ix)
+		{
+			if( i %% 100 == 0) message("Probe ", i, " of ", nrow(B))
+			ret[i, ] <- adjust.relatedness.1(B[i,], covs, kin)
+		}
+		return(ret)
 	}, mc.cores=mc.cores)
 
 	message("Reducing results...")
@@ -176,7 +182,7 @@ adjust.relatedness <- function(B, covs, kin, mc.cores=mc.cores)
 	colnames(adjBeta) <- colnames(B)
 	rownames(adjBeta) <- rownames(B)
 	for (i in 1:length(tmpList)){
-		adjBeta[tmpList[[i]],] = t(tmpAdj[[i]])
+		adjBeta[tmpList[[i]],] = tmpAdj[[i]]
 	}
 	return(adjBeta)
 }
