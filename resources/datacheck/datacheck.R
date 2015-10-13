@@ -13,6 +13,7 @@ EWASphenotypes=as.character(args[11]);
 height=as.character(args[12]);
 bmi=as.character(args[13]);
 cnvs=as.character(args[14]);
+log_directory=as.character(args[15])
 
 #BIM file check
 controlsnps<-read.table(snpsforpositioncheck,header=F,stringsAsFactors=F)
@@ -359,6 +360,27 @@ if(c1>c2){stop("ERROR:please remove duplicate samples from cnv data")}
 if(any(is.na(cnv))){stop("ERROR:please remove NAs from cnv matrix","\n")}
 
 
+# Cohort characteristics
+
+cohort_summary <- list()
+cohort_summary$sample_size <- length(ids)
+cohort_summary$n_males <- sum(covar$Sex == "M")
+cohort_summary$n_females <- sum(covar$Sex == "F")
+cohort_summary$mean_age <- mean(covar$Age)
+cohort_summary$sd_age <- sd(covar$Age)
+cohort_summary$max_age <- max(covar$Age)
+cohort_summary$min_age <- min(covar$Age)
+cohort_summary$mean_Height <- mean(ph$Height)
+cohort_summary$sd_Height <- sd(ph$Height)
+cohort_summary$max_Height <- max(ph$dHeight)
+cohort_summary$min_Height <- min(ph$Height)
+cohort_summary$mean_BMI <- mean(ph$BMI)
+cohort_summary$sd_BMI <- sd(ph$BMI)
+cohort_summary$max_BMI <- max(ph$dBMI)
+cohort_summary$min_BMI <- min(ph$BMI)
+cohort_summary$n_snp <- nrow(bim)
+
+save(cohort_summary, file=file.path(log_directory, "cohort_descriptives.RData"))
 
 cat("You successfully performed all datachecks!","\n")
 
