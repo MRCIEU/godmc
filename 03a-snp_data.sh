@@ -45,7 +45,8 @@ rm temp_hm3snps.txt
 
 # Get genetic outliers
 echo "Detecting genetic outliers"
-R --no-save --args ${pcs_all} ${pca_sd} ${n_pcs} ${genetic_outlier_ids} < resources/genetics/genetic_outliers.R
+#R --no-save --args ${pcs_all} ${pca_sd} ${n_pcs} ${genetic_outlier_ids} < resources/genetics/genetic_outliers.R
+R --no-save --args ${pcs_all} ${pca_sd} ${n_pcs} ${genetic_outlier_ids} ${pcaplot} ${genetic_outlier_ids}< resources/genetics/genetic_outliers.R
 
 # Remove genetic outliers from data
 echo "Removing genetic outliers"
