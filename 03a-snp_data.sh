@@ -31,18 +31,15 @@ echo "Updating SNP ID coding"
 cp ${bfile}.bim ${bfile}.bim.original
 awk '{if (length($5) == "1" && length($6) == "1") print $1, "chr"$1":"$4":SNP", $3, $4, $5, $6;else print $1, "chr"$1":"$4":INDEL", $3, $4, $5, $6;}' ${bfile}.bim.original > ${bfile}.bim
 
-
-# Make GRMs and calculate PCs
-echo "Creating kinship matrix and calculating PCs"
-gunzip -c ${hm3_snps} > temp_hm3snps.txt
+#Calculate PCs
+gunzip -c ${hm3_snps_no_ld} > temp_hm3snpsnold.txt
 ${plink} \
 	--bfile ${bfile} \
-	--extract temp_hm3snps.txt \
+	--extract temp_hm3snpsnold.txt \
 	--maf ${grm_maf_cutoff} \
 	--pca ${n_pcs} \
-	--make-grm-bin \
-	--out ${grmfile_all}
-rm temp_hm3snps.txt
+	--out ${pca}
+rm temp_hm3snpsnold.txt
 
 # Get genetic outliers
 echo "Detecting genetic outliers"
@@ -56,6 +53,18 @@ ${plink} \
 	--remove ${genetic_outlier_ids} \
 	--make-bed \
 	--out ${bfile}
+
+
+# Make GRMs
+echo "Creating kinship matrix"
+gunzip -c ${hm3_snps} > temp_hm3snps.txt
+${plink} \
+	--bfile ${bfile} \
+	--extract temp_hm3snps.txt \
+	--maf ${grm_maf_cutoff} \
+	--make-grm-bin \
+	--out ${grmfile_all}
+rm temp_hm3snps.txt
 
 ${gcta} \
 	--grm ${grmfile_all} \
