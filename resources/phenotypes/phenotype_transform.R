@@ -39,11 +39,11 @@ data$trait <- data[[trait_var]]
 data$trait <- as.numeric(data$trait)
 
 w.test=1
-if (length(which(names(data)%in%"Sex"))>0){
+if (length(which(names(data)%in%"Sex"))>0 & length(rownames(table(data$Sex)))>1){
 data <- data[which(data$Sex!="NA" &data$trait!="NA"& data$trait!="na"&data$trait!="0"),] 
 data$Sex <- as.factor(data$Sex)
-
 sex_names <- rownames(table(data$Sex))
+
 w.test<-wilcox.test(data$trait[data$Sex=="M"], data$trait[data$Sex=="F"] )[3]
 
 colors <- 1:length(sex_names)
@@ -59,7 +59,7 @@ legend("topright",sex_names,col=colors,lty=1)
 
 #### plot the distribution of raw phenotypes
 par(mfrow=c(2,2))
-if (w.test>0.05|length(which(names(data)%in%"Sex"))==0){
+if (w.test>0.05|length(rownames(table(data$Sex)))==1){
 data <- data[which(data$trait!="NA"& data$trait!="na"&data$trait!="0"),]
 plot(data$trait, xlab="", main=paste("raw ",trait_var," (N=", length(which(!is.na(data$trait))),")",sep=""),cex.main=0.7)
 hist(data$trait, xlab="", main=paste("raw ",trait_var," (N=", length(which(!is.na(data$trait))),")",sep=""),cex.main=0.7)
