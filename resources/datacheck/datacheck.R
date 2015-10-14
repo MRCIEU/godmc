@@ -379,6 +379,7 @@ cohort_summary$sd_BMI <- sd(ph$BMI)
 cohort_summary$max_BMI <- max(ph$dBMI)
 cohort_summary$min_BMI <- min(ph$BMI)
 cohort_summary$n_snp <- nrow(bim)
+cohort$summary$covariates <- names(covar)[-1]
 
 save(cohort_summary, file=file.path(log_directory, "cohort_descriptives.RData"))
 
