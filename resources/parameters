@@ -34,7 +34,8 @@ grmfile_relateds="${home_directory}/processed_data/genetic_data/data_relateds"
 grmfile_unrelateds="${home_directory}/processed_data/genetic_data/data_unrelateds"
 
 # PCA files
-pcs_all="${grmfile_all}.eigenvec"
+pca="${home_directory}/processed_data/genetic_data/pca"
+pcs_all="${pca}.eigenvec"
 
 # Cell count
 cellcounts="${home_directory}/processed_data/methylation_data/cellcounts.txt"
@@ -54,6 +55,7 @@ gwas_covariates="${home_directory}/processed_data/genetic_data/gwas_covariates"
 # SNP list files
 hm3_snps="${home_directory}/resources/genetics/hapmap3_autosome.snplist.gz"
 ilmn_probesnps="${home_directory}/resources/qc/probesnps.txt"
+hm3_snps_no_ld="${home_directory}/resources/genetics/hapmap3_autosome.snplist_withoutlong-range.LDSNPs.txt.gz"
 
 # Sample mixup checks
 bfile_probesnps="${bfile}_probesnps"
