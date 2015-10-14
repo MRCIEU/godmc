@@ -111,10 +111,10 @@ vline.data2 <- data.frame(PCy=unique(scores$PCy),z = thresh1b)
     geom_point() +
     labs(y="PC.scores",x="PC.scores") +
     
-    geom_vline(aes(xintercept = threshold1)) +
-    geom_hline(aes(yintercept = threshold3)) +
-    geom_hline(aes(yintercept = threshold4)) +
-    geom_vline(aes(xintercept = threshold2)) +
+    geom_vline(aes(xintercept = threshold1),colour="blue", linetype="dashed") +
+    geom_hline(aes(yintercept = threshold3),colour="blue", linetype="dashed") +
+    geom_hline(aes(yintercept = threshold4),colour="blue", linetype="dashed") +
+    geom_vline(aes(xintercept = threshold2),colour="blue", linetype="dashed") +
     facet_wrap(PC1~PCy ,ncol=4) +
     theme(strip.text.x = element_text(size=6),strip.text.y = element_text(size=6)) +
     theme(axis.text = element_text(size = 6)) 
