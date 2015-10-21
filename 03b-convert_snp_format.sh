@@ -48,12 +48,12 @@ echo "Converting plink files to transposed raw format"
 ${plink} --bfile ${bfile} --recode A-transpose --out ${bfile} --freq
 make_tab_format ${plink} ${bfile} ${allele_ref} ${bfile_chunksize} ${tabfile}
 
-
-echo "Converting hapmap3 SNPs to transposed raw format"
-gunzip -c ${hm3_snps} > temp.snplist
-${plink} --bfile ${bfile} --recode A-transpose --out ${bfile_hm3} --extract temp.snplist
-rm temp.snplist
-make_tab_format ${plink} ${bfile_hm3} ${allele_ref_hm3} ${bfile_chunksize} ${tabfile_hm3}
+#Don't need this
+#echo "Converting hapmap3 SNPs to transposed raw format"
+#gunzip -c ${hm3_snps} > temp.snplist
+#${plink} --bfile ${bfile} --recode A-transpose --out ${bfile_hm3} --extract temp.snplist
+#rm temp.snplist
+#make_tab_format ${plink} ${bfile_hm3} ${allele_ref_hm3} ${bfile_chunksize} ${tabfile_hm3}
 
 # Convert CNV data
 R --no-save --args ${cnvs} ${tabcnv} ${bfile_chunksize} < resources/genetics/cnv_tabfile.R
