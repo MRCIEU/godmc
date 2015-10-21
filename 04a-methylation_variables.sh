@@ -4,13 +4,16 @@ set -e
 source config
 
 
+
+
+
 # Estimate cell counts
 if [ "${cellcounts_required}" = "yes" ]
 then
 	if [ "${provided_cellcounts}" = "NULL" ]
 	then
-		R --no-save --args ${betas} ${cellcounts_predicted} ${cellcount_reference} < resources/cellcounts/estimate_cellcounts.R
-	#cp ${cellcounts_predicted} ${home_directory}/input_data
+		R --no-save --args ${betas} ${cellcounts} ${cellcount_reference} < resources/cellcounts/estimate_cellcounts.R
+
         elif [ -f "${provided_cellcounts}" ]
 	then
 		echo "Using the cellcounts provided in ${provided_cellcounts}."
