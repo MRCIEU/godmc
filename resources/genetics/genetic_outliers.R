@@ -45,12 +45,11 @@ arguments <- commandArgs(T)
 pcafile <- arguments[1]
 pcasd <- as.numeric(arguments[2])
 npc <- as.numeric(arguments[3])
-out_file <- arguments[4]
+outliers <- arguments[4]
 pcaplotfile<-as.character(arguments[5])
-outliers<-as.character(arguments[6])
 
 pca <- read.table(pcafile)
-#pca<-read.table("./processed_data/genetic_data/data.eigenvec")
+#pca<-read.table("./processed_data/genetic_data/pca.eigenvec")
 #pcaplotfile=as.character("./processed_data/genetic_data/pcaplot.pdf")
 
 pca2 <- removeOutliersFromData(pca[,-c(1:2)], pcasd, iterations=3)
@@ -58,7 +57,7 @@ index <- apply(pca2, 1, function(x) any(is.na(x)))
 
 genetic_outliers <- pca[index,1:2]
 
-write.table(genetic_outliers, file=out_file, row=F, col=F, qu=F)
+write.table(genetic_outliers, file=outliers, row=F, col=F, qu=F)
 if(length(genetic_outliers) > 0)
 {
 	write.table(subset(pca, !V2 %in% genetic_outliers[,2]), file=pcafile, row=F, col=F, qu=F)	
@@ -72,13 +71,9 @@ scores<-data.frame()
 hline.data1<-data.frame()
 hline.data2<-data.frame()
 
-
-o<-read.table(outliers,sep="\t",header=F,stringsAsFactors=F)
-
 out<-data.frame()
 for (i in 1:length(pc)){
 PC<-pc[i]+2
-
 
 thresh2a <- mean(pca[,PC],na.rm=T) + pcasd*(sd(pca[,PC],na.rm=T))
 thresh2b <- mean(pca[,PC],na.rm=T) - pcasd*(sd(pca[,PC],na.rm=T))
@@ -86,9 +81,8 @@ thresh2b <- mean(pca[,PC],na.rm=T) - pcasd*(sd(pca[,PC],na.rm=T))
 hline1 <- data.frame(PCy=paste("PC",pc[i],sep=""),z = thresh2a)
 hline2 <- data.frame(PCy=paste("PC",pc[i],sep=""),z = thresh2b)
 
-
 d <- data.frame(iid=pca$V2,threshold1=thresh1a,threshold2=thresh1b,threshold3=thresh2a,threshold4=thresh2b,PC=paste("PC1vsPC",pc[i],sep=""),PC1="PC1",PCy=paste("PC",pc[i],sep=""),PC.scores.x=pca[,3],PC.scores.y=pca[,PC])
-d2<-d[which(d[,1]%in%o[,1]),]
+d2<-d[which(d[,1]%in%genetic_outliers[,2]),]
 
 scores<-rbind(scores,d)
 hline.data1<-rbind(hline.data1,hline1)
