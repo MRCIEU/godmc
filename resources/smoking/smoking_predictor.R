@@ -8,19 +8,46 @@ main <- function()
 	methylationfile <- arguments[1]
 	fam_file <- arguments[2]
 	out_file <- arguments[3]
-
+    smoking.prediction.plot<-arguments[4]
+    SD<-as.numeric(arguments[5])
+    cov_file<-arguments[6]
+    
+    
 	# Dataframe of Illig data (supplementary table 2) http://www.ncbi.nlm.nih.gov/pubmed/23691101
 	load("resources/smoking/illig.RData")
-
+    fam <- read.table(fam_file, stringsAsFactors=FALSE)[,1:2]
+	
+	covs <- read.table(cov_file, header=T, stringsAsFactors=FALSE)
+    m<-match(fam[,2],covs$IID)
+    covs<-covs[m,]
+    
 	# Load methylation data - this contains the object "norm.beta"
 	# This is an ncpg (rows) x nid (cols) matrix
 	# Columns and rows labelled with ID and CPG respectively
 	load(methylationfile)
-	smok <- predict.smoking(Illig_data, norm.beta)
-	fam <- read.table(fam_file, stringsAsFactors=FALSE)[,1:2]
+    m<-match(fam[,2],colnames(norm.beta))
+    norm.beta<-norm.beta[,m]
+    
+    smok <- predict.smoking(Illig_data, norm.beta)
 	nom <- names(smok)
 	smok <- merge(smok, fam, by.x="IID", by.y="V2")
 	smok <- subset(smok, select=c("V1", nom))
+	m<-match(fam$V2,smok$IID)
+    smok<-smok[m,]
+
+    pdf(smoking.prediction.plot, width=12, height=8)
+	par(mfrow=c(2,2))
+	plot(smok$Smoking, xlab="", main=paste("Smoking prediction (N=", length(which(!is.na(smok$Smoking))),")",sep=""),cex.main=0.7)
+	hist(smok$Smoking, xlab="", main=paste("Smoking prediction (N=", length(which(!is.na(smok$Smoking))),")",sep=""),cex.main=0.7)
+	abline(v=mean(smok$Smoking,na.rm=T)-SD*sd(smok$Smoking,na.rm=T),lty=2)
+	abline(v=mean(smok$Smoking,na.rm=T)+SD*sd(smok$Smoking,na.rm=T),lty=2)
+	qqnorm(smok$Smoking, main=paste("Smoking prediction (N=", length(which(!is.na(smok$Smoking))),"; shapiroP=",signif(as.numeric(shapiro.test(smok$Smoking)[2]),2),")",sep=""),cex.main=0.7)
+	qqline(smok$Smoking)
+    par(mfrow=c(2,2))
+	plot(covs$Age,smok$Smoking, xlab="Age", ylab="predicted smoking",main="Age vs Smoking prediction",cex.main=0.7)
+	
+    dev.off()
+    
 	write.table(subset(smok, select=-c(V1)), file=paste0(out_file, ".txt"), row=F, col=T, qu=F)
 	write.table(smok, file=paste0(out_file, ".plink"), row=F, col=F, qu=F)
 }
