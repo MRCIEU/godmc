@@ -58,10 +58,11 @@ index <- apply(pca2, 1, function(x) any(is.na(x)))
 genetic_outliers <- pca[index,1:2]
 
 write.table(genetic_outliers, file=outliers, row=F, col=F, qu=F)
-if(length(genetic_outliers) > 0)
-{
-	write.table(subset(pca, !V2 %in% genetic_outliers[,2]), file=pcafile, row=F, col=F, qu=F)	
-}
+
+#if(length(genetic_outliers) > 0)
+#{
+#	write.table(subset(pca, !V2 %in% genetic_outliers[,2]), file=pcafile, row=F, col=F, qu=F)	
+#}
 
 library(ggplot2)
 thresh1a <- mean(pca[,3],na.rm=T) + pcasd*(sd(pca[,3],na.rm=T))
@@ -82,7 +83,7 @@ hline1 <- data.frame(PCy=paste("PC",pc[i],sep=""),z = thresh2a)
 hline2 <- data.frame(PCy=paste("PC",pc[i],sep=""),z = thresh2b)
 
 d <- data.frame(iid=pca$V2,threshold1=thresh1a,threshold2=thresh1b,threshold3=thresh2a,threshold4=thresh2b,PC=paste("PC1vsPC",pc[i],sep=""),PC1="PC1",PCy=paste("PC",pc[i],sep=""),PC.scores.x=pca[,3],PC.scores.y=pca[,PC])
-d2<-d[which(d[,1]%in%genetic_outliers[,2]),]
+#d2<-d[which(d[,1]%in%genetic_outliers[,2]),]
 
 scores<-rbind(scores,d)
 hline.data1<-rbind(hline.data1,hline1)
@@ -92,8 +93,9 @@ hline.data2<-rbind(hline.data2,hline2)
 #w1<-which(d2$PC.scores.y<thresh2b)
 #w2<-which(d2$PC.scores.y>thresh2a)
 #w<-unique(c(w1,w2))
-out<-rbind(out,d2)
 
+#out<-rbind(out,d2)
+out<-rbind(out,d)
 }
 
 
