@@ -1,4 +1,4 @@
-## USE:
+2## USE:
 
 ## http://labs.genetics.ucla.edu/horvath/dnamage/TUTORIAL1.pdf
 ## http://labs.genetics.ucla.edu/horvath/dnamage/probeAnnotation21kdatMethUsed.csv
@@ -43,14 +43,20 @@ main <- function()
 	cov_file <- arguments[2]
 	fam_file <- arguments[3]
 	out_file <- arguments[4]
+    age.acceleration.plot<-arguments[5]
+    SD<-as.numeric(arguments[6])
 
-	message("Getting probe paramaters")
+	message("Getting probe parameters")
 	dnamage.probeAnnotation21kdatMethUsed=read.csv("resources/dnamage/probeAnnotation21kdatMethUsed.csv.gz")
 	dnamage.probeAnnotation27k=read.csv("resources/dnamage/datMiniAnnotation27k.csv.gz")
 	dnamage.datClock=read.csv("resources/dnamage/AdditionalFile3.csv.gz")
 
 	message("Reading in data")
 	covs <- read.table(cov_file, header=T, stringsAsFactors=FALSE)
+	fam <- read.table(fam_file, stringsAsFactors=FALSE)
+	m<-match(fam[,2],covs[,1])
+	covs<-covs[m,]
+
 	index <- grep("^age$", names(covs), ignore.case=TRUE)
 	if(length(index) != 1)
 	{
@@ -59,7 +65,8 @@ main <- function()
 	names(covs)[index] <- "Age"
 	if("FID" %in% names(covs)) covs <- subset(covs, select=-c(FID))
 	load(beta_file)
-
+    m<-match(fam[,2],colnames(norm.beta))
+    norm.beta<-norm.beta[,m]
 	message("Predicting age")
 	agepred <- dnamage(norm.beta, normalizeData=FALSE, dnamage.probeAnnotation27k, dnamage.probeAnnotation21kdatMethUsed, dnamage.datClock)
 	agepred$SampleID <- colnames(norm.beta)
@@ -67,14 +74,29 @@ main <- function()
 
 	message("Generating age accelerated residuals")
 	phen <- generate.aar(agepred, covs)
-	write.table(phen, file=paste0(out_file, ".txt"), row=F, col=T, qu=F)
+
+	pdf(age.acceleration.plot, width=12, height=8)
+	par(mfrow=c(2,2))
+	plot(phen$Age,phen$DNAmAge,cex.main=0.7,cex=0.7, main=paste("correlation between predicted age and actual age=",cor(phen$Age, phen$DNAmAge,use="pair"),sep=""))
+
+    write.table(phen, file=paste0(out_file, ".txt"), row=F, col=T, qu=F)
 
 	nom <- names(phen)
-	fam <- read.table(fam_file, stringsAsFactors=FALSE)
-	phen <- merge(phen, fam, by.x="IID", by.y="V2")
-	phen <- subset(phen, select=c(V1, IID, AAR))
+	#phen <- merge(phen, fam, by.x="IID", by.y="V2")
+	#phen <- subset(phen, select=c(V1, IID, AAR))
+	m<- match(fam$V2,phen$IID)
+	phen<-data.frame(FID=fam$V1,IID=phen$IID[m],AAR=phen$AAR[m])
 	write.table(phen, file=paste0(out_file, ".aar.plink"), row=F, col=F, qu=F)
 
+
+	par(mfrow=c(2,2))
+	plot(phen$AAR, xlab="", main=paste("age acceleration (N=", length(which(!is.na(phen$AAR))),")",sep=""),cex.main=0.7)
+	hist(phen$AAR, xlab="", main=paste("age acceleration (N=", length(which(!is.na(phen$AAR))),")",sep=""),cex.main=0.7)
+	abline(v=mean(phen$AAR,na.rm=T)-SD*sd(phen$AAR,na.rm=T),lty=2)
+	abline(v=mean(phen$AAR,na.rm=T)+SD*sd(phen$AAR,na.rm=T),lty=2)
+	qqnorm(phen$AAR, main=paste("age acceleration (N=", length(which(!is.na(phen$AAR))),"; shapiroP=",signif(as.numeric(shapiro.test(phen$AAR)[2]),2),")",sep=""),cex.main=0.7)
+	qqline(phen$AAR)
+	dev.off()
 }
 
 
@@ -869,5 +891,3 @@ blc2=function (Y, w, maxiter = 25, tol = 1e-06, weights = NULL, verbose = TRUE)
 
 
 main()
-
-
