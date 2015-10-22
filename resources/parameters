@@ -72,9 +72,14 @@ methylation_adjusted_pcs_sq="${home_directory}/processed_data/methylation_data/m
 
 # Smoking prediction
 smoking_pred="${home_directory}/processed_data/methylation_data/smoking_prediction"
+smoking_pred_plot="${home_directory}/processed_data/methylation_data/smoking_prediction.pdf"
+smoking_pred_SD="5"
+
 
 # Age prediction
 age_pred="${home_directory}/processed_data/methylation_data/age_prediction"
+age_pred_plot="${home_directory}/processed_data/methylation_data/age_prediction.pdf"
+age_pred_SD="5"
 
 # Results locations
 ewas_results="${home_directory}/results/ewas/results"
