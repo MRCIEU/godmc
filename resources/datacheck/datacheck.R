@@ -14,6 +14,7 @@ height=as.character(args[12]);
 bmi=as.character(args[13]);
 cnvs=as.character(args[14]);
 log_directory=as.character(args[15])
+age.distribution.plot=as.character(args[16]);
 
 #BIM file check
 controlsnps<-read.table(snpsforpositioncheck,header=F,stringsAsFactors=F)
@@ -262,8 +263,9 @@ if(mean(covar$Age, na.rm=T) > 100)
 	stop("ERROR: Average age is above 100, please make sure age is provided in years.")
 }
 
-
-
+pdf(paste(age.distribution.plot,".pdf",sep=""),height=6,width=6)
+hist(covar$Age, xlab="Age", main=paste("age distribution (N=", length(which(!is.na(covar$Age))),")",sep=""),cex.main=0.7)
+dev.off()
 
 #EWAS phenotypes
 if(!is.na(EWASphenotypes)){

@@ -14,6 +14,7 @@ echo "Copying genetic data to processing folder"
 # cp ${bfile_raw}.bed ${bfile}.bed
 # cp ${bfile_raw}.bim ${bfile}.bim
 # cp ${bfile_raw}.fam ${bfile}.fam
+
 ${plink} \
 	--bfile ${bfile_raw} \
 	--keep ${intersect_ids_plink} \
@@ -31,29 +32,6 @@ echo "Updating SNP ID coding"
 cp ${bfile}.bim ${bfile}.bim.original
 awk '{if (length($5) == "1" && length($6) == "1") print $1, "chr"$1":"$4":SNP", $3, $4, $5, $6;else print $1, "chr"$1":"$4":INDEL", $3, $4, $5, $6;}' ${bfile}.bim.original > ${bfile}.bim
 
-#Calculate PCs
-gunzip -c ${hm3_snps_no_ld} > temp_hm3snpsnold.txt
-${plink} \
-	--bfile ${bfile} \
-	--extract temp_hm3snpsnold.txt \
-	--maf ${grm_maf_cutoff} \
-	--pca ${n_pcs} \
-	--out ${pca}
-rm temp_hm3snpsnold.txt
-
-# Get genetic outliers
-echo "Detecting genetic outliers"
-#R --no-save --args ${pcs_all} ${pca_sd} ${n_pcs} ${genetic_outlier_ids} < resources/genetics/genetic_outliers.R
-R --no-save --args ${pcs_all} ${pca_sd} ${n_pcs} ${genetic_outlier_ids} ${pcaplot} ${genetic_outlier_ids}< resources/genetics/genetic_outliers.R
-
-# Remove genetic outliers from data
-echo "Removing genetic outliers"
-${plink} \
-	--bfile ${bfile} \
-	--remove ${genetic_outlier_ids} \
-	--make-bed \
-	--out ${bfile}
-
 
 # Make GRMs
 echo "Creating kinship matrix"
@@ -65,12 +43,6 @@ ${plink} \
 	--make-grm-bin \
 	--out ${grmfile_all}
 rm temp_hm3snps.txt
-
-${gcta} \
-	--grm ${grmfile_all} \
-	--remove ${genetic_outlier_ids} \
-	--make-grm-bin \
-	--out ${grmfile_all}
 
 # Create pedigree matrix if family data, otherwise remove related individuals from existing kinship and data file
 if [ "${unrelated}" = "no" ]
@@ -95,3 +67,48 @@ else
 	echo "Error: Set unrelated flag in config to yes or no"
 	exit 1
 fi
+
+#Calculate PCs
+if [ "${unrelated}" = "yes" ]
+then
+
+gunzip -c ${hm3_snps_no_ld} > temp_hm3snpsnold.txt
+
+${plink} \
+	--bfile ${bfile} \
+	--extract temp_hm3snpsnold.txt \
+	--indep-pairwise 10000 5 0.1 \
+	--maf 0.2 \
+	--out ${pca}
+
+rm temp_hm3snpsnold.txt
+
+${plink} \
+	--bfile ${bfile} \
+	--extract ${pca}.prune.in \
+	--pca 20 \
+	--out ${pca}
+
+# Get genetic outliers
+echo "Detecting genetic outliers"
+
+R --no-save --args ${pcs_all} ${pca_sd} ${n_pcs} ${genetic_outlier_ids} ${pcaplot} < resources/genetics/genetic_outliers.R
+
+# Remove genetic outliers from data
+echo "Removing genetic outliers"
+${plink} \
+	--bfile ${bfile} \
+	--remove ${genetic_outlier_ids} \
+	--make-bed \
+	--out ${bfile}
+
+${gcta} \
+	--grm ${grmfile_all} \
+	--remove ${genetic_outlier_ids} \
+	--make-grm-bin \
+	--out ${grmfile_all}
+
+fi
+#Update ids
+awk '{print $1,$2}' <${bfile}.fam >${intersect_ids_plink}
+awk '{print $2}' <${bfile}.fam >${intersect_ids}

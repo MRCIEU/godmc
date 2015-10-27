@@ -6,9 +6,15 @@ smok_file <- arguments[3]
 fam_file <- arguments[4]
 out_file <- arguments[5]
 
+cat(covs_file,"\n")
 
+covs_file="/panfs/panasas01/sscm/epzjlm/repo/godmc/processed_data/methylation_data/all_covariates.txt"
+aar_file="/panfs/panasas01/sscm/epzjlm/repo/godmc/processed_data/methylation_data/age_prediction.txt"
+smok_file="/panfs/panasas01/sscm/epzjlm/repo/godmc/processed_data/methylation_data/smoking_prediction.txt"
+fam_file="/panfs/panasas01/sscm/epzjlm/repo/godmc/processed_data/genetic_data/data.fam"
+out_file="/panfs/panasas01/sscm/epzjlm/repo/godmc/processed_data/genetic_data/gwas_covariates"
 
-covs <- read.table(covs_file, he=T, stringsAsFactors=FALSE)
+allcovs <- read.table(covs_file, he=T, stringsAsFactors=FALSE)
 aar <- read.table(aar_file, he=T, stringsAsFactors=FALSE)
 smok <- read.table(smok_file, he=T, stringsAsFactors=FALSE)
 fam <- read.table(fam_file, stringsAsFactors=FALSE)[,1:2]
@@ -16,38 +22,38 @@ fam <- read.table(fam_file, stringsAsFactors=FALSE)[,1:2]
 # Create covariates for AAR GWAS
 # FID IID Sex Smoking
 
-if("Sex" %in% names(covs))
+if("Sex" %in% names(allcovs))
 {
-	dat <- merge(fam, subset(allcovs, select=c(IID, Sex)), by.x="V2", by.y="IID")
+	dat <- merge(fam, subset(allcovs, select=c("IID", "Sex")), by.x="V2", by.y="IID")
 	dat <- merge(dat, smok, by.x="V2", by.y="IID")
-	dat <- subset(dat, select=c(V1, V2, Sex, Smoking))
+	dat <- subset(dat, select=c("V1", "V2", "Sex", "Smoking"))
 	write.table(dat, paste0(out_file, ".aar"), row=F, col=F, qu=F)
 }
 
 # Create covariates for Smoking GWAS
-# FID IID Sex Age
+# FID IID Age Sex
 
 covnames <- c("Age", "Sex")
-covnames <- covnames[covnames %in% names(covs)]
+covnames <- covnames[covnames %in% names(allcovs)]
 if(length(covnames) > 0)
 {
-	dat <- merge(fam, subset(allcovs, select=c(IID, covnames)), by.x="V2", by.y="IID")
-	dat <- subset(dat, select=c(V1, V2, covnames))
+	dat <- merge(fam, subset(allcovs, select=c("IID", covnames)), by.x="V2", by.y="IID")
+	dat <- subset(dat, select=c("V1", "V2", covnames))
 	write.table(dat, paste0(out_file, ".smoking"), row=F, col=F, qu=F)
 }
 
 
 # Create covariates for cellcounts GWAS
-# FID IID Sex Age Smoking
+# FID IID Smoking Age Sex
 
 covnames <- c("Age", "Sex")
-covnames <- covnames[covnames %in% names(covs)]
-dat <- merge(fam, smoking, by.x="V2", by.y="IID")
-dat <- subset(dat, select=c(V1, V2, Smoking))
+covnames <- covnames[covnames %in% names(allcovs)]
+dat <- merge(fam, smok, by.x="V2", by.y="IID")
+dat <- subset(dat, select=c("V1", "V2", "Smoking"))
 if(length(covnames) > 0)
 {
-	dat <- merge(dat, subset(allcovs, select=c(IID, covnames)), by.x="V2", by.y="IID")
-	dat <- subset(dat, select=c(V1, V2, Smoking, covnames))
+	dat <- merge(dat, subset(allcovs, select=c("IID", covnames)), by.x="V2", by.y="IID")
+	dat <- subset(dat, select=c("V1", "V2", "Smoking", covnames))
 }
 write.table(dat, paste0(out_file, ".cellcounts"), row=F, col=F, qu=F)
 

@@ -305,16 +305,17 @@ dnamage.stepwise <- function(dat1, meanXchromosome,
 	Comment[restSamples]= paste(Comment[restSamples],lab1)
 	datout=data.frame(SampleID=colnames(dat1)[-1], DNAmAge=predictedAge, Comment, noMissingPerSample,meanMethBySample, minMethBySample, maxMethBySample)
 	
-	if ( !is.null( meanXchromosome) ){  
+	# The thresholds to predict gender are incorrect.
+	#if ( !is.null( meanXchromosome) ){  
 		
-		if ( length( meanXchromosome)==dim(datout)[[1]] ){
-			predictedGender=ifelse(meanXchromosome>.4,"female",
-				ifelse(meanXchromosome<.38,"male","Unsure"))
-			datout=data.frame(datout,predictedGender=predictedGender,meanXchromosome=meanXchromosome)
+	#	if ( length( meanXchromosome)==dim(datout)[[1]] ){
+#			predictedGender=ifelse(meanXchromosome>.4,"female",
+#				ifelse(meanXchromosome<.38,"male","Unsure"))
+#			datout=data.frame(datout,predictedGender=predictedGender,meanXchromosome=meanXchromosome)
 			
-		} # end of if 
+#		} # end of if 
 		
-	} # end of if
+#	} # end of if
 
 	datout
 }

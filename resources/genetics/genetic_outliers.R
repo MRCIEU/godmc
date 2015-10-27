@@ -51,6 +51,7 @@ pcaplotfile<-as.character(arguments[5])
 pca <- read.table(pcafile)
 #pca<-read.table("./processed_data/genetic_data/pca.eigenvec")
 #pcaplotfile=as.character("./processed_data/genetic_data/pcaplot.pdf")
+#genetic_outliers="./processed_data/genetic_data/genetic_outliers.txt"
 
 pca2 <- removeOutliersFromData(pca[,-c(1:2)], pcasd, iterations=3)
 index <- apply(pca2, 1, function(x) any(is.na(x)))

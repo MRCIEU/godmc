@@ -5,6 +5,9 @@ pheno.plot=as.character(args[3])
 covfile= as.character(args[4]);
 transformed.phenotypes=as.character(args[5])
 SD=as.numeric(args[6])
+phenotypes.plink.raw=as.character(args[7])
+phenotypes.plink.transformed=as.character(args[8])
+
 
 library(lattice)
 
@@ -19,6 +22,11 @@ library(lattice)
 data<- read.table(phenofile, header=T,stringsAsFactors =F)
 traits<-names(data)[-1]
 IID<-read.table(ids)
+
+m<-match(IID[,2],data$IID)
+data2<-data.frame(IID[,2],data[m,])
+write.table(data2,phenotypes.plink.raw,row.names=F,col.names=F,quote=F)
+
 outdata.all<-IID
 
 pdf(pheno.plot, width=12, height=8)
@@ -203,6 +211,9 @@ outdata.all<-cbind(outdata.all,outdata$trait)
 }
 dev.off()
 
-colnames(outdata.all)<-c("IID",traits)
-write.table(outdata.all,transformed.phenotypes,sep="\t",quote=F,row.names=F,col.names=T)
+colnames(outdata.all)<-c("FID","IID",traits)
+head(outdata.all)
+write.table(outdata.all[,-1],transformed.phenotypes,sep="\t",quote=F,row.names=F,col.names=T)
+
+write.table(outdata.all,phenotypes.plink.transformed,sep="\t",quote=F,row.names=F,col.names=F)
 

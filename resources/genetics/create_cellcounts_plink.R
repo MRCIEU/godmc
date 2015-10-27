@@ -4,8 +4,9 @@
 	ids = as.character(args[3]);
     cellcounts.plot = as.character(args[4]);
     covfile = as.character(args[5]);
-    transformed.cellcounts = as.character(args[6]);
+    cellcounts.plink = as.character(args[6]);
     SD = as.numeric(args[7]);
+    transformed.cellcounts = as.character(args[8]);
 
 #cellcount_file <- "cellcounts.txt"
 #ids<-("./processed_data/ids/ids_plink.txt")
@@ -29,7 +30,12 @@ library(lattice)
 		h[!is.finite(h)] <- 0
 		-sum(h)
 	})
-	write.table(cellcounts, file=out_file, row=F, col=F, qu=F)	
+
+    IID<-read.table(ids)
+    m<-match(IID[,2],cellcounts$IID)
+    write.table(cellcounts[m,],cellcount_file,sep="\t",row.names=F,col.names=T,quote=F)
+    cellcounts<-data.frame(FID=IID[,1],cellcounts[m,])
+    write.table(cellcounts, file=out_file, row=F, col=F, qu=F)
 
 #	for(i in 2:ncol(cellcounts))
 #	{
@@ -44,7 +50,6 @@ library(lattice)
 
 
 traits<-names(cellcounts)[-1]
-IID<-read.table(ids)
 outdata.all<-IID
 
 pdf(cellcounts.plot, width=12, height=8)
@@ -229,7 +234,8 @@ outdata.all<-cbind(outdata.all,outdata$trait)
 }
 dev.off()
 
-colnames(outdata.all)<-c("IID",traits)
-write.table(outdata.all,transformed.cellcounts,sep="\t",quote=F,row.names=F,col.names=T)
+colnames(outdata.all)<-c("FID","IID",traits)
+write.table(outdata.all[,-1],transformed.cellcounts,sep="\t",quote=F,row.names=F,col.names=T)
+write.table(outdata.all,cellcounts.plink,sep="\t",quote=F,row.names=F,col.names=F)
 
 

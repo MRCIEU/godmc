@@ -40,8 +40,12 @@ allcovs <- merge(cellcount, pca, by="IID", all=TRUE)
 allcovs <- merge(allcovs, covs, by="IID", all=TRUE)
 allcovs <- merge(allcovs, smok, by="IID", all=TRUE)
 
-write.table(allcovs, file=paste0(out_file, ".txt"), row=F, col=T, qu=F)
+fam<-read.table(fam_file)
+m<-match(fam[,2],allcovs[,1])
+allcovs<-data.frame(FID=fam[,2],allcovs[m,])
+write.table(allcovs,file=paste(out_file,".plink",sep=""),row.names=F,col.names=F,quote=F)
+write.table(allcovs[,-1], file=paste0(out_file, ".txt"), row=F, col=T, qu=F)
 
-mat <- t(as.matrix(allcovs))
+mat <- t(as.matrix(allcovs[,-1]))
 write.table(mat, file=paste0(out_file, ".matrixeqtl"), row=TRUE, col=FALSE, qu=FALSE, sep="\t")
 
