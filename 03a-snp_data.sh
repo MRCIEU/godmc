@@ -33,6 +33,19 @@ cp ${bfile}.bim ${bfile}.bim.original
 awk '{if (length($5) == "1" && length($6) == "1") print $1, "chr"$1":"$4":SNP", $3, $4, $5, $6;else print $1, "chr"$1":"$4":INDEL", $3, $4, $5, $6;}' ${bfile}.bim.original > ${bfile}.bim
 
 
+# Checking for any duplicate SNPs
+cp ${bfile}.bim ${bfile}.bim.original2
+awk '{
+	if (++dup[$2] > 1) { 
+		print $1, $2".duplicate."dup[$2], $3, $4, $5, $6 
+	} else {
+		print $0 
+	}}' ${bfile}.bim.original2 > ${bfile}.bim
+
+grep "duplicate" ${bfile}.bim | awk '{ print $2 }' > ${bfile}.duplicates.txt
+plink1.90 --bfile ${bfile} --exclude ${bfile}.duplicates.txt --make-bed --out ${bfile}
+
+
 # Make GRMs
 echo "Creating kinship matrix"
 gunzip -c ${hm3_snps} > temp_hm3snps.txt
@@ -69,9 +82,6 @@ else
 fi
 
 #Calculate PCs
-if [ "${unrelated}" = "yes" ]
-then
-
 gunzip -c ${hm3_snps_no_ld} > temp_hm3snpsnold.txt
 
 ${plink} \
@@ -108,7 +118,8 @@ ${gcta} \
 	--make-grm-bin \
 	--out ${grmfile_all}
 
-fi
+
+
 #Update ids
 awk '{print $1,$2}' <${bfile}.fam >${intersect_ids_plink}
 awk '{print $2}' <${bfile}.fam >${intersect_ids}
