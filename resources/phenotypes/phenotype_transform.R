@@ -3,15 +3,18 @@ ids = as.character(args[1]);
 phenofile= as.character(args[2]);
 pheno.plot=as.character(args[3])
 covfile= as.character(args[4]);
-transformed.phenotypes=as.character(args[5])
-SD=as.numeric(args[6])
+transformed.phenotypes=as.character(args[5]);
+SD=as.numeric(args[6]);
+phenotypes.plink=as.character(args[7]);
+outfile=as.character(args[8]);
 
 library(lattice)
 
 #transformed.phenotypes<-"processed_data/phenotypes/transformed.phenotypes.txt"
 #transformed.phenotypes<-"transformed.phenotypes.txt"
-#phenofile <- "EWAS.phenotypes.raw.txt"
-#covfile<-"covariates.txt"
+#phenofile <- "./input_data/EWAS.phenotypes.raw.txt"
+#covfile<-"./input_data/covariates.txt"
+#ids<-"./processed_data/ids/intersect_ids_plink.txt"
 #covfile<-"covariates_withoutSex.txt"
 #pheno.plot<-"phenotypeplots.pdf"
 #SD=5
@@ -19,7 +22,12 @@ library(lattice)
 data<- read.table(phenofile, header=T,stringsAsFactors =F)
 traits<-names(data)[-1]
 IID<-read.table(ids)
-outdata.all<-IID
+outdata.all<-as.character(IID[,2])
+m<-match(IID[,2],data$IID)
+data2<-data.frame(FID=IID[,1],data[m,])
+write.table(data2,file=paste(phenotypes.plink,".raw",sep=""),quote=F,row.names=F,col.names=F)
+write.table(data2[,-1],file=paste0(outfile,".txt"),quote=F,row.names=F,col.names=T)
+
 
 pdf(pheno.plot, width=12, height=8)
 par(mfrow=c(2,2))
@@ -95,7 +103,7 @@ data[nmiss,"trait"]<-(data[nmiss,"trait"]-mean(data[nmiss,"trait"]))/sd(data[nmi
 
 outdata<-data.frame(IID=data$IID,trait=data$trait)
 m<-match(IID[,2],outdata$IID)
-outdata<-data.frame(IID=IID,trait=outdata$trait[m])
+outdata<-data.frame(IID=IID[,2],trait=outdata$trait[m])
 
 #### plot the distribution of transformed phenotypes
 par(mfrow=c(2,2))
@@ -170,7 +178,7 @@ female[nmiss_female,"trait"]<-(female[nmiss_female,"trait"]-mean(female[nmiss_fe
 
 outdata<-rbind(male,female)
 m<-match(IID[,2],outdata$IID)
-outdata<-data.frame(IID=IID,trait=outdata$trait[m])
+outdata<-data.frame(IID=IID[,2],trait=outdata$trait[m])
 
 #after transformation
 par(mfrow=c(2,2))
@@ -204,5 +212,11 @@ outdata.all<-cbind(outdata.all,outdata$trait)
 dev.off()
 
 colnames(outdata.all)<-c("IID",traits)
-write.table(outdata.all,transformed.phenotypes,sep="\t",quote=F,row.names=F,col.names=T)
+m<-match(IID[,2],outdata.all[,1])
+outdata.all<-data.frame(FID=IID[,1],outdata.all[m,])
+write.table(outdata.all[,-1],file=transformed.phenotypes,sep="\t",quote=F,row.names=F,col.names=T)
+write.table(outdata.all,file=phenotypes.plink,quote=F,row.names=F,col.names=F)
+
+
+
 

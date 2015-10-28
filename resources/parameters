@@ -11,9 +11,11 @@ control_snps="${home_directory}/resources/genetics/snpsforbuildandposcheck.txt"
 cohort_descriptives="${home_directory}/log_files/datacheck/cohort_descriptives.RData"
 
 #EWAS phenotypes
-EWASplot="${home_directory}/processed_data/phenotypes/EWAS.phenotypes.pdf"
-EWAStransformed="${home_directory}/processed_data/phenotypes/EWAS.transformed.txt"
-EWAS_SD="5"
+ewasplot="${home_directory}/processed_data/phenotypes/ewas.phenotypes.pdf"
+ewastransformed="${home_directory}/processed_data/phenotypes/ewas.transformed.txt"
+ewas_sd="5"
+ewas_plink="${home_directory}/processed_data/phenotypes/ewas.plink"
+ewas_file="${home_directory}/processed_data/phenotypes/ewas"
 
 # Clean genetic data
 bfile="${home_directory}/processed_data/genetic_data/data"

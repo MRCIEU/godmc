@@ -12,7 +12,7 @@ if [ "${cellcounts_required}" = "yes" ]
 then
 	if [ "${provided_cellcounts}" = "NULL" ]
 	then
-		R --no-save --args ${betas} ${cellcounts} "${cellcount_reference}" < resources/cellcounts/estimate_cellcounts_meffil.R
+		R --no-save --args ${betas} ${cellcounts} "${cellcount_reference}" ${bfile}.fam < resources/cellcounts/estimate_cellcounts_meffil.R
 
         elif [ -f "${provided_cellcounts}" ]
 	then
