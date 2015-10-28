@@ -6,14 +6,6 @@ smok_file <- arguments[3]
 fam_file <- arguments[4]
 out_file <- arguments[5]
 
-cat(covs_file,"\n")
-
-covs_file="/panfs/panasas01/sscm/epzjlm/repo/godmc/processed_data/methylation_data/all_covariates.txt"
-aar_file="/panfs/panasas01/sscm/epzjlm/repo/godmc/processed_data/methylation_data/age_prediction.txt"
-smok_file="/panfs/panasas01/sscm/epzjlm/repo/godmc/processed_data/methylation_data/smoking_prediction.txt"
-fam_file="/panfs/panasas01/sscm/epzjlm/repo/godmc/processed_data/genetic_data/data.fam"
-out_file="/panfs/panasas01/sscm/epzjlm/repo/godmc/processed_data/genetic_data/gwas_covariates"
-
 allcovs <- read.table(covs_file, he=T, stringsAsFactors=FALSE)
 aar <- read.table(aar_file, he=T, stringsAsFactors=FALSE)
 smok <- read.table(smok_file, he=T, stringsAsFactors=FALSE)

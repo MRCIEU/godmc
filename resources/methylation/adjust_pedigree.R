@@ -1,5 +1,5 @@
 library(parallel)
-library(GenABEL)
+suppressMessages(library(GenABEL))
 
 main <- function()
 {
@@ -51,6 +51,7 @@ main <- function()
 	{
 		norm.beta <- adjust.relatedness.serial(norm.beta, covs, kin)
 	} else {
+		message("Running with ", nthreads, " threads")
 		norm.beta <- adjust.relatedness(norm.beta, covs, kin, nthreads)
 	}
 	save(norm.beta, file=out_file)
@@ -147,7 +148,7 @@ adjust.relatedness.1 <- function(x, covs, kin, quiet=TRUE)
 	d <- data.frame(X=rntransform(x), covs)
 	rownames(d) <- colnames(kin)
 	form <- as.formula(paste0("X ~ ", paste(names(d)[-1], collapse=" + ")))
-	rntransform(polygenic(form, data=d, kinship.matrix=kin, quiet=quiet)$grresidualY)
+	as.numeric(rntransform(polygenic(form, data=d, kinship.matrix=kin, quiet=quiet)$grresidualY))
 }
 
 rntransform <- function(x)
@@ -162,29 +163,21 @@ rntransform <- function(x)
 
 adjust.relatedness <- function(B, covs, kin, mc.cores=mc.cores)
 {
-	tmpList = lapply(1:mc.cores, function(i){ seq(from=i, to=nrow(B), by=mc.cores) })
 
-	message("Adjusting data for polygenic effects, may take some time...")	
-
-	tmpAdj <- mclapply(tmpList, function(ix)
+	l1 <- get.index.list(nrow(B), mc.cores)
+	l <- lapply(l1, function(ii)
 	{
-		ret <- B[ix,]
-		for(i in ix)
+		res <- mclapply(ii, function(i)
 		{
 			if( i %% 100 == 0) message("Probe ", i, " of ", nrow(B))
-			ret[i, ] <- adjust.relatedness.1(B[i,], covs, kin)
-		}
-		return(ret)
-	}, mc.cores=mc.cores)
-
-	message("Reducing results...")
-	adjBeta = matrix(NA, nrow(B), ncol(B))
-	colnames(adjBeta) <- colnames(B)
-	rownames(adjBeta) <- rownames(B)
-	for (i in 1:length(tmpList)){
-		adjBeta[tmpList[[i]],] = tmpAdj[[i]]
-	}
-	return(adjBeta)
+			adjust.relatedness.1(B[i,], covs, kin)
+		})
+		return(do.call(rbind, res))
+	})
+	l <- do.call(rbind, l)
+	rownames(l) <- rownames(B)
+	colnames(l) <- colnames(B)
+	return(l)
 }
 
 
@@ -201,5 +194,16 @@ adjust.relatedness.serial <- function(B, covs, kin)
 	# apply(B, 1, function(x) adjust.relatedness.1(x, kin))
 }
 
+get.index.list <- function(n, mc.cores)
+{
+	mc.cores <- ifelse(mc.cores < 1, 1, mc.cores)
+	div <- floor(n / mc.cores)
+	rem <- n %% mc.cores
+	l1 <- lapply(1:div, function(x) (x-1) * mc.cores + 1:mc.cores)
+	if(rem != 0) l1[[div+1]] <- l1[[div]][mc.cores] + 1:rem
+	return(l1)
+}
+
 
 main()
+

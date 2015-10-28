@@ -43,6 +43,7 @@ main <- function()
 	{
 		norm.beta <- adjust.covs.serial(norm.beta, covs)
 	} else {
+		message("Running with ", nthreads, " threads")
 		norm.beta <- adjust.covs(norm.beta, covs, nthreads)	
 	}
 	
@@ -54,28 +55,35 @@ adjust.covs.1 <- function(x, covs)
 {
 	d <- data.frame(X=rntransform(x), covs)
 	form <- as.formula(paste0("X ~ ", paste(names(d)[-1], collapse=" + ")))
-	rntransform(residuals(lm(form, data=d)))
+	as.numeric(rntransform(residuals(lm(form, data=d))))
 }
 
 adjust.covs <- function(B, covs, mc.cores=mc.cores)
 {
-	tmpList = lapply(1:mc.cores, function(i){ seq(from=i, to=nrow(B), by=mc.cores) })
+	l1 <- get.index.list(nrow(B), mc.cores)
+	l <- lapply(l1, function(ii)
+	{
+		res <- mclapply(ii, function(i)
+		{
+			if( i %% 10 == 0) message("Probe ", i, " of ", nrow(B))
+			adjust.covs.1(B[i,], covs)
+		})
+		return(do.call(rbind, res))
+	})
+	l <- do.call(rbind, l)
+	rownames(l) <- rownames(B)
+	colnames(l) <- colnames(B)
+	return(l)
+}
 
-	message("Adjusting data for covariates, may take some time...")	
-
-	tmpAdj <- mclapply(tmpList, function(ix)
-	{ 
-		apply(B[ix,], 1, function(x) adjust.covs.1(x, covs))
-	}, mc.cores=mc.cores)
-
-	message("Reducing results...")
-	adjBeta = matrix(NA, nrow(B), ncol(B))
-	colnames(adjBeta) <- colnames(B)
-	rownames(adjBeta) <- rownames(B)
-	for (i in 1:length(tmpList)){
-		adjBeta[tmpList[[i]],] = t(tmpAdj[[i]])
-	}
-	return(adjBeta)
+get.index.list <- function(n, mc.cores)
+{
+	mc.cores <- ifelse(mc.cores < 1, 1, mc.cores)
+	div <- floor(n / mc.cores)
+	rem <- n %% mc.cores
+	l1 <- lapply(1:div, function(x) (x-1) * mc.cores + 1:mc.cores)
+	if(rem != 0) l1[[div+1]] <- l1[[div]][mc.cores] + 1:rem
+	return(l1)
 }
 
 adjust.covs.serial <- function(B, covs)

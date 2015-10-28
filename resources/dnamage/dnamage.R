@@ -1,4 +1,4 @@
-2## USE:
+## USE:
 
 ## http://labs.genetics.ucla.edu/horvath/dnamage/TUTORIAL1.pdf
 ## http://labs.genetics.ucla.edu/horvath/dnamage/probeAnnotation21kdatMethUsed.csv
@@ -96,7 +96,7 @@ main <- function()
 	abline(v=mean(phen$AAR,na.rm=T)+SD*sd(phen$AAR,na.rm=T),lty=2)
 	qqnorm(phen$AAR, main=paste("age acceleration (N=", length(which(!is.na(phen$AAR))),"; shapiroP=",signif(as.numeric(shapiro.test(phen$AAR)[2]),2),")",sep=""),cex.main=0.7)
 	qqline(phen$AAR)
-	dev.off()
+	quiet <- dev.off()
 }
 
 
@@ -211,7 +211,7 @@ dnamage.stepwise <- function(dat1, meanXchromosome,
 	colnames(datMethUsed)=as.character(dat1[,1])
 	
 	noMissingPerSample=apply(as.matrix(is.na(datMethUsed)),1,sum)
-	print(table(noMissingPerSample))
+	# print(table(noMissingPerSample))
 	
 	##STEP 2: Imputing 
 	if (! fastImputation & nSamples>1 & max(noMissingPerSample,na.rm=TRUE)<3000 ){
@@ -328,7 +328,7 @@ generate.aar <- function(agepred, phen)
 	agepred <- subset(agepred, select=c(SampleID, DNAmAge))
 	phen <- merge(phen, agepred, by.x="IID", by.y="SampleID", all.x=TRUE)
 
-	print(paste("The correlation between predicted age and actual age is", cor(phen$Age, phen$DNAmAge, use="pair")))
+	message("The correlation between predicted age and actual age is ", cor(phen$Age, phen$DNAmAge, use="pair"))
 
 	phen$AAR <- residuals(lm(Age ~ DNAmAge, phen, na.action=na.exclude))
 	phen <- phen[order(phen$index), ]
