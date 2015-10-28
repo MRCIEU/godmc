@@ -12,7 +12,7 @@ cohort_descriptives="${home_directory}/log_files/check_data/cohort_descriptives.
 ageplot="${home_directory}/log_files/check_data/age_distribution.pdf"
 
 #EWAS phenotypes
-ewasplot="${home_directory}/processed_data/phenotypes/ewas.phenotypes.pdf"
+ewasplot="${home_directory}/log_files/phenotype_data/ewas_phenotypes.pdf"
 ewastransformed="${home_directory}/processed_data/phenotypes/ewas.transformed.txt"
 ewas_sd="5"
 ewas_plink="${home_directory}/processed_data/phenotypes/ewas.plink"
@@ -50,7 +50,7 @@ cellcounts_tf="${home_directory}/processed_data/cellcounts/cellcounts.transforme
 cellcounts_entropy="${home_directory}/processed_data/cellcounts/cellcounts_entropy.txt"
 cellcounts_plink="${home_directory}/processed_data/genetic_data/cellcounts.transformed.plink"
 cellcounts_plink_raw="${home_directory}/processed_data/genetic_data/cellcounts.plink.raw"
-cellcounts_plot="${home_directory}/processed_data/cellcounts/cellcounts.plot.pdf"
+cellcounts_plot="${home_directory}/log_files/methylation_variables/cellcounts_plot.pdf"
 cellcounts_SD="5"
 
 # Covariates
@@ -79,13 +79,13 @@ methylation_adjusted_pcs_sq="${home_directory}/processed_data/methylation_data/m
 
 # Smoking prediction
 smoking_pred="${home_directory}/processed_data/methylation_data/smoking_prediction"
-smoking_pred_plot="${home_directory}/processed_data/methylation_data/smoking_prediction.pdf"
+smoking_pred_plot="${home_directory}/log_files/methylation_variables/smoking_prediction.pdf"
 smoking_pred_SD="5"
 
 
 # Age prediction
 age_pred="${home_directory}/processed_data/methylation_data/age_prediction"
-age_pred_plot="${home_directory}/processed_data/methylation_data/age_prediction.pdf"
+age_pred_plot="${home_directory}/log_files/methylation_variables/age_prediction.pdf"
 age_pred_SD="5"
 
 # Results locations

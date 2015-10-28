@@ -2,7 +2,7 @@
 
 set -e
 source config
-exec &> >(tee ${methylation_variables})
+exec &> >(tee ${methylation_variables_logfile})
 
 
 # Estimate cell counts
@@ -10,7 +10,7 @@ if [ "${cellcounts_required}" = "yes" ]
 then
 	if [ "${provided_cellcounts}" = "NULL" ]
 	then
-
+		echo "Estimating cell counts"
 		Rscript resources/cellcounts/estimate_cellcountsbybeta.R \
 			${betas} \
 			${cellcounts} \
@@ -24,9 +24,17 @@ then
 	else
 		echo "Error: The file ${provided_cellcounts} doesn't exist. You have specified that cell counts are required. Please set 'provided_cellcounts' to NULL if you want them to be estimated now, or specify a path to a file with the pre-specified cell counts."
 	fi
-	#R --no-save --args ${cellcounts} ${cellcounts_plink} ${home_directory}/processed_data/cellcounts/  < resources/genetics/create_cellcounts_plink.R
-
-        R --no-save --args ${cellcounts} ${cellcounts_plink_raw} ${intersect_ids_plink} ${cellcounts_plot} ${covariates} ${cellcounts_plink} ${cellcounts_SD} ${cellcounts_tf} ${cellcounts_entropy} < resources/genetics/create_cellcounts_plink.R ${home_directory}/processed_data/cellcounts/cellcounts_transform.Rout 2>&1
+	echo "Transforming cell counts"
+	Rscript resources/genetics/create_cellcounts_plink.R \
+		${cellcounts} \
+		${cellcounts_plink_raw} \
+		${intersect_ids_plink} \
+		${cellcounts_plot} \
+		${covariates} \
+		${cellcounts_plink} \
+		${cellcounts_SD} \
+		${cellcounts_tf} \
+		${cellcounts_entropy}
 
 elif [ "${cellcounts_required}" = "no" ]
 then
@@ -37,13 +45,41 @@ else
 fi
 
 # Estimate age accelerated residuals
-R --no-save --args ${betas} ${covariates} ${bfile}.fam ${age_pred} ${age_pred_plot} ${age_pred_SD} < resources/dnamage/dnamage.R
+echo "Estimating age"
+Rscript resources/dnamage/dnamage.R \
+	${betas} \
+	${covariates} \
+	${bfile}.fam \
+	${age_pred} \
+	${age_pred_plot} \
+	${age_pred_SD}
 
 # Predict smoking
-R --no-save --args ${betas} ${bfile}.fam ${smoking_pred} ${smoking_pred_plot} ${smoking_pred_SD} ${covariates} < resources/smoking/smoking_predictor.R
+echo "Estimating smoking"
+Rscript resources/smoking/smoking_predictor.R \
+	${betas} \
+	${bfile}.fam \
+	${smoking_pred} \
+	${smoking_pred_plot} \
+	${smoking_pred_SD} \
+	${covariates}
 
 # Organise covariates
-R --no-save --args ${covariates} ${pcs_all} ${cellcounts} ${smoking_pred}.txt ${bfile}.fam ${covariates_combined} < resources/genetics/covariates.R
+echo "Organising covariates"
+Rscript resources/genetics/covariates.R \
+	${covariates} \
+	${pcs_all} \
+	${cellcounts} \
+	${smoking_pred}.txt \
+	${bfile}.fam \
+	${covariates_combined}
 
 # GWAS Covariates
-R --no-save --args ${covariates_combined}.txt ${age_pred}.txt ${smoking_pred}.txt ${bfile}.fam ${gwas_covariates} < resources/genetics/create_covariates_files.R
+Rscript resources/genetics/create_covariates_files.R \
+	${covariates_combined}.txt \
+	${age_pred}.txt \
+	${smoking_pred}.txt \
+	${bfile}.fam \
+	${gwas_covariates}
+
+echo "Successfully created methylation-related variables"

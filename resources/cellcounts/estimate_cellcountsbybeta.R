@@ -1,4 +1,4 @@
-library(meffil, quietly=TRUE)
+suppressMessages(library(meffil))
 
 
 arguments <- commandArgs(T)

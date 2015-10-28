@@ -24,10 +24,13 @@ main <- function()
 	# Load methylation data - this contains the object "norm.beta"
 	# This is an ncpg (rows) x nid (cols) matrix
 	# Columns and rows labelled with ID and CPG respectively
+
+	message("Loading methylation data")
 	load(methylationfile)
     m<-match(fam[,2],colnames(norm.beta))
     norm.beta<-norm.beta[,m]
-    
+
+	message("Predicting smoking levels")
     smok <- predict.smoking(Illig_data, norm.beta)
 	nom <- names(smok)
 	smok <- merge(smok, fam, by.x="IID", by.y="V2")
@@ -46,7 +49,7 @@ main <- function()
     par(mfrow=c(2,2))
 	plot(covs$Age,smok$Smoking, xlab="Age", ylab="predicted smoking",main="Age vs Smoking prediction",cex.main=0.7)
 	
-    dev.off()
+    quiet <- dev.off()
     
 	write.table(subset(smok, select=-c(V1)), file=paste0(out_file, ".txt"), row=F, col=T, qu=F)
 	write.table(smok, file=paste0(out_file, ".plink"), row=F, col=F, qu=F)
