@@ -33,7 +33,6 @@ echo "Updating SNP ID coding"
 cp ${bfile}.bim ${bfile}.bim.original
 awk '{if (length($5) == "1" && length($6) == "1") print $1, "chr"$1":"$4":SNP", $3, $4, $5, $6;else print $1, "chr"$1":"$4":INDEL", $3, $4, $5, $6;}' ${bfile}.bim.original > ${bfile}.bim
 
-
 # Checking for any duplicate SNPs
 cp ${bfile}.bim ${bfile}.bim.original2
 awk '{

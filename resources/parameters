@@ -12,11 +12,11 @@ cohort_descriptives="${home_directory}/log_files/check_data/cohort_descriptives.
 ageplot="${home_directory}/log_files/check_data/age_distribution.pdf"
 
 #EWAS phenotypes
-EWASplot="${home_directory}/processed_data/phenotypes/EWAS.phenotypes.pdf"
-EWAStransformed="${home_directory}/processed_data/phenotypes/EWAS.transformed.txt"
-EWAS_SD="5"
-EWAS_plink="${home_directory}/processed_data/phenotypes/EWAS.transformed.plink"
-EWAS_plink_raw="${home_directory}/processed_data/phenotypes/EWAS.plink.raw"
+ewasplot="${home_directory}/processed_data/phenotypes/ewas.phenotypes.pdf"
+ewastransformed="${home_directory}/processed_data/phenotypes/ewas.transformed.txt"
+ewas_sd="5"
+ewas_plink="${home_directory}/processed_data/phenotypes/ewas.plink"
+ewas_file="${home_directory}/processed_data/phenotypes/ewas"
 
 # Clean genetic data
 bfile="${home_directory}/processed_data/genetic_data/data"
