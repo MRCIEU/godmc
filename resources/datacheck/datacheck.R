@@ -1,102 +1,131 @@
-args = (commandArgs(TRUE));
-bim= as.character(args[1]);
-fam= as.character(args[2]);
-betas= as.character(args[3]);
-covariates=as.character(args[4]);
-cellcounts=as.character(args[5]);
-ids=as.character(args[6]);
-ids_plink=as.character(args[7]);
-SNPsbychr=as.character(args[8]);
-no.SNPs.by.chr.plot=as.character(args[9]);
-snpsforpositioncheck=as.character(args[10]);
-EWASphenotypes=as.character(args[11]);
-height=as.character(args[12]);
-bmi=as.character(args[13]);
-cnvs=as.character(args[14]);
-log_directory=as.character(args[15])
-age.distribution.plot=as.character(args[16]);
+library(data.table)
 
-#BIM file check
-controlsnps<-read.table(snpsforpositioncheck,header=F,stringsAsFactors=F)
-bim<-read.table(bim,header=F,stringsAsFactors=F)
+args <- (commandArgs(TRUE));
+bim_file <- as.character(args[1]);
+fam_file <- as.character(args[2]);
+betas_file <- as.character(args[3]);
+covariates_file <- as.character(args[4]);
+cellcounts_file <- as.character(args[5]);
+ids <- as.character(args[6]);
+ids_plink <- as.character(args[7]);
+snpsbychr_file <- as.character(args[8]);
+controlsnps_file <- as.character(args[9]);
+phenotypes_file <- as.character(args[10]);
+cnv_file <- as.character(args[11]);
+cohort_descriptives_file <- as.character(args[12])
+age_distribution_plot <- as.character(args[13])
 
-#CHR
-#ID
-#cM
-#BP
-#A1
-#A2
 
-#test chr coding
-chrno<-table(bim[,1])
-w<-which(names(chrno)%in%as.character(c(1:22))==F)
-cat("check chromosome coding","\n")
+# BIM file check
+message("Checking bim file: ", bim_file)
+controlsnps <- read.table(controlsnps_file, header=F, stringsAsFactors=F)
+# bim <- read.table(bim_file, stringsAsFactors=F, colClass=c("numeric", "character", "numeric", "numeric", "character", "character"))
+bim <- as.data.frame(fread(bim_file))
 
-if(length(w)>0){
-message("Warning: There are some chromosomes other than 1-22, they will be removed","\n")
+message("Number of SNPs: ", nrow(bim))
+
+# test chr coding
+chrno <- table(bim[,1])
+w <- which(! names(chrno) %in% as.character(c(1:22)))
+
+print(data.frame(chrno))
+
+if(length(w) > 0)
+{
+	message("Warning: There are some chromosomes other than 1-22, they will be removed","\n")
 }
 
-w<-which(names(chrno)%in%c(1:22)==T)
-if(length(w)<22) {
-stop("ERROR:please change chromosome coding to 1-22","\n")
+w <- which(names(chrno) %in% c(1:22))
+if(length(w)<22)
+{
+	stop("ERROR:  please change chromosome coding to 1-22")
 }
 
-a1<-data.frame(table(bim[,5]))
-a2<-data.frame(table(bim[,6]))
+message("Checking alleles")
+a1 <- data.frame(table(bim[,5]))
+a2 <- data.frame(table(bim[,6]))
 
-allele.out<-NULL
-for (t in 1:dim(a1)[1]){
-testa1<-unlist(strsplit(as.character(a1$Var1[t]),split="",fixed=T))
-w<-which(testa1%in%c("A","C","T","G")==F)
-if(length(w)>0){
-allele<-which(bim[,5]%in%a1$Var[t])
-allele.out<-rbind(allele.out,bim[allele,])}}
+allele.out <- NULL
+for (t in 1:nrow(a1))
+{
+	testa1 <- unlist(strsplit(as.character(a1$Var1[t]), split="", fixed=T))
+	w <- which(! testa1 %in% c("A","C","T","G"))
+	if(length(w) > 0)
+	{
+		allele <- which(bim[,5] %in% a1$Var[t])
+		allele.out <- rbind(allele.out,bim[allele,])
+	}
+}
 
-if(dim(allele.out)[1]>0){perc.miscoding<-dim(allele.out)[1]/dim(bim)[1]}
-if(perc.miscoding>0.01){stop("ERROR:more than 1% of miscoding alleles, please change allele coding to A,C,T,G","\n")}
+if(!is.null(allele.out))
+{
+	perc.miscoding <- nrow(allele.out)/nrow(bim)
+	if(perc.miscoding > 0.01)
+	{
+		stop("ERROR: more than 1% of miscoding alleles, please change allele coding to A,C,T,G")
+	}
+}
 
+allele.out <- NULL
+for (t in 1:nrow(a2))
+{
+	testa2 <- unlist(strsplit(as.character(a2$Var1[t]), split="", fixed=T))
+	w <- which(! testa2 %in% c("A","C","T","G"))
+	if(length(w) > 0)
+	{
+		allele <- which(bim[,5] %in% a2$Var[t])
+		allele.out <- rbind(allele.out,bim[allele,])
+	}
+}
 
-allele.out<-NULL
-for (t in 1:dim(a1)[1]){
-testa2<-unlist(strsplit(as.character(a2$Var1[t]),split="",fixed=T))
-w<-which(testa2%in%c("A","C","T","G")==F)
-if(length(w)>0){
-allele<-which(bim[,6]%in%a2$Var[t])
-allele.out<-rbind(allele.out,bim[allele,])}}
+if(!is.null(allele.out))
+{
+	perc.miscoding <- nrow(allele.out)/nrow(bim)
+	if(perc.miscoding > 0.01)
+	{
+		stop("ERROR: more than 1% of miscoding alleles, please change allele coding to A,C,T,G")
+	}
+}
 
-if(dim(allele.out)[1]>0){perc.miscoding<-dim(allele.out)[1]/dim(bim)[1]}
-if(perc.miscoding>0.01){stop("ERROR:more than 1% of miscoding alleles, please change allele coding to A,C,T,G","\n")}
+message("Checking for duplicate SNPs")
+if(any(duplicated(bim[,2])))
+{
+	stop("ERROR: duplicate SNPs in bim file")
+}
 
 ###
-id<-paste(bim[,1],bim[,4],nchar(as.character(bim[,5])),nchar(as.character(bim[,6])))
-l1<-length(id)
-l2<-length(unique(id))
-l<-(length(id)-length(unique(id)))/length(id)
-if(l>0){
-stop("ERROR:you have duplicated CHR:POS:{SNP/INDEL} positions. See the wiki for info on how to handle this.","\n")  
-}
+# id <- paste(bim[,1], bim[,4], nchar(as.character(bim[,5])),nchar(as.character(bim[,6])))
+# l1 <- length(id)
+# l2 <- length(unique(id))
+# l <- (length(id)-length(unique(id)))/length(id)
+# if(l > 0)
+# {
+# 	stop("ERROR: you have duplicated CHR:POS:{SNP/INDEL} positions. See the wiki for info on how to handle this.")
+# }
 
 #######################################################
 
-no.SNPs.bychr<-NULL
-for (i in 1:22){
-cat("check position and alleles for chromosome ",i,"\n") 
-chr<-bim[which(bim[,1]%in%i),]
-no.SNPs<-dim(chr)[1]
-controlsnps.chr<-controlsnps[which(controlsnps$V2%in%i),]
-w<-which(chr[,4]%in%controlsnps.chr$V3)
-pos.check<-length(w)/dim(controlsnps.chr)[1]
-cat(pos.check,"\n")
-no.SNPs.bychr<-append(no.SNPs.bychr,no.SNPs)
-if(pos.check<0.80){
-stop("ERROR:please change positions for chromosome ",i,"\n")   
+message("Checking position and alleles for chromosome against control SNPs")
+no.SNPs.bychr <- NULL
+for (i in 1:22)
+{
+	chr <- bim[which(bim[,1] %in% i),]
+	no.SNPs <- nrow(chr)
+	controlsnps.chr <- controlsnps[which(controlsnps$V2 %in% i), ]
+	w <- which(chr[,4] %in% controlsnps.chr$V3)
+	pos.check <- length(w)/nrow(controlsnps.chr)
+	message("Chr ", i, " proportion in agreement: ", pos.check)
+	no.SNPs.bychr <- append(no.SNPs.bychr, no.SNPs)
+	if(pos.check<0.80)
+	{
+		stop("ERROR: please change positions for chromosome ",i, " to build 37")
+	}
 }
-}
-pdf(paste(no.SNPs.by.chr.plot,".pdf",sep=""),height=6,width=6)
-barplot(no.SNPs.bychr, main="no of SNVs by chromosome",xlab="chromosome",names=c(1:22),cex.names=0.6,cex.axis=0.6)
-dev.off()
+# pdf(paste(no.SNPs.by.chr.plot,".pdf",sep=""),height=6,width=6)
+# barplot(no.SNPs.bychr, main="no of SNVs by chromosome",xlab="chromosome",names=c(1:22),cex.names=0.6,cex.axis=0.6)
+# dev.off()
 
-write.table(no.SNPs.bychr,SNPsbychr,sep="\t",quote=F,row.names=F,col.names=F)
+write.table(no.SNPs.bychr,snpsbychr_file,sep="\t",quote=F,row.names=F,col.names=F)
 
 
 ##
@@ -109,17 +138,18 @@ write.table(no.SNPs.bychr,SNPsbychr,sep="\t",quote=F,row.names=F,col.names=F)
 #Sex (1=male; 2=female; other=unknown)
 #Phenotype
 
-fam<-read.table(fam,header=F,stringsAsFactors=F)
+message("Checking fam file: ", fam_file)
 
-d1<-length(fam[,2])
-d2<-length(unique(fam[,2]))
-if(d1!=d2){
-stop("ERROR:individual identifier is not unique","\n")   
+fam <- read.table(fam_file,header=F,stringsAsFactors=F)
+
+if(any(duplicated(fam[,2])))
+{
+	stop("ERROR: individual identifier is not unique")
 }
 
-g<-grep("_",fam[,2])
-if(length(g)>0){
-stop("ERROR:please remove underscores from individual ids","\n")   
+if(any(grepl("_",fam[,2])))
+{
+	stop("ERROR: please remove underscores from individual ids")
 }
 
 
@@ -128,199 +158,256 @@ stop("ERROR:please remove underscores from individual ids","\n")
 #CpG1
 #CpG2
 
+message("Checking methylation data: ", betas_file)
+load(betas_file)
 
-
-load(betas)
-
-l<-ls()
-w<-which(l%in%c("norm.beta"))
-
-if(length(w)<1){
-stop("ERROR:please save methylation matrix with the name norm.beta","\n")
+if(! "norm.beta" %in% ls())
+{
+	stop("ERROR: please save methylation matrix with the object name norm.beta")
 }
-
+message("norm.beta object found")
 #is methylation data a matrix
 
-if(is.matrix(norm.beta)==F){
-stop("ERROR:please transform methylation norm.beta to a matrix","\n")	
+if(!is.matrix(norm.beta))
+{
+	stop("ERROR: please transform methylation norm.beta to a matrix")
 }
-
 #are CpGs in rows?
-d1<-dim(norm.beta)[1]
-d2<-dim(norm.beta)[2]
-if(d1<d2){
-stop("ERROR:please transpose methylation matrix (CpGs in rows; samples in columns)","\n")   
+d1 <- nrow(norm.beta)
+nid_meth <- ncol(norm.beta)
+message("Number of individuals with methylation data: ", nid_meth)
+message("Number of CpGs: ", d1)
+if(d1 < nid_meth)
+{
+	stop("ERROR: please transpose methylation matrix (CpGs in rows; samples in columns)")
 }
+message("Data is a correctly oriented matrix")
 
 #are individuals unique
-c1<-length(colnames(norm.beta))
-c2<-length(unique(colnames(norm.beta)))
-
-if(c1>c2){stop("ERROR:please remove duplicate samples from methylation data")}
+if(any(duplicated(colnames(norm.beta))))
+{
+	stop("ERROR: please remove duplicate samples from methylation data")
+}
+message("No duplicate IDs")
 
 #check for NAs in beta matrix
-if(any(is.na(norm.beta))){stop("ERROR:please remove NAs from methylation matrix","\n")}
+if(any(is.na(norm.beta)))
+{
+	stop("ERROR: please remove NAs from methylation matrix")
+}
+message("No NAs in data")
 
 #check for negative values in beta matrix
-if(any(norm.beta < 0)) {stop("ERROR:please remove negative values from methylation matrix","\n")}
+if(any(norm.beta < 0))
+{
+	stop("ERROR: please remove negative values from methylation matrix. Are these beta values?")
+}
 
 #check for values above 1 in beta matrix
-if(any(norm.beta > 1)) {stop("ERROR:please remove negative values from methylation matrix","\n")}
+if(any(norm.beta > 1)) 
+{
+	stop("ERROR: please remove values > 1 from methylation matrix. Are these beta values?")
+}
+message("All values are within 0-1")
+
+if(any(grepl("rs", rownames(norm.beta))))
+{
+	stop("ERROR: there are SNPs in the methylation data. Please remove all rows with rs IDs.")
+}
 
 #extract list of individuals with geno+methylation data
-overlap<-intersect(colnames(norm.beta),fam[,2])
-n.overlap<-length(overlap)
-if(n.overlap<100){
-stop("ERROR:less than 100 subjects with methylation and genotype data","\n")
+overlap <- intersect(colnames(norm.beta),fam[,2])
+n.overlap <- length(overlap)
+if(n.overlap < 50)
+{
+	stop("ERROR: fewer than 50 subjects with methylation and genotype data")
 }
-w<-which(fam[,2]%in%overlap)
-fam2<-fam[w,1:2]
+
+w <- which(fam[,2] %in% overlap)
+fam2 <- fam[w,1:2]
+message(nrow(fam2), " individuals present in both genetic and methylation datasets")
 write.table(fam2[,2],ids,sep="\t",quote=F,row.names=F,col.names=F)
 write.table(fam2[,1:2],ids_plink,sep="\t",quote=F,row.names=F,col.names=F)
 
 
 #CELLCOUNTS
-if(cellcounts != "NULL")){
-cc<-read.table(cellcounts,header=T)
-c1<-dim(cc)[1]
-c2<-dim(cc)[2]
-if(c1!=d2){
-stop("ERROR:number of samples in cell counts file is not the same as in beta matrix","\n")   
+
+message("Checking cell counts data: ", cellcounts_file)
+if(cellcounts_file != "NULL")
+{
+	cc <- read.table(cellcounts_file,header=T)
+	c1 <- dim(cc)[1]
+	c2 <- dim(cc)[2]
+
+	if(c1!=nid_meth)
+	{
+		stop("ERROR: number of samples in cell counts file is not the same as in beta matrix")   
+	}
+
+	w <- which(names(cc)[1] %in% c("IID"))
+	if(w!=1)
+	{
+		stop("ERROR: first column from cellcounts file should be the sample identifier with the name IID")
+	}
+
+	if(c2<3)
+	{
+		stop("ERROR: are there any columns with cell counts missing in the cell counts file?")
+	}
+
+	a <- apply(cc,2,function(x) y<-length(which(is.na(x))))
+	if(length(which(a > 0.1*nid_meth)))
+	{
+		stop("ERROR: more than 10% of missingness in one of the cellcounts")
+	}
+	message("Number of cell types: ", c2)
+	message("Cell types:\n", paste(names(cc)[-1], collapse="\n"))
 } else {
 	message("No cell counts are provided, these will be estimated by the pipeline.")
 }
 
-w<-which(names(cc)[1]%in%c("IID"))
-if(w!=1){
-stop("ERROR:first column from cellcounts file should be the sample identifier with the name IID","\n")
-}
-
-if(c2<3){
-stop("ERROR:are there any columns with cell counts missing in the cell counts file?","\n")   
-}
-
-a<-apply(cc,2,function(x) y<-length(which(is.na(x))))
-if(length(which(a>0.1*d2))){
-stop("ERROR:more than 10% of missingness in one of the cellcounts","\n")
-}
-}
-
 #COVARIATES
-covar<-read.table(covariates,header=T)
-cov1<-dim(covar)[1]
-cov2<-dim(covar)[2]
-if(cov1!=d2){
-stop("ERROR:number of samples in covariates file is not the same as in beta matrix","\n")   
+message("Checking covariates file: ", covariates_file)
+covar <- read.table(covariates_file,header=T)
+cov1 <- dim(covar)[1]
+cov2 <- dim(covar)[2]
+# if(cov1!=nid_meth)
+# {
+# 	stop("ERROR: number of samples in covariates file is not the same as in beta matrix")
+# }
+
+commonids <- Reduce(intersect, list(colnames(norm.beta), covar$IID, fam[,2]))
+message("Number of samples with covariate, methylation and genetic data: ", length(commonids))
+
+if(length(commonids) < 50)
+{
+	stop("ERROR: must have at least 50 individuals with covariate, methylation and genetic data.")
 }
 
-w<-which(names(covar)[1]%in%c("IID"))
-if(w!=1){
-stop("ERROR:first column from cellcounts file should be the sample identifier with the name IID","\n")
+w <- which(names(covar)[1] %in% c("IID"))
+if(w!=1)
+{
+	stop("ERROR: first column from cellcounts file should be the sample identifier with the name IID")
 }
 
-if(cov2<3){
-stop("ERROR:are there any covariates missing in the covariates file?","\n")   
+if(cov2<3)
+{
+	stop("ERROR: are there any covariates missing in the covariates file? Sex and Age are required")
 }
 
-a<-apply(covar,2,function(x) y<-length(which(is.na(x))))
-if(length(which(a>0.1*d2))){
-stop("ERROR:more than 10% of missingness in one of the covariates","\n")   
+a <- apply(covar,2,function(x) y<-length(which(is.na(x))))
+if(length(which(a>0.1*nid_meth)))
+{
+	stop("ERROR: more than 10% of missingness in one of the covariates","\n")   
 }
 
 if(! "Sex" %in% names(covar))
 {
-	stop("ERROR: There is no Sex variable in the covariate file. Please provide M/F values, even if they are all the same sex.")
+	stop("ERROR:  There is no Sex variable in the covariate file. Please provide M/F values, even if they are all the same sex.")
 }
 
 if(any(is.na(covar$Sex)))
 {
-	stop("ERROR: There are some values in the Sex column that are neither M nor F. Please make sure all individuals have data for this column.")
+	stop("ERROR:  There are some values in the Sex column that are neither M nor F. Please make sure all individuals have data for this column.")
 }
 
-index <- covar$Sex == "M" | covar$sex == "F"
+index <- covar$Sex %in% c("M", "F")
 if(any(!index))
 {
-	stop("ERROR: There are some values in the Sex column that are neither M nor F. Please make sure all individuals have data for this column.")
+	stop("ERROR:  There are some values in the Sex column that are neither M nor F. Please make sure all individuals have data for this column.")
 }
 
 if(! "Age" %in% names(covar))
 {
-	stop("ERROR: There is no Age variable in the covariate file. Please provide age in years, even if they are all the same age.")
+	stop("ERROR:  There is no Age variable in the covariate file. Please provide age in years, even if they are all the same age.")
 }
+
+pdf(age_distribution_plot, height=6, width=6)
+hist(covar$Age, breaks=50, xlab="Age", main=paste("age distribution (N=", length(which(!is.na(covar$Age))),")",sep=""),cex.main=0.7)
+dev.off()
+
 
 if(any(is.na(covar$Age)))
 {
-	stop("ERROR: Some individuals don't have ages. Please make sure there are no missing values.")
+	stop("ERROR:  Some individuals don't have ages. Please make sure there are no missing values.")
 }
 
 if(any(covar$Age < 0))
 {
-	stop("ERROR: Some negative values in the age column.")
+	stop("ERROR:  Some negative values in the age column.")
 }
 
 if(mean(covar$Age, na.rm=T) > 100)
 {
-	stop("ERROR: Average age is above 100, please make sure age is provided in years.")
+	stop("ERROR:  Average age is above 100, please make sure age is provided in years.")
 }
+message("Number of individuals with covariate data: ", cov1)
+message("Covariates provided:\n", paste(names(covar)[-1], collapse="\n"))
+message("Average age: ", mean(covar$Age))
+message("Number of males: ", sum(covar$Sex == "M"))
+message("Number of females: ", sum(covar$Sex == "F"))
 
-pdf(paste(age.distribution.plot,".pdf",sep=""),height=6,width=6)
-hist(covar$Age, xlab="Age", main=paste("age distribution (N=", length(which(!is.na(covar$Age))),")",sep=""),cex.main=0.7)
-dev.off()
 
 #EWAS phenotypes
-if(!is.na(EWASphenotypes)){
-ph<-read.table(EWASphenotypes,header=T)
-p1<-dim(ph)[1]
-p2<-dim(ph)[2]
-if(p1!=d2){
-stop("ERROR:number of samples in phenotype file is not the same as in beta matrix","\n")   
-}
 
-w<-which(names(ph)[1]%in%c("IID"))
-if(w!=1){
-stop("ERROR:first column from phenotype file should be the sample identifier with the name IID","\n")
-}
+message("Checking phenotypes: ", phenotypes_file)
+if(phenotypes_file != "NULL")
+{
+	ph<-read.table(phenotypes_file,header=T)
+	p1<-dim(ph)[1]
+	p2<-dim(ph)[2]
 
-if(p2<2){
-stop("ERROR:are there any columns with phenotypes missing in the EWAS phenotypes file?","\n")   
-}
+	# if(p1!=nid_meth)
+	# {
+	# 	stop("ERROR: number of samples in phenotype file is not the same as in beta matrix","\n")   
+	# }
+	
+	if(names(ph)[1] != "IID")
+	{
+		stop("ERROR: first column from phenotype file should be the sample identifier with the name IID")
+	}
 
-a<-apply(ph,2,function(x) y<-length(which(is.na(x))))
-if(length(which(a>0.1*d2))){
-stop("ERROR:more than 10% of missingness in one of the EWASphenotypes","\n")
-}
+	commonids <- Reduce(intersect, list(covar$IID, colnames(norm.beta), ph$IID))
+	message(length(commonids), " in common between covariate, methylation and phenotype data")
 
-if(height != "no")){
-w<-which(names(ph)%in%c("Height"))
-if(length(w)<1){
-    stop("ERROR:please change height variable to be called 'Height' (note capitalisation)","\n")
-}
-if(length(w)>0){
-m1<-mean(ph[,w],na.rm=T)
-if(m1<1.0|m1>2.5){
-stop("ERROR:please convert Height units to centimeters","\n")
-}
-}
-}
+	if(p2 < 2)
+	{
+		stop("ERROR: No phenotypes present. Please set the phenotype variable to 'NULL' in the config file")
+	}
 
-if(bmi != "no")){
-w<-which(names(ph)%in%c("BMI"))
-if(length(w)<1){
-    stop("ERROR:please change BMI variable to 'BMI' (note capitalisation)","\n")
-}
+	nom <- names(ph)[-1][names(ph)[-1] %in% c("BMI", "Height")]
+	if(length(nom) < 1)
+	{
+		stop("ERROR: Neither 'Height' nor 'BMI' variables are present in the phenotype file. Please check that the columns are correctly entered (note capitalisation).")
+	}
 
-if(length(w)>0){
-m1<-mean(ph[,w],na.rm=T)
-if(m1<10|m1>35){
-stop("ERROR:please convert BMI units to kg/m2","\n")
-}
-}
-}
 
-a<-apply(ph,2,function(x) y<-length(which(is.na(x))))
-if(length(which(a>0.1*d2))){
-stop("ERROR:more than 10% of missingness in one of the EWASphenotypes","\n")
-}
+	a <- apply(ph,2,function(x) sum(is.na(x), na.rm=T))
+	if(any(a > 0.1*nid_meth))
+	{
+		nom <- names(ph)[a > 0.1*nid_meth]
+		stop("ERROR: more than 10% of missingness in at least one of the EWAS phenotypes:\n", paste(nom, collapse="\n"))
+	}
+
+	if("Height" %in% nom)
+	{
+		message("Checking Height")
+		m1 <- mean(ph$Height,na.rm=T)
+		if(m1<1.0|m1>2.5)
+		{
+			stop("ERROR: please convert Height units to metres")
+		}
+	}
+
+	if("BMI" %in% nom)
+	{
+		message("Checking BMI")
+		m1<-mean(ph$BMI,na.rm=T)
+		if(m1<10|m1>35)
+		{
+			stop("ERROR: please convert BMI units to kg/m2")
+		}
+	}
 }
 
 #CNV data check
@@ -329,38 +416,46 @@ stop("ERROR:more than 10% of missingness in one of the EWASphenotypes","\n")
 #cnv2
 
 
+message("Checking CNV data: ", cnv_file)
+load(cnv_file)
 
-load(cnvs)
-
-l<-ls()
-w<-which(l%in%c("cnv"))
-
-if(length(w)<1){
-    stop("ERROR:please save cnv matrix with the name cnv","\n")
+if(! "cnv" %in% ls())
+{
+	stop("ERROR: please save cnv matrix with the object name 'cnv'")
 }
 
 #is cnv data a matrix
 
-if(is.matrix(cnv)==F){
-    stop("ERROR:please transform cnv object to a matrix","\n")
+if(!is.matrix(cnv))
+{
+	stop("ERROR: please transform cnv object to a matrix")
 }
 
 #are CpGs in rows?
-d1<-dim(cnv)[1]
-d2<-dim(cnv)[2]
-if(d1<d2){
-    stop("ERROR:please transpose cnv matrix (cnvs in rows; samples in columns)","\n")
+d1 <- dim(cnv)[1]
+d2 <- dim(cnv)[2]
+if(d1 < d2)
+{
+    stop("ERROR: please transpose cnv matrix (cnvs in rows; samples in columns)")
 }
 
-#are individuals unique
-c1<-length(colnames(cnv))
-c2<-length(unique(colnames(cnv)))
+message("Number of individuals with CNV data: ", d1)
+message("Number of positions in CNV data: ", d2)
 
-if(c1>c2){stop("ERROR:please remove duplicate samples from cnv data")}
+#are individuals unique
+if(any(duplicated(colnames(cnv))))
+{
+	stop("ERROR: please remove duplicate samples from cnv data")
+}
 
 #check for NAs in beta matrix
-if(any(is.na(cnv))){stop("ERROR:please remove NAs from cnv matrix","\n")}
+if(any(is.na(cnv)))
+{
+	stop("ERROR: please remove NAs from cnv matrix","\n")
+}
 
+commonids <- Reduce(intersect, list(colnames(cnv), covar$IID, colnames(norm.beta)))
+message(length(commonids), " samples in common between CNV, covariate and methylation data")
 
 # Cohort characteristics
 
@@ -369,27 +464,23 @@ cohort_summary$sample_size <- length(ids)
 cohort_summary$n_males <- sum(covar$Sex == "M")
 cohort_summary$n_females <- sum(covar$Sex == "F")
 cohort_summary$mean_age <- mean(covar$Age)
+cohort_summary$median_age <- median(covar$Age)
 cohort_summary$sd_age <- sd(covar$Age)
 cohort_summary$max_age <- max(covar$Age)
 cohort_summary$min_age <- min(covar$Age)
 cohort_summary$mean_Height <- mean(ph$Height)
+cohort_summary$median_Height <- median(ph$Height)
 cohort_summary$sd_Height <- sd(ph$Height)
-cohort_summary$max_Height <- max(ph$dHeight)
+cohort_summary$max_Height <- max(ph$Height)
 cohort_summary$min_Height <- min(ph$Height)
 cohort_summary$mean_BMI <- mean(ph$BMI)
+cohort_summary$median_BMI <- median(ph$BMI)
 cohort_summary$sd_BMI <- sd(ph$BMI)
-cohort_summary$max_BMI <- max(ph$dBMI)
+cohort_summary$max_BMI <- max(ph$BMI)
 cohort_summary$min_BMI <- min(ph$BMI)
 cohort_summary$n_snp <- nrow(bim)
-cohort$summary$covariates <- names(covar)[-1]
+cohort_summary$covariates <- names(covar)[-1]
 
-save(cohort_summary, file=file.path(log_directory, "cohort_descriptives.RData"))
+save(cohort_summary, file=cohort_descriptives_file)
 
 cat("You successfully performed all datachecks!","\n")
-
-
-
-
-
-
-
