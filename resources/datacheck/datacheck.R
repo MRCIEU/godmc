@@ -13,6 +13,8 @@ controlsnps_file <- as.character(args[9]);
 phenotypes_file <- as.character(args[10]);
 cnv_file <- as.character(args[11]);
 cohort_descriptives_file <- as.character(args[12])
+age_distribution_plot <- as.character(args[13])
+
 
 # BIM file check
 message("Checking bim file: ", bim_file)
@@ -208,6 +210,11 @@ if(any(norm.beta > 1))
 }
 message("All values are within 0-1")
 
+if(any(grepl("rs", rownames(norm.beta))))
+{
+	stop("ERROR: there are SNPs in the methylation data. Please remove all rows with rs IDs.")
+}
+
 #extract list of individuals with geno+methylation data
 overlap <- intersect(colnames(norm.beta),fam[,2])
 n.overlap <- length(overlap)
@@ -314,6 +321,11 @@ if(! "Age" %in% names(covar))
 {
 	stop("ERROR:  There is no Age variable in the covariate file. Please provide age in years, even if they are all the same age.")
 }
+
+pdf(paste(age_distribution_plot,".pdf",sep=""),height=6,width=6)
+hist(covar$Age, breaks=50, xlab="Age", main=paste("age distribution (N=", length(which(!is.na(covar$Age))),")",sep=""),cex.main=0.7)
+dev.off()
+
 
 if(any(is.na(covar$Age)))
 {
