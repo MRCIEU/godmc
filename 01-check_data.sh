@@ -2,6 +2,7 @@
 
 set -e
 source config
+exec &> >(tee ${check_data_logfile})
 
 Rscript resources/datacheck/datacheck.R \
 	${bfile_raw}.bim \
@@ -17,5 +18,5 @@ Rscript resources/datacheck/datacheck.R \
 	${phenotypes} \
 	${cnvs} \
 	${cohort_descriptives} \
-	${ageplot} \
-	2>&1 | tee ${datacheck_logfile}
+	${ageplot}
+

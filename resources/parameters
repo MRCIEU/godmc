@@ -4,13 +4,12 @@
 intersect_ids_plink="${home_directory}/processed_data/ids/intersect_ids_plink.txt"
 intersect_ids="${home_directory}/processed_data/ids/intersect_ids.txt"
 
-#datacheck
+#check_data
 control_snps="${home_directory}/resources/genetics/snpsforbuildandposcheck.txt"
-snpcheck="${home_directory}/log_files/datacheck/no_snps_by_chr.txt"
-snpplot="${home_directory}/log_files/datacheck/no_snps_by_chr_plot.pdf"
-cohort_descriptives="${home_directory}/log_files/datacheck/cohort_descriptives.RData"
-ageplot="${home_directory}/log_files/datacheck/age_distribution.pdf"
-datacheck_logfile="${home_directory}/log_files/datacheck/datacheck.log"
+snpcheck="${home_directory}/log_files/check_data/no_snps_by_chr.txt"
+snpplot="${home_directory}/log_files/check_data/no_snps_by_chr_plot.pdf"
+cohort_descriptives="${home_directory}/log_files/check_data/cohort_descriptives.RData"
+ageplot="${home_directory}/log_files/check_data/age_distribution.pdf"
 
 #EWAS phenotypes
 EWASplot="${home_directory}/processed_data/phenotypes/EWAS.phenotypes.pdf"
@@ -102,6 +101,23 @@ matrixeqtl_vmqtl_dir="${home_directory}/results/matrixeqtl_vmqtl"
 resname="res"
 
 # logfiles
+check_data_logfile="${home_directory}/log_files/check_data/log.txt"
+snp_data_logfile="${home_directory}/log_files/snp_data/log.txt"
+convert_methylation_format_logfile="${home_directory}/log_files/convert_methylation_format/log.txt"
+convert_snp_format_logfile="${home_directory}/log_files/convert_snp_format/log.txt"
+ewas_logfile="${home_directory}/log_files/ewas/log.txt"
+gwas_aar_logfile="${home_directory}/log_files/gwas_aar/log.txt"
+gwas_cellcounts_logfile="${home_directory}/log_files/gwas_cellcounts/log.txt"
+gwas_smoking_logfile="${home_directory}/log_files/gwas_smoking/log.txt"
+mcnv_logfile="${home_directory}/log_files/mcnv/log.txt"
+methylation_adjustment1_logfile="${home_directory}/log_files/methylation_adjustment1/log.txt"
+methylation_adjustment2_logfile="${home_directory}/log_files/methylation_adjustment2/log.txt"
+methylation_pcs_logfile="${home_directory}/log_files/methylation_pcs/log.txt"
+methylation_variables_logfile="${home_directory}/log_files/methylation_variables/log.txt"
+mqtl_logfile="${home_directory}/log_files/mqtl/log.txt"
+phenotype_data_logfile="${home_directory}/log_files/phenotype_data/log.txt"
+snp_data_logfile="${home_directory}/log_files/snp_data/log.txt"
+vmqtl_logfile="${home_directory}/log_files/vmqtl/log.txt"
 
 
 
