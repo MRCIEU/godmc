@@ -2,6 +2,7 @@
 
 set -e
 source config
+exec &> >(tee ${convert_snp_format_logfile})
 
 function make_tab_format {
 
@@ -56,4 +57,4 @@ make_tab_format ${plink} ${bfile} ${allele_ref} ${bfile_chunksize} ${tabfile}
 #make_tab_format ${plink} ${bfile_hm3} ${allele_ref_hm3} ${bfile_chunksize} ${tabfile_hm3}
 
 # Convert CNV data
-R --no-save --args ${cnvs} ${tabcnv} ${bfile_chunksize} < resources/genetics/cnv_tabfile.R
+Rscript resources/genetics/cnv_tabfile.R ${cnvs} ${tabcnv} ${bfile_chunksize}
