@@ -16,7 +16,7 @@ betas="${home_directory}/input_data/data.RData"
 cnvs="${home_directory}/input_data/cnv.RData"
 bfile_raw="${home_directory}/input_data/data"
 covariates="${home_directory}/input_data/covariates.txt"
-EWASphenotypes="${home_directory}/input_data/EWAS.phenotypes.raw.txt"
+phenotypes="${home_directory}/input_data/phenotypes.txt"
 
 # Cellcounts
 # If you have purified cell types then set this to no
@@ -26,11 +26,11 @@ cellcounts_required="yes"
 # Otherwise leave it as NULL
 provided_cellcounts="NULL"
 
-#If you have EWAS phenotypes height and/or bmi then set this to "yes" 
-#Otherwise leave it as no
-EWAS_phenotypes="no"
-height="no"
-bmi="no"
+# #If you have EWAS phenotypes height and/or bmi then set this to "yes" 
+# #Otherwise leave it as no
+# EWAS_phenotypes="no"
+# height="no"
+# bmi="no"
 
 # Are the samples unrelated? If so (even if there is possible cryptic relatedness) set this to "yes"
 # If there are relationships in the data then set this to "no"
