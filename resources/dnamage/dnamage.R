@@ -1,4 +1,4 @@
-2## USE:
+## USE:
 
 ## http://labs.genetics.ucla.edu/horvath/dnamage/TUTORIAL1.pdf
 ## http://labs.genetics.ucla.edu/horvath/dnamage/probeAnnotation21kdatMethUsed.csv

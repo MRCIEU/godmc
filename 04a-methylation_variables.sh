@@ -2,6 +2,7 @@
 
 set -e
 source config
+exec &> >(tee ${methylation_variables})
 
 
 # Estimate cell counts
@@ -9,7 +10,12 @@ if [ "${cellcounts_required}" = "yes" ]
 then
 	if [ "${provided_cellcounts}" = "NULL" ]
 	then
-		R --no-save --args ${betas} ${cellcounts} ${cellcounts_reference} ${bfile}.fam < resources/cellcounts/estimate_cellcountsbybeta.R
+
+		Rscript resources/cellcounts/estimate_cellcountsbybeta.R \
+			${betas} \
+			${cellcounts} \
+			${cellcounts_reference} \
+			${bfile}.fam
 
         elif [ -f "${provided_cellcounts}" ]
 	then
