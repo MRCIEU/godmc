@@ -5,11 +5,12 @@ intersect_ids_plink="${home_directory}/processed_data/ids/intersect_ids_plink.tx
 intersect_ids="${home_directory}/processed_data/ids/intersect_ids.txt"
 
 #datacheck
-snpcheck="${home_directory}/log_files/datacheck/no.snps.by.chr.txt"
-snpplot="${home_directory}/log_files/datacheck/no.snps.by.chr.plot.pdf"
 control_snps="${home_directory}/resources/genetics/snpsforbuildandposcheck.txt"
+snpcheck="${home_directory}/log_files/datacheck/no_snps_by_chr.txt"
+snpplot="${home_directory}/log_files/datacheck/no_snps_by_chr_plot.pdf"
 cohort_descriptives="${home_directory}/log_files/datacheck/cohort_descriptives.RData"
 ageplot="${home_directory}/log_files/datacheck/age_distribution.pdf"
+datacheck_logfile="${home_directory}/log_files/datacheck/datacheck.log"
 
 #EWAS phenotypes
 EWASplot="${home_directory}/processed_data/phenotypes/EWAS.phenotypes.pdf"

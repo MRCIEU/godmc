@@ -9,11 +9,12 @@ cellcounts_file <- as.character(args[5]);
 ids <- as.character(args[6]);
 ids_plink <- as.character(args[7]);
 snpsbychr_file <- as.character(args[8]);
-controlsnps_file <- as.character(args[9]);
-phenotypes_file <- as.character(args[10]);
-cnv_file <- as.character(args[11]);
-cohort_descriptives_file <- as.character(args[12])
-age_distribution_plot <- as.character(args[13])
+snpsbychr_plot <- as.character(args[9]);
+controlsnps_file <- as.character(args[10]);
+phenotypes_file <- as.character(args[11]);
+cnv_file <- as.character(args[12]);
+cohort_descriptives_file <- as.character(args[13])
+age_distribution_plot <- as.character(args[14])
 
 
 # BIM file check
@@ -121,9 +122,9 @@ for (i in 1:22)
 		stop("ERROR: please change positions for chromosome ",i, " to build 37")
 	}
 }
-# pdf(paste(no.SNPs.by.chr.plot,".pdf",sep=""),height=6,width=6)
-# barplot(no.SNPs.bychr, main="no of SNVs by chromosome",xlab="chromosome",names=c(1:22),cex.names=0.6,cex.axis=0.6)
-# dev.off()
+pdf(snpsbychr_plot, height=6, width=6)
+barplot(no.SNPs.bychr, main="no of SNVs by chromosome",xlab="chromosome",names=c(1:22),cex.names=0.6,cex.axis=0.6)
+dev.off()
 
 write.table(no.SNPs.bychr,snpsbychr_file,sep="\t",quote=F,row.names=F,col.names=F)
 
