@@ -26,7 +26,7 @@ then
 	fi
 	#R --no-save --args ${cellcounts} ${cellcounts_plink} ${home_directory}/processed_data/cellcounts/  < resources/genetics/create_cellcounts_plink.R
 
-        R --no-save --args ${cellcounts} ${cellcounts_plink_raw} ${intersect_ids_plink} ${cellcounts_plot} ${covariates} ${cellcounts_plink} ${cellcounts_SD} ${cellcounts_tf} < resources/genetics/create_cellcounts_plink.R ${home_directory}/processed_data/cellcounts/cellcounts_transform.Rout 2>&1
+        R --no-save --args ${cellcounts} ${cellcounts_plink_raw} ${intersect_ids_plink} ${cellcounts_plot} ${covariates} ${cellcounts_plink} ${cellcounts_SD} ${cellcounts_tf} ${cellcounts_entropy} < resources/genetics/create_cellcounts_plink.R ${home_directory}/processed_data/cellcounts/cellcounts_transform.Rout 2>&1
 
 elif [ "${cellcounts_required}" = "no" ]
 then
