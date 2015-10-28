@@ -7,7 +7,7 @@
     cellcounts.plink = as.character(args[6]);
     SD = as.numeric(args[7]);
     transformed.cellcounts = as.character(args[8]);
-
+    cellcounts.entropy = as.character(args[9]);
 #cellcount_file <- "cellcounts.txt"
 #ids<-("./processed_data/ids/ids_plink.txt")
 #cellcounts.plot<-"cellcountsplots.pdf"
@@ -33,7 +33,7 @@ library(lattice)
 
     IID<-read.table(ids)
     m<-match(IID[,2],cellcounts$IID)
-    write.table(cellcounts[m,],cellcount_file,sep="\t",row.names=F,col.names=T,quote=F)
+    write.table(cellcounts[m,],file=cellcounts.entropy,sep="\t",row.names=F,col.names=T,quote=F)
     cellcounts<-data.frame(FID=IID[,1],cellcounts[m,])
     write.table(cellcounts, file=out_file, row=F, col=F, qu=F)
 
