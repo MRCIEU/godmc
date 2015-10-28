@@ -9,6 +9,7 @@ if [ "${cellcounts_required}" = "yes" ]
 then
 	if [ "${provided_cellcounts}" = "NULL" ]
 	then
+
 		R --no-save --args ${betas} ${cellcounts} ${cellcounts_reference} ${bfile}.fam < resources/cellcounts/estimate_cellcountsbybeta.R
 
         elif [ -f "${provided_cellcounts}" ]
@@ -19,6 +20,7 @@ then
 		echo "Error: The file ${provided_cellcounts} doesn't exist. You have specified that cell counts are required. Please set 'provided_cellcounts' to NULL if you want them to be estimated now, or specify a path to a file with the pre-specified cell counts."
 	fi
 	#R --no-save --args ${cellcounts} ${cellcounts_plink} ${home_directory}/processed_data/cellcounts/  < resources/genetics/create_cellcounts_plink.R
+
         R --no-save --args ${cellcounts} ${cellcounts_plink_raw} ${intersect_ids_plink} ${cellcounts_plot} ${covariates} ${cellcounts_plink} ${cellcounts_SD} ${cellcounts_tf} < resources/genetics/create_cellcounts_plink.R ${home_directory}/processed_data/cellcounts/cellcounts_transform.Rout 2>&1
 
 elif [ "${cellcounts_required}" = "no" ]

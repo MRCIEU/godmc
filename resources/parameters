@@ -49,8 +49,8 @@ cellcounts="${home_directory}/processed_data/methylation_data/cellcounts.txt"
 cellcounts_reference="blood_gse35069_complete"
 cellcounts_tf="${home_directory}/processed_data/cellcounts/cellcounts.transformed.txt"
 
-cellcounts_plink="${home_directory}/processed_data/cellcounts/cellcounts.transformed.plink"
-cellcounts_plink_raw="${home_directory}/processed_data/cellcounts/cellcounts.plink.raw"
+cellcounts_plink="${home_directory}/processed_data/genetic_data/cellcounts.transformed.plink"
+cellcounts_plink_raw="${home_directory}/processed_data/genetic_data/cellcounts.plink.raw"
 cellcounts_plot="${home_directory}/processed_data/cellcounts/cellcounts.plot.pdf"
 cellcounts_SD="5"
 
