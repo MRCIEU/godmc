@@ -8,10 +8,10 @@
     SD = as.numeric(args[7]);
     transformed.cellcounts = as.character(args[8]);
     cellcounts.entropy = as.character(args[9]);
-#cellcount_file <- "cellcounts.txt"
+#cellcount_file <- "./input_data/cellcounts.txt"
 #ids<-("./processed_data/ids/ids_plink.txt")
 #cellcounts.plot<-"cellcountsplots.pdf"
-#covfile<-"covariates.txt"
+#covfile<-"./input_data/covariates.txt"
 #transformed.cellcounts<-"transformed.cellcounts.txt"
 #SD=5
 
@@ -33,9 +33,10 @@ library(lattice)
 
     IID<-read.table(ids)
     m<-match(IID[,2],cellcounts$IID)
+    cellcounts<-cellcounts[m,]
     write.table(cellcounts[m,],file=cellcounts.entropy,sep="\t",row.names=F,col.names=T,quote=F)
-    cellcounts<-data.frame(FID=IID[,1],cellcounts[m,])
-    write.table(cellcounts, file=out_file, row=F, col=F, qu=F)
+    cellcounts.out<-data.frame(FID=IID[,1],cellcounts[m,])
+    write.table(cellcounts.out, file=out_file, row=F, col=F, qu=F)
 
 #	for(i in 2:ncol(cellcounts))
 #	{
@@ -50,7 +51,7 @@ library(lattice)
 
 
 traits<-names(cellcounts)[-1]
-outdata.all<-IID
+outdata.all<-as.character(IID[,2])
 
 pdf(cellcounts.plot, width=12, height=8)
 par(mfrow=c(2,2))
@@ -234,8 +235,15 @@ outdata.all<-cbind(outdata.all,outdata$trait)
 }
 dev.off()
 
-colnames(outdata.all)<-c("FID","IID",traits)
-write.table(outdata.all[,-1],transformed.cellcounts,sep="\t",quote=F,row.names=F,col.names=T)
-write.table(outdata.all,cellcounts.plink,sep="\t",quote=F,row.names=F,col.names=F)
+colnames(outdata.all)<-c("IID",traits)
+write.table(outdata.all,transformed.cellcounts,sep="\t",quote=F,row.names=F,col.names=T)
+
+names(outdata.all)
+m<-match(IID[,2],outdata.all[,1])
+outdata.all<-data.frame(FID=IID[,1],outdata.all[m,])
+names(outdata.all)
+cat(cellcounts.plink,"\n")
+write.table(outdata.all,file=cellcounts.plink,sep="\t",quote=F,row.names=F,col.names=F)
+
 
 
