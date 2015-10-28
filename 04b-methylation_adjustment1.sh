@@ -4,6 +4,7 @@ set -e
 source config
 
 batch_number=${1}
+exec &> >(tee ${methylation_adjustment1_logfile}${batch_number})
 
 
 
@@ -25,10 +26,24 @@ fi
 if [ "${unrelated}" = "yes" ]
 then
 	echo "You have specified that the data is not family data. Adjusting only for covariates..."
-	R --no-save --args ${betas} ${covariates_combined}.txt ${methylation_adjusted} ${nthreads} ${meth_chunks} ${i} < resources/methylation/adjust_covs.R
+	Rscript resources/methylation/adjust_covs.R \
+		${betas} \
+		${covariates_combined}.txt \
+		${methylation_adjusted} \
+		${nthreads} \
+		${meth_chunks} \
+		${i}
+
 elif [ "${unrelated}" = "no" ]
 then
 	# For family data adjust methylation data for relatedness (take residuals after fitting pedigree matrix, i.e. GRAMMAR method)
 	echo "You have specified that the data is family data. Adjusting for pedigree and covariates..."
-	R --no-save --args ${betas} ${grmfile_relateds} ${covariates_combined}.txt ${methylation_adjusted} ${nthreads} ${meth_chunks} ${i} < resources/methylation/adjust_pedigree.R
+	Rscript resources/methylation/adjust_pedigree.R \
+		${betas} \
+		${grmfile_relateds} \
+		${covariates_combined}.txt \
+		${methylation_adjusted} \
+		${nthreads} \
+		${meth_chunks} \
+		${i}
 fi
