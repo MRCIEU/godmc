@@ -52,7 +52,7 @@ main <- function()
 		norm.beta <- adjust.relatedness.serial(norm.beta, covs, kin)
 	} else {
 		message("Running with ", nthreads, " threads")
-		norm.beta <- adjust.relatedness(norm.beta[1:300,], covs, kin, nthreads)
+		norm.beta <- adjust.relatedness(norm.beta, covs, kin, nthreads)
 	}
 	save(norm.beta, file=out_file)
 }
