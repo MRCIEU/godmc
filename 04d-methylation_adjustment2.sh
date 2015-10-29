@@ -2,9 +2,11 @@
 
 set -e
 source config
+exec &> >(tee ${methylation_adjustment2_logfile})
 
 batch_number=${1}
 
+echo "Adjusting methylation for meth PCs"
 
 if [ -n "${1}" ]
 then
@@ -21,4 +23,10 @@ else
 fi
 
 
-R --no-save --args ${methylation_adjusted}.RData ${nongenetic_meth_pcs}.txt ${methylation_adjusted_pcs} ${nthreads} ${meth_chunks} ${i} < resources/methylation/adjust_covs.R
+Rscript resources/methylation/adjust_covs.R \
+	${methylation_adjusted}.RData \
+	${nongenetic_meth_pcs}.txt \
+	${methylation_adjusted_pcs} \
+	${nthreads} \
+	${meth_chunks} \
+	${i}
