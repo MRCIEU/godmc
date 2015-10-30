@@ -41,14 +41,21 @@ main <- function()
 	gene$fileSliceSize = slicesize
 	gene$LoadFile( phen_file )
 
-	ids <- Reduce(intersect, list(snps$columnNames, gene$columnNames, cvrt$columnNames))
+	if(nrow(cvrt) > 0)
+	{
+		ids <- Reduce(intersect, list(snps$columnNames, gene$columnNames, cvrt$columnNames))
+		snps$ColumnSubsample(match(ids, snps$columnNames))
+		gene$ColumnSubsample(match(ids, gene$columnNames))
+		cvrt$ColumnSubsample(match(ids, cvrt$columnNames))
+		stopifnot(all(snps$columnNames==gene$columnNames))
+		stopifnot(all(snps$columnNames==cvrt$columnNames))
+	} else {
+		ids <- Reduce(intersect, list(snps$columnNames, gene$columnNames))
+		snps$ColumnSubsample(match(ids, snps$columnNames))
+		gene$ColumnSubsample(match(ids, gene$columnNames))
+		stopifnot(all(snps$columnNames==gene$columnNames))
+	}
 
-	snps$ColumnSubsample(match(ids, snps$columnNames))
-	gene$ColumnSubsample(match(ids, gene$columnNames))
-	cvrt$ColumnSubsample(match(ids, cvrt$columnNames))
-
-	stopifnot(all(snps$columnNames==gene$columnNames))
-	stopifnot(all(snps$columnNames==cvrt$columnNames))
 
 	me <- Matrix_eQTL_engine(
 		snps = snps,
