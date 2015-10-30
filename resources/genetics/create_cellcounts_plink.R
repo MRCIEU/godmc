@@ -26,6 +26,7 @@ library(lattice)
 
 	cellcounts$entropy <- apply(as.matrix(cellcounts[,-1]), 1, function(x)
 	{
+		x <- x[x>0]
 		h <- x * log2(x)
 		h[!is.finite(h)] <- 0
 		-sum(h)

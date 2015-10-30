@@ -16,6 +16,14 @@ fam <- read.table(fam_file, stringsAsFactors=FALSE)[,1:2]
 
 if("Sex" %in% names(allcovs))
 {
+	allcovs$Sex[allcovs$Sex == "M"] <- 1
+	allcovs$Sex[allcovs$Sex == "F"] <- 2
+	allcovs$Sex <- as.numeric(allcovs$Sex)
+}
+
+
+if("Sex" %in% names(allcovs))
+{
 	dat <- merge(fam, subset(allcovs, select=c("IID", "Sex")), by.x="V2", by.y="IID")
 	dat <- merge(dat, smok, by.x="V2", by.y="IID")
 	dat <- subset(dat, select=c("V1", "V2", "Sex", "Smoking"))
