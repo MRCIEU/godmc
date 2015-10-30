@@ -2,5 +2,7 @@
 
 set -e
 source config
+exec &> >(tee ${methylation_adjustment1_logfile}_aggregation)
 
-R --no-save --args ${methylation_adjusted} ${meth_chunks} < ${home_directory}/resources/methylation/aggregate_chunks.R
+echo "Aggregating methylation_adjustment1 chunks"
+Rscript ${home_directory}/resources/methylation/aggregate_chunks.R ${methylation_adjusted} ${meth_chunks}
