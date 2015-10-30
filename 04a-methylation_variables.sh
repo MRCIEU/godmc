@@ -82,4 +82,10 @@ Rscript resources/genetics/create_covariates_files.R \
 	${bfile}.fam \
 	${gwas_covariates}
 
+# GEMMA files
+Rscript resources/genetics/gemma_files.R \
+	${grmfile_all} \
+	${cellcounts_tf} \
+	${gwas_cellcounts_dir}/cellcounts_columns.txt
+
 echo "Successfully created methylation-related variables"

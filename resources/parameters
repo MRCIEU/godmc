@@ -130,3 +130,4 @@ vmqtl_logfile="${home_directory}/log_files/vmqtl/log.txt"
 # scripts and binaries
 plink="${home_directory}/resources/bin/plink1.90"
 gcta="${home_directory}/resources/bin/gcta64"
+gemma="${home_directory}/resources/bin/gemma"
