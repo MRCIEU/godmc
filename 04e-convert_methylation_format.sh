@@ -2,6 +2,8 @@
 
 set -e
 source config
+exec &> >(tee ${convert_methylation_format_logfile})
 
-R --no-save --args ${methylation_adjusted_pcs} ${methylation_adjusted_pcs_sq} < resources/methylation/methylation_matrixeqtl_format.R
-
+Rscript resources/methylation/methylation_matrixeqtl_format.R \
+	${methylation_adjusted_pcs} \
+	${methylation_adjusted_pcs_sq}
