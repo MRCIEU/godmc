@@ -11,5 +11,5 @@ chunks <- split(1:nrow(cnv), ceiling(1:nrow(cnv)/chunksize))
 for(i in 1:length(chunks))
 {
 	message(i, " of ", length(chunks))
-	write.table(cnv[i, ], file=paste0(tabfile, ".tab.", i), row=T, col=T, qu=F, sep="\t")
+	write.table(cnv[chunks[[i]], ], file=paste0(tabfile, ".tab.", i), row=T, col=T, qu=F, sep="\t")
 }
