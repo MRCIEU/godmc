@@ -11,7 +11,8 @@ else
 	Rscript resources/methylation/ewas.R \
 		${methylation_adjusted_pcs}.RData \
 		${ewastransformed} \
-		${ewas_results}
+		${ewas_results} \
+		${ewas_qqplots}
 fi
 
 echo "Successfully performed EWAS"

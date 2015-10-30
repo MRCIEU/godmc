@@ -90,8 +90,7 @@ age_pred_SD="5"
 
 # Results locations
 ewas_results="${home_directory}/results/ewas/results"
-ewas_bmi_dir="${home_directory}/results/ewas_bmi"
-ewas_height_dir="${home_directory}/results/ewas_height"
+ewas_qqplots="${home_directory}/log_files/ewas/qqplot"
 gwas_aar_dir="${home_directory}/results/gwas_aar"
 gwas_cellcounts_dir="${home_directory}/results/gwas_cellcounts"
 gwas_smoking_dir="${home_directory}/results/gwas_smoking"
