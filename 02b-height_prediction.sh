@@ -28,7 +28,7 @@ then
         ${height_snps}.profile \
         ${ewastransformed} \
         ${height_plot}
-
+    
     echo "Successfully completed allele score calculation "
 else
 	echo "No phenotypes"
