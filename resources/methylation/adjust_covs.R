@@ -65,7 +65,7 @@ adjust.covs <- function(B, covs, mc.cores=mc.cores)
 	{
 		res <- mclapply(ii, function(i)
 		{
-			if( i %% 10 == 0) message("Probe ", i, " of ", nrow(B))
+			if( i %% 100 == 0) message("Probe ", i, " of ", nrow(B))
 			adjust.covs.1(B[i,], covs)
 		})
 		return(do.call(rbind, res))

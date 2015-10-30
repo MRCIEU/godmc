@@ -2,9 +2,9 @@
 
 set -e
 source config
-exec &> >(tee ${methylation_adjustment2_logfile})
 
 batch_number=${1}
+exec &> >(tee ${methylation_adjustment2_logfile}_${batch_number})
 
 echo "Adjusting methylation for meth PCs"
 
