@@ -8,7 +8,7 @@ exec &> >(tee ${methylation_pcs_logfile})
 
 if [ ! "${phenotypes}" = "NULL" ]
 then
-	phenfile=${ewastransformed}
+	phenfile="${ewastransformed}"
 else
 	phenfile="NULL"
 fi
