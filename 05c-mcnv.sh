@@ -24,7 +24,7 @@ threshold="${soft_threshold}"
 out="${matrixeqtl_mcnv_dir}/${resname}.${batch_number}.RData"
 
 
-nbatch=(${tabfile}.tab.*)
+nbatch=(${tabcnv}.tab.*)
 nbatch=${#nbatch[@]}
 
 echo "Performing meQTL analysis on CNVs batch ${batch_number} of ${nbatch}"
