@@ -100,6 +100,12 @@ matrixeqtl_mqtl_dir="${home_directory}/results/matrixeqtl_mqtl"
 matrixeqtl_vmqtl_dir="${home_directory}/results/matrixeqtl_vmqtl"
 resname="res"
 
+#height prediction
+height_snps_wood="${home_directory}/resources/genetics/wood.height.snps_af0.1"
+height_snps="${home_directory}/processed_data/genetic_data/height"
+height_plot="${home_directory}/log_files/ewas/heightcor_plot.pdf"
+
+
 # logfiles
 check_data_logfile="${home_directory}/log_files/check_data/log.txt"
 snp_data_logfile="${home_directory}/log_files/snp_data/log.txt"
