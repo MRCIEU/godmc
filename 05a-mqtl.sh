@@ -1,10 +1,5 @@
 #!/bin/bash
 
-# create batch scripts
-# e.g to run:
-
-# $ ./scriptname 1
-
 set -e
 source config
 
