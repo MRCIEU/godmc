@@ -3,6 +3,8 @@
 set -e
 source config
 
+cd ${gwas_cellcounts_dir}
+
 chr=${1}
 re='^[0-9]+$'
 if ! [[ $chr =~ $re ]] ; then
