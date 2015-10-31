@@ -2,3 +2,6 @@
 
 set -e
 source config
+
+
+

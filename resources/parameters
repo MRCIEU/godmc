@@ -21,7 +21,7 @@ ewas_file="${home_directory}/processed_data/phenotypes/ewas"
 # Clean genetic data
 bfile="${home_directory}/processed_data/genetic_data/data"
 tabfile="${home_directory}/processed_data/genetic_data/tabfile/data"
-allele_ref="${home_directory}/processed_data/genetic_data/data.allele_codes"
+allele_ref="${home_directory}/results/matrixeqtl_mqtl/data.allele_codes"
 bfile_hm3="${home_directory}/processed_data/genetic_data/data_hm3"
 tabfile_hm3="${home_directory}/processed_data/genetic_data/tabfile_hm3/data"
 allele_ref_hm3="${home_directory}/processed_data/genetic_data/data_hm3.allele_codes"
@@ -125,6 +125,7 @@ mqtl_logfile="${home_directory}/log_files/mqtl/log.txt"
 phenotype_data_logfile="${home_directory}/log_files/phenotype_data/log.txt"
 snp_data_logfile="${home_directory}/log_files/snp_data/log.txt"
 vmqtl_logfile="${home_directory}/log_files/vmqtl/log.txt"
+check_results_logfile="${home_directory}/log_files/check_results/log.txt"
 
 
 
