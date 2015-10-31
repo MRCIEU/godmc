@@ -21,11 +21,20 @@ main <- function()
 	cellcounts <- cellcounts[match(cellcounts$IID, ids$V2), ]
 	entropy <- cellcounts$entropy
 	cellcounts <- subset(cellcounts, select=-c(IID, entropy))
-	for(i in 1:ncol(cellcounts))
+	
+	index <- apply(cellcounts, 2, function(x)
 	{
-		index <- is.na(cellcounts[,i])
-		cellcounts[index, i] <- min(cellcounts[,i], na.rm=TRUE)
-	}
+		(sum(is.na(x)) / length(x)) < 0.2
+	})
+
+	cellcounts <- cellcounts[, index]
+
+	# for(i in 1:ncol(cellcounts))
+	# {
+	# 	index <- is.na(cellcounts[,i])
+	# 	cellcounts[index, i] <- min(cellcounts[,i], na.rm=TRUE)
+	# }
+
 
 	write.table(round(cellcounts, 5), file=paste0(cellcounts_file, ".gemma"), row=F, col=F, qu=F, sep="\t")
 	write.table(data.frame(ids, entropy), file=paste0(cellcounts_file, ".entropy.plink"), row=F, col=F, qu=F)
