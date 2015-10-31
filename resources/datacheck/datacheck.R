@@ -15,6 +15,7 @@ phenotypes_file <- as.character(args[11]);
 cnv_file <- as.character(args[12]);
 cohort_descriptives_file <- as.character(args[13])
 age_distribution_plot <- as.character(args[14])
+ewas_phenotype_list_file <- as.character(args[15])
 
 
 # BIM file check
@@ -124,7 +125,7 @@ for (i in 1:22)
 }
 pdf(snpsbychr_plot, height=6, width=6)
 barplot(no.SNPs.bychr, main="no of SNVs by chromosome",xlab="chromosome",names=c(1:22),cex.names=0.6,cex.axis=0.6)
-dev.off()
+tmp <- dev.off()
 
 write.table(no.SNPs.bychr,snpsbychr_file,sep="\t",quote=F,row.names=F,col.names=F)
 
@@ -409,6 +410,10 @@ if(phenotypes_file != "NULL")
 			stop("ERROR: please convert BMI units to kg/m2")
 		}
 	}
+
+	write.table(names(ph)[-1], file=ewas_phenotype_list_file, row=F, col=F, qu=F)
+} else {
+	message("WARNING: No phenotypes have been provided.\nWARNING: EWAS will not be performed.")
 }
 
 #CNV data check

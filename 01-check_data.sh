@@ -18,5 +18,6 @@ Rscript resources/datacheck/datacheck.R \
 	${phenotypes} \
 	${cnvs} \
 	${cohort_descriptives} \
-	${ageplot}
+	${ageplot} \
+	${ewas_results}.phenotype_list
 
