@@ -34,7 +34,6 @@ main <- function()
 	message("Keeping ", ncol(pc), " non-genetic PCs.")
 	pc <- data.frame(IID=rownames(pc), pc)
 	write.table(pc, file=paste0(out_file, ".txt"), row=F, col=T, qu=F)
-	message("Successfully performed genetic analysis of methylation PCs")
 }
 
 run_all_chunks_serial <- function(dn, geno_file, gene, threshold, slicesize)

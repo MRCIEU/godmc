@@ -102,7 +102,7 @@ ${plink} \
 # Get genetic outliers
 echo "Detecting genetic outliers"
 
-R --no-save --args ${pcs_all} ${pca_sd} ${n_pcs} ${genetic_outlier_ids} ${pcaplot} < resources/genetics/genetic_outliers.R
+Rscript resources/genetics/genetic_outliers.R ${pcs_all} ${pca_sd} ${n_pcs} ${genetic_outlier_ids} ${pcaplot} 
 
 # Remove genetic outliers from data
 echo "Removing genetic outliers"
@@ -123,3 +123,5 @@ ${gcta} \
 #Update ids
 awk '{print $1,$2}' <${bfile}.fam >${intersect_ids_plink}
 awk '{print $2}' <${bfile}.fam >${intersect_ids}
+
+echo "Successfully formatted SNP data"

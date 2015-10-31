@@ -13,6 +13,6 @@ ${gcta} \
 	--thread-num ${nthreads}
 
 echo "Compressing results"
-gzip ${gwas_cellcounts_dir}/cellcount_entropy.loco.mlma
+gzip -f ${gwas_cellcounts_dir}/cellcount_entropy.loco.mlma
 
 echo "Successfully performed GWAS"

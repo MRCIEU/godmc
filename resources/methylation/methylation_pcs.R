@@ -50,5 +50,3 @@ if(phen_file != "NULL")
 pc1 <- t(pc)
 save(pc, file=paste0(pc_out, ".RData"))
 write.table(pc1, file=paste0(pc_out, ".txt"), row=T, col=T, qu=F, sep="\t")
-
-message("Successfully generated methylation PCs")

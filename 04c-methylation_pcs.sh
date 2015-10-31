@@ -28,3 +28,5 @@ Rscript resources/methylation/genetic_meth_pcs.R \
 	${nongenetic_meth_pcs} \
 	${meth_pc_threshold} \
 	${nthreads}
+
+echo "Successfully generated non-genetic methylation PCs"

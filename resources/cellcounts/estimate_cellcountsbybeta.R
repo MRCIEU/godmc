@@ -20,5 +20,3 @@ cellcounts <- data.frame(IID=row.names(cellcounts),cellcounts)
 fam <- read.table(fam_file, stringsAsFactors=FALSE)
 m <- match(fam[,2],cellcounts$IID)
 write.table(cellcounts[m,],cellcountfile,sep="\t",row.names=F,col.names=T,quote=F)
-
-message("Successfully generated cell counts")

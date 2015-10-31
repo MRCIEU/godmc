@@ -37,9 +37,9 @@ ${gemma} \
 	-o cellcounts_mvlmm_${chr}
 
 echo "Compressing results"
-gzip output/cellcounts_mvlmm_${chr}.assoc.txt
+gzip -f output/cellcounts_mvlmm_${chr}.assoc.txt
 mv output/cellcounts_mvlmm_${chr}.* ${gwas_cellcounts_dir}
 
 rm ${bfile}_${chr}*
 
-echo "Successfully performed multivariate LMM on cellcounts"
+echo "Successfully performed multivariate LMM on cellcounts for chromsome ${chr}"

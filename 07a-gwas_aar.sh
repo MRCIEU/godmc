@@ -13,6 +13,6 @@ ${gcta} \
 	--thread-num ${nthreads}
 
 echo "Compressing results"
-gzip ${gwas_aar_dir}/aar.loco.mlma
+gzip -f ${gwas_aar_dir}/aar.loco.mlma
 
 echo "Successfully performed GWAS"

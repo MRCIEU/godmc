@@ -1,3 +1,5 @@
+#!/bin/bash
+
 #Height prediction
 set -e
 source config

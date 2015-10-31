@@ -13,6 +13,6 @@ ${gcta} \
 	--thread-num ${nthreads}
 
 echo "Compressing results"
-gzip ${gwas_smoking_dir}/smoking.loco.mlma
+gzip -f ${gwas_smoking_dir}/smoking.loco.mlma
 
 echo "Successfully performed GWAS"

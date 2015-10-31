@@ -58,3 +58,5 @@ make_tab_format ${plink} ${bfile} ${allele_ref} ${bfile_chunksize} ${tabfile}
 
 # Convert CNV data
 Rscript resources/genetics/cnv_tabfile.R ${cnvs} ${tabcnv} ${bfile_chunksize}
+
+echo "Successfully converted genetic data"
