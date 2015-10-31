@@ -16,8 +16,7 @@ then
 			${cellcounts} \
 			${cellcounts_reference} \
 			${bfile}.fam
-
-        elif [ -f "${provided_cellcounts}" ]
+		elif [ -f "${provided_cellcounts}" ]
 	then
 		echo "Using the cellcounts provided in ${provided_cellcounts}."
 		cp ${provided_cellcounts} ${cellcounts}
@@ -86,6 +85,7 @@ Rscript resources/genetics/create_covariates_files.R \
 Rscript resources/genetics/gemma_files.R \
 	${grmfile_all} \
 	${cellcounts_tf} \
-	${gwas_cellcounts_dir}/cellcounts_columns.txt
+	${gwas_cellcounts_dir}/cellcounts_columns.txt \
+	${gwas_covariates}.cellcounts
 
 echo "Successfully created methylation-related variables"

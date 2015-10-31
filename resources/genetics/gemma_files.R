@@ -6,6 +6,7 @@ main <- function()
 	grm_file <- arguments[1]
 	cellcounts_file <- arguments[2]
 	cellcounts_annotation <- arguments[3]
+	covariates_file <- arguments[4]
 
 	message("Converting GRM into GEMMA format")
 	grm <- readGRM(grm_file)
@@ -29,6 +30,14 @@ main <- function()
 	write.table(round(cellcounts, 5), file=paste0(cellcounts_file, ".gemma"), row=F, col=F, qu=F, sep="\t")
 	write.table(data.frame(ids, entropy), file=paste0(cellcounts_file, ".entropy.plink"), row=F, col=F, qu=F)
 	write.table(names(cellcounts), file=cellcounts_annotation, row=F, col=F, qu=F)
+
+	covars <- read.table(covariates_file)
+	covars[match(covars$V2, ids$V2), ]
+	stopifnot(all(covars$V2 == ids$V2))
+
+	covars <- data.frame(1, covars[,-c(1:2)])
+	write.table(covars, file=paste0(covariates_file, ".gemma"), row=F, col=F, qu=F, sep="\t")
+
 }
 
 

@@ -2,12 +2,17 @@
 
 set -e
 source config
+exec &> >(tee ${gwas_aar_logfile})
 
-# Setup covariates
-# One covariate - sex
+${gcta} \
+	--bfile ${bfile} \
+	--mlma-loco \
+	--pheno ${age_pred}.aar.plink \
+	--qcovar ${gwas_covariates}.aar \
+	--out ${gwas_aar_dir}/aar \
+	--thread-num ${nthreads}
 
-${gcta} --bfile ${bfile} --mlma-loco --pheno ${age_pred}.aar.plink --qcovar ${gwas_covariates}.aar --out ${gwas_aar_dir}/gwas
+echo "Compressing results"
+gzip ${gwas_aar_dir}/aar.loco.mlma
 
-# Setup phenotype
-# Run GCTA
-
+echo "Successfully performed GWAS"

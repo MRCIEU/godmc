@@ -114,6 +114,7 @@ convert_snp_format_logfile="${home_directory}/log_files/convert_snp_format/log.t
 ewas_logfile="${home_directory}/log_files/ewas/log.txt"
 gwas_aar_logfile="${home_directory}/log_files/gwas_aar/log.txt"
 gwas_cellcounts_logfile="${home_directory}/log_files/gwas_cellcounts/log.txt"
+gwas_cellcount_entropy_logfile="${home_directory}/log_files/gwas_cellcount_entropy/log.txt"
 gwas_smoking_logfile="${home_directory}/log_files/gwas_smoking/log.txt"
 mcnv_logfile="${home_directory}/log_files/mcnv/log.txt"
 methylation_adjustment1_logfile="${home_directory}/log_files/methylation_adjustment1/log.txt"
