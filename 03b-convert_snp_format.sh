@@ -6,11 +6,10 @@ exec &> >(tee ${convert_snp_format_logfile})
 
 function make_tab_format {
 
-	plink_bin=$1
-	transposed_file=$2
-	allele_references=$3
-	chunksize=$4
-	outfile=$5
+	transposed_file=$1
+	allele_references=$2
+	chunksize=$3
+	outfile=$4
 
 	echo "Generating matrixeqtl format genetic data"
 
@@ -24,8 +23,7 @@ function make_tab_format {
 	sed 1d ${transposed_file}.traw | cut -f 2,7- > ${transposed_file}.traw2
 	mv ${transposed_file}.traw2 ${transposed_file}.traw
 
-	echo "Splitting data into ${chunksize} SNP subsets"
-	rm ${outfile}.tab.*
+	rm -f ${outfile}.tab.*
 	split -d -a 10 -l ${chunksize} ${transposed_file}.traw ${outfile}.tab.
 
 	i=1
@@ -38,6 +36,7 @@ function make_tab_format {
 	done
 
 	rm traw.header
+	rm ${transposed_file}.traw
 	echo "Done!"
 
 }
@@ -47,16 +46,22 @@ function make_tab_format {
 #Generate plink.raw / plink.frq #freq files are required to determine effect allele
 echo "Converting plink files to transposed raw format"
 ${plink} --bfile ${bfile} --recode A-transpose --out ${bfile} --freq
-make_tab_format ${plink} ${bfile} ${allele_ref} ${bfile_chunksize} ${tabfile}
 
-#Don't need this
-#echo "Converting hapmap3 SNPs to transposed raw format"
-#gunzip -c ${hm3_snps} > temp.snplist
-#${plink} --bfile ${bfile} --recode A-transpose --out ${bfile_hm3} --extract temp.snplist
-#rm temp.snplist
-#make_tab_format ${plink} ${bfile_hm3} ${allele_ref_hm3} ${bfile_chunksize} ${tabfile_hm3}
+# How big will each chunk be
+nrow=`wc -l ${bfile}.bim | awk '{ print $1 }'`
+chunksize=$(($nrow / $bfile_chunks))
+remainder=$(($nrow % $bfile_chunks))
+
+if [ ! "${remainder}" == "0" ]
+then
+	chunksize=$(($chunksize + 1))
+fi
+echo "Splitting genetic data into ${bfile_chunks} chunks"
+echo "Each chunk will contain ${chunksize} SNPs"
+
+make_tab_format ${bfile} ${allele_ref} ${chunksize} ${tabfile}
 
 # Convert CNV data
-Rscript resources/genetics/cnv_tabfile.R ${cnvs} ${tabcnv} ${bfile_chunksize}
+Rscript resources/genetics/cnv_tabfile.R ${cnvs} ${tabcnv} ${bfile_chunks}
 
 echo "Successfully converted genetic data"
