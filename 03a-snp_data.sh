@@ -46,6 +46,13 @@ grep "duplicate" ${bfile}.bim | awk '{ print $2 }' > ${bfile}.duplicates.txt
 plink1.90 --bfile ${bfile} --exclude ${bfile}.duplicates.txt --make-bed --out ${bfile}
 
 
+# Get frequencies
+plink1.90 --bfile ${bfile} --freq --hardy --out ${matrixeqtl_mqtl_dir}/data
+gzip -f ${matrixeqtl_mqtl_dir}/data.frq
+gzip -f ${matrixeqtl_mqtl_dir}/data.hwe
+gzip -c ${quality_scores} > ${matrixeqtl_mqtl_dir}/data.info.gz
+
+
 # Make GRMs
 echo "Creating kinship matrix"
 gunzip -c ${hm3_snps} > temp_hm3snps.txt

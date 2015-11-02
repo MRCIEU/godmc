@@ -2,12 +2,12 @@ arguments <- commandArgs(T)
 
 cnvfile <- arguments[1]
 tabfile <- arguments[2]
-chunksize <- as.numeric(arguments[3])
+nchunks <- as.numeric(arguments[3])
 
 message("Loading CNV data")
 load(cnvfile)
-message("Splitting ", nrow(cnv), " CNV variables into ", chunksize, " row chunks.")
-chunks <- split(1:nrow(cnv), ceiling(1:nrow(cnv)/chunksize))
+message("Splitting ", nrow(cnv), " CNV variables into ", nchunks, " chunks.")
+chunks <- split(1:nrow(cnv), 1:nchunks)
 for(i in 1:length(chunks))
 {
 	message(i, " of ", length(chunks))

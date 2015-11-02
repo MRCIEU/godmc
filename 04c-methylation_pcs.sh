@@ -23,7 +23,7 @@ Rscript resources/methylation/methylation_pcs.R \
 
 echo "Performing genetic analysis of methylation PCs"
 Rscript resources/methylation/genetic_meth_pcs.R \
-	${tabfile_hm3} \
+	${tabfile} \
 	${meth_pcs} \
 	${nongenetic_meth_pcs} \
 	${meth_pc_threshold} \

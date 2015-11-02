@@ -86,9 +86,8 @@ else
 fi
 
 
-nbatch=(${tabfile}.tab.*)
-nbatch=${#nbatch[@]}
-nsuccess=`grep -i "success" ${mqtl_logfile}* | wc -l`
+nbatch=`ls -l ${tabfile}.tab.* | wc -l`
+nsuccess=`tail ${mqtl_logfile}* | grep -i "success" | wc -l`
 if [ "${nbatch}" = "${nsuccess}" ]; then
 	echo "05a-mqtl.sh completed successfully for all batches"
 else
@@ -96,9 +95,8 @@ else
 fi
 
 
-nbatch=(${tabfile}.tab.*)
-nbatch=${#nbatch[@]}
-nsuccess=`grep -i "success" ${vmqtl_logfile}* | wc -l`
+nbatch=`ls -l ${tabfile}.tab.* | wc -l`
+nsuccess=`tail ${vmqtl_logfile}* | grep -i "success" | wc -l`
 if [ "${nbatch}" = "${nsuccess}" ]; then
 	echo "05b-vmqtl.sh completed successfully for all batches"
 else
@@ -106,9 +104,8 @@ else
 fi
 
 
-nbatch=(${tabcnv}.tab.*)
-nbatch=${#nbatch[@]}
-nsuccess=`grep -i "success" ${mcnv_logfile}* | wc -l`
+nbatch=`ls -l ${tabcnv}.tab.* | wc -l`
+nsuccess=`tail ${mcnv_logfile}* | grep -i "success" | wc -l`
 if [ "${nbatch}" = "${nsuccess}" ]; then
 	echo "05c-mcnv.sh completed successfully for all batches"
 else
@@ -221,26 +218,43 @@ else
 fi
 
 # mqtl
-nbatch=(${tabfile}.tab.*)
-nbatch=${#nbatch[@]}
-nsuccess=`grep -l "res" ${matrixeqtl_mqtl_dir}/* | wc -l`
+nbatch=`ls -l ${tabfile}.tab.* | wc -l`
+nsuccess=`ls -l ${matrixeqtl_mqtl_dir}/res* | wc -l`
 if [ "${nsuccess}" = "${nbatch}" ]; then
 	echo "All mQTL results present"
 else
 	echo "Problem: Only ${nsuccess} of ${nbatch} mQTL result files are present"
 fi
 
+# SNP summaries
 if [ -f "${allele_ref}" ]; then
 	echo "Allele reference file present"
 else
 	echo "Problem: Allele reference file is absent"
 fi
 
+if [ -f "${matrixeqtl_mqtl_dir}/data.frq.gz" ]; then
+	echo "Allele frequency file present"
+else
+	echo "Problem: Allele frequency file is absent"
+fi
+
+if [ -f "${matrixeqtl_mqtl_dir}/data.hwe.gz" ]; then
+	echo "HWE file present"
+else
+	echo "Problem: HWE file is absent"
+fi
+
+if [ -f "${matrixeqtl_mqtl_dir}/data.info.gz" ]; then
+	echo "Imputation quality file present"
+else
+	echo "Problem: Imputation quality file is absent"
+fi
+
 
 # vmqtl
-nbatch=(${tabfile}.tab.*)
-nbatch=${#nbatch[@]}
-nsuccess=`grep -l "res" ${matrixeqtl_vmqtl_dir}/* | wc -l`
+nbatch=`ls -l ${tabfile}.tab.* | wc -l`
+nsuccess=`ls -l ${matrixeqtl_vmqtl_dir}/res* | wc -l`
 if [ "${nsuccess}" = "${nbatch}" ]; then
 	echo "All variance-mQTL results present"
 else
@@ -248,9 +262,8 @@ else
 fi
 
 # mcnv
-nbatch=(${tabcnv}.tab.*)
-nbatch=${#nbatch[@]}
-nsuccess=`grep -l "res" ${matrixeqtl_mcnv_dir}/* | wc -l`
+nbatch=`ls -l ${tabcnv}.tab.* | wc -l`
+nsuccess=`ls -l ${matrixeqtl_mcnv_dir}/res* | wc -l`
 if [ "${nsuccess}" = "${nbatch}" ]; then
 	echo "All CNV-mQTL results present"
 else
