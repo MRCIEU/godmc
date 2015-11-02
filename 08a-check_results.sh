@@ -143,14 +143,20 @@ else
 	echo "Problem: 07c-gwas_cellcount_entropy.sh did not complete successfully"
 fi
 
-
-nsuccess=`grep -i "success" ${gwas_cellcounts_logfile}* | wc -l`
-if [ "${nsuccess}" = "22" ]; then
-	echo "07d-gwas_cellcounts.sh completed successfully on all chromosomes."
+nbatch=`wc -l ${gwas_cellcounts_dir}/cellcounts_columns.txt | awk '{ print $1 }'`
+nsuccess=`tail ${gwas_cellcounts_logfile}_* | grep -i "success" | wc -l`
+if [ "${nbatch}" = "${nsuccess}" ]; then
+	echo "07d-gwas_cellcounts.sh completed successfully for all cell types"
 else
-	echo "Problem: 07d-gwas_cellcounts.sh only complete for ${nsuccess} of 22 chromosomes"
+	echo "problem: 07d-gwas_cellcounts.sh only complete for ${nsuccess} of ${nbatch} cell types"
 fi
 
+nsuccess=`grep -i "success" ${gwas_cellcounts_gemma_logfile}* | wc -l`
+if [ "${nsuccess}" = "${genetic_chunks}" ]; then
+	echo "07e-gwas_cellcounts_mvlmm.sh completed successfully on all chromosomes."
+else
+	echo "Problem: 07e-gwas_cellcounts_mvlmm.sh only complete for ${nsuccess} of ${genetic_chunks} batches"
+fi
 
 
 ## Check results files
@@ -210,11 +216,21 @@ else
 	echo "Problem: Cellcount annotation is absent"
 fi
 
+ncellcounts=`wc -l ${gwas_cellcounts_dir}/cellcounts_columns.txt | awk '{ print $1 }'`
+for i in $(seq 1 $ncellcounts);
+do
+	if [ -f "${gwas_cellcounts_dir}/cellcount_${i}.loco.mlma.gz" ]; then
+		echo "GWAS for cell type ${i} of ${ncellcounts} complete"
+	else
+		echo "problem: GWAS did not complete for cell type ${i}"
+	fi
+done
+
 nsuccess=`grep -l "assoc" ${gwas_cellcounts_dir}/* | wc -l`
-if [ "${nsuccess}" = "22" ]; then
+if [ "${nsuccess}" = "${genetic_chunks}" ]; then
 	echo "Cellcounts results present for all chromosomes"
 else
-	echo "Problem: Only ${nsuccess} of 22 cellcounts result files are present"
+	echo "Problem: Only ${nsuccess} of ${genetic_chunks} batches result files are present for the MVLMM cellcount GWAS"
 fi
 
 # mqtl

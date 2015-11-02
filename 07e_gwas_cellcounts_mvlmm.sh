@@ -13,7 +13,7 @@ if ! [[ $batch =~ $re ]] ; then
 	echo "Usage: ${0} [batch]"
 	exit 1
 fi
-exec &> >(tee ${gwas_cellcounts_logfile}_${batch})
+exec &> >(tee ${gwas_cellcounts_gemma_logfile}_${batch})
 
 # Get SNP list
 echo "Data is split into ${genetic_chunks} chunks"
