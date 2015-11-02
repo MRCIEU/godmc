@@ -49,19 +49,19 @@ ${plink} --bfile ${bfile} --recode A-transpose --out ${bfile} --freq
 
 # How big will each chunk be
 nrow=`wc -l ${bfile}.bim | awk '{ print $1 }'`
-chunksize=$(($nrow / $bfile_chunks))
-remainder=$(($nrow % $bfile_chunks))
+chunksize=$(($nrow / $genetic_chunks))
+remainder=$(($nrow % $genetic_chunks))
 
 if [ ! "${remainder}" == "0" ]
 then
 	chunksize=$(($chunksize + 1))
 fi
-echo "Splitting genetic data into ${bfile_chunks} chunks"
+echo "Splitting genetic data into ${genetic_chunks} chunks"
 echo "Each chunk will contain ${chunksize} SNPs"
 
 make_tab_format ${bfile} ${allele_ref} ${chunksize} ${tabfile}
 
 # Convert CNV data
-Rscript resources/genetics/cnv_tabfile.R ${cnvs} ${tabcnv} ${bfile_chunks}
+Rscript resources/genetics/cnv_tabfile.R ${cnvs} ${tabcnv} ${genetic_chunks}
 
 echo "Successfully converted genetic data"

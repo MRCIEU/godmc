@@ -37,6 +37,11 @@ main <- function()
 		(sum(is.na(x)) / length(x)) < 0.2
 	})
 
+	for(i in 1:ncol(cellcounts))
+	{
+		cellcounts[is.na(cellcounts[,i]), i] <- mean(cellcounts[,i], na.rm=T)
+	}
+
 	cellcounts <- cellcounts[, index]
 
 	write.table(round(cellcounts, 5), file=paste0(cellcounts_file, ".gemma"), row=F, col=F, qu=F, sep="\t")

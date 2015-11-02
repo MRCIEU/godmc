@@ -5,39 +5,46 @@ source config
 
 cd ${gwas_cellcounts_dir}
 
-chr=${1}
+batch=${1}
 re='^[0-9]+$'
-if ! [[ $chr =~ $re ]] ; then
-	echo "error: Chromosome variable is not a number"
-	echo "Usage: ${0} [chr]"
+if ! [[ $batch =~ $re ]] ; then
+	echo "error: Batch variable is not a number"
+	echo "Please provide a number between 1 and 'genetic_chunks'"
+	echo "Usage: ${0} [batch]"
 	exit 1
 fi
-exec &> >(tee ${gwas_cellcounts_logfile}_${chr})
+exec &> >(tee ${gwas_cellcounts_logfile}_${batch})
 
-echo "Formatting data for chromosome ${chr}"
+# Get SNP list
+echo "Data is split into ${genetic_chunks} chunks"
+echo "Running chunk ${batch}"
+
+awk '{ print $1 }' ${tabfile}.tab.${batch} | sed 1d > ${bfile}.snplist.${batch}
+
+echo "Formatting data for batch ${batch}"
 plink1.90 \
 	--bfile ${bfile} \
-	--chr ${chr} \
+	--extract ${bfile}.snplist.${batch} \
 	--make-bed \
-	--out ${bfile}_${chr}
+	--out ${bfile}_${batch}
 
-cut -d " " -f 1-5 ${bfile}_${chr}.fam | tr ' ' '\t' > ${bfile}_${chr}.fam.temp
-paste -d "\t" ${bfile}_${chr}.fam.temp ${cellcounts_tf}.gemma > ${bfile}_${chr}.fam
+cut -d " " -f 1-5 ${bfile}_${batch}.fam | tr ' ' '\t' > ${bfile}_${batch}.fam.temp
+paste -d "\t" ${bfile}_${batch}.fam.temp ${cellcounts_tf}.gemma > ${bfile}_${batch}.fam
 
 nval=`awk '{ print NR }' ${gwas_cellcounts_dir}/cellcounts_columns.txt | tr '\n' ' '`
 echo "Performing multivariate LMM on ${nval} cellcount phenotypes"
 
 ${gemma} \
-	-bfile ${bfile}_${chr} \
+	-bfile ${bfile}_${batch} \
 	-k ${grmfile_all}.gemma \
 	-n ${nval} \
 	-lmm 4 \
-	-o cellcounts_mvlmm_${chr}
+	-o cellcounts_mvlmm_${batch}
 
 echo "Compressing results"
-gzip -f output/cellcounts_mvlmm_${chr}.assoc.txt
-mv output/cellcounts_mvlmm_${chr}.* ${gwas_cellcounts_dir}
+gzip -f output/cellcounts_mvlmm_${batch}.assoc.txt
+mv output/cellcounts_mvlmm_${batch}.* ${gwas_cellcounts_dir}
 
-rm ${bfile}_${chr}*
+rm ${bfile}_${batch}*
 
-echo "Successfully performed multivariate LMM on cellcounts for chromsome ${chr}"
+echo "Successfully performed multivariate LMM on cellcounts for chromsome ${batch}"

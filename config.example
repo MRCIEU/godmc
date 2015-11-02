@@ -47,7 +47,7 @@ meth_chunks="100"
 
 # Number of chunks to split genetic data during mQTL and cellcount GWAS
 # See 06a, 06b and 07e
-genetic_chunks="1000"
+genetic_chunks="500"
 
 # SNP filtering
 # HWE threshold, minor allele frequency, SNP missingness, individual missingness
@@ -70,7 +70,6 @@ meth_pc_cutoff="0.8"
 meth_pc_threshold="1e-8"
 
 # Matrixeqtl parameters
-bfile_chunks=500
 soft_threshold="1e-5"
 soft_threshold_cnv="1e-5"
 
