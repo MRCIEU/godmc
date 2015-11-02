@@ -87,7 +87,7 @@ fi
 
 
 nbatch=`ls -l ${tabfile}.tab.* | wc -l`
-nsuccess=`grep -i "success" ${mqtl_logfile}* | wc -l`
+nsuccess=`tail ${mqtl_logfile}* | grep -i "success" | wc -l`
 if [ "${nbatch}" = "${nsuccess}" ]; then
 	echo "05a-mqtl.sh completed successfully for all batches"
 else
@@ -96,7 +96,7 @@ fi
 
 
 nbatch=`ls -l ${tabfile}.tab.* | wc -l`
-nsuccess=`grep -i "success" ${vmqtl_logfile}* | wc -l`
+nsuccess=`tail ${vmqtl_logfile}* | grep -i "success" | wc -l`
 if [ "${nbatch}" = "${nsuccess}" ]; then
 	echo "05b-vmqtl.sh completed successfully for all batches"
 else
@@ -105,7 +105,7 @@ fi
 
 
 nbatch=`ls -l ${tabcnv}.tab.* | wc -l`
-nsuccess=`grep -i "success" ${mcnv_logfile}* | wc -l`
+nsuccess=`tail ${mcnv_logfile}* | grep -i "success" | wc -l`
 if [ "${nbatch}" = "${nsuccess}" ]; then
 	echo "05c-mcnv.sh completed successfully for all batches"
 else
@@ -226,10 +226,29 @@ else
 	echo "Problem: Only ${nsuccess} of ${nbatch} mQTL result files are present"
 fi
 
+# SNP summaries
 if [ -f "${allele_ref}" ]; then
 	echo "Allele reference file present"
 else
 	echo "Problem: Allele reference file is absent"
+fi
+
+if [ -f "${matrixeqtl_mqtl_dir}/data.frq.gz" ]; then
+	echo "Allele frequency file present"
+else
+	echo "Problem: Allele frequency file is absent"
+fi
+
+if [ -f "${matrixeqtl_mqtl_dir}/data.hwe.gz" ]; then
+	echo "HWE file present"
+else
+	echo "Problem: HWE file is absent"
+fi
+
+if [ -f "${matrixeqtl_mqtl_dir}/data.info.gz" ]; then
+	echo "Imputation quality file present"
+else
+	echo "Problem: Imputation quality file is absent"
 fi
 
 
