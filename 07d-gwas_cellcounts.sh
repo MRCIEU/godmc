@@ -14,13 +14,10 @@ if ! [[ $chr =~ $re ]] ; then
 fi
 exec &> >(tee ${gwas_cellcounts_logfile}_${chr})
 
-head -n 10000 ${bfile}.bim | awk '{ print $2 }' > snplist_${chr}
-
-
 echo "Formatting data for chromosome ${chr}"
 plink1.90 \
 	--bfile ${bfile} \
-	--extract snplist_${chr} \
+	--chr ${chr} \
 	--make-bed \
 	--out ${bfile}_${chr}
 
@@ -30,16 +27,8 @@ paste -d "\t" ${bfile}_${chr}.fam.temp ${cellcounts_tf}.gemma > ${bfile}_${chr}.
 nval=`awk '{ print NR }' ${gwas_cellcounts_dir}/cellcounts_columns.txt | tr '\n' ' '`
 echo "Performing multivariate LMM on ${nval} cellcount phenotypes"
 
-# ${gemma} \
-# 	-bfile ${bfile}_${chr} \
-# 	-k ${grmfile_all}.gemma \
-# 	-n ${nval} \
-# 	-lmm 4 \
-# 	-o cellcounts_mvlmm_${chr}
-
 ${gemma} \
 	-bfile ${bfile}_${chr} \
-	-c ${gwas_covariates}.cellcounts.gemma \
 	-k ${grmfile_all}.gemma \
 	-n ${nval} \
 	-lmm 4 \

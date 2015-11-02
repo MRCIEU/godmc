@@ -6,7 +6,7 @@ main <- function()
 	grm_file <- arguments[1]
 	cellcounts_file <- arguments[2]
 	cellcounts_annotation <- arguments[3]
-	covariates_file <- arguments[4]
+	smoking_file <- arguments[4]
 
 	message("Converting GRM into GEMMA format")
 	grm <- readGRM(grm_file)
@@ -16,12 +16,22 @@ main <- function()
 	message("Writing GRM")
 	write.table(round(grm, 5), file=paste0(grm_file, ".gemma"), row=F, col=F, qu=F, sep="\t")
 
-	message("Converting cellcounts into GEMMA format")
+	message("Adjusting cellcounts for smoking and converting into GEMMA format")
 	cellcounts <- read.table(cellcounts_file, he=T, stringsAsFactors=FALSE)
 	cellcounts <- cellcounts[match(cellcounts$IID, ids$V2), ]
+	smok <- read.table(smoking_file, header=TRUE)
+	smok <- smok[match(smok$IID, cellcounts$IID), ]
+	stopifnot(all(smok$IID == cellcounts$IID))
+
 	entropy <- cellcounts$entropy
 	cellcounts <- subset(cellcounts, select=-c(IID, entropy))
-	
+
+	# Adjust for smoking
+	for(i in 1:ncol(cellcounts))
+	{
+		cellcounts[,i] <- residuals(lm(cellcounts[,i] ~ smok$Smoking, na.action=na.exclude))
+	}
+
 	index <- apply(cellcounts, 2, function(x)
 	{
 		(sum(is.na(x)) / length(x)) < 0.2
@@ -29,23 +39,9 @@ main <- function()
 
 	cellcounts <- cellcounts[, index]
 
-	# for(i in 1:ncol(cellcounts))
-	# {
-	# 	index <- is.na(cellcounts[,i])
-	# 	cellcounts[index, i] <- min(cellcounts[,i], na.rm=TRUE)
-	# }
-
-
 	write.table(round(cellcounts, 5), file=paste0(cellcounts_file, ".gemma"), row=F, col=F, qu=F, sep="\t")
 	write.table(data.frame(ids, entropy), file=paste0(cellcounts_file, ".entropy.plink"), row=F, col=F, qu=F)
 	write.table(names(cellcounts), file=cellcounts_annotation, row=F, col=F, qu=F)
-
-	covars <- read.table(covariates_file)
-	covars[match(covars$V2, ids$V2), ]
-	stopifnot(all(covars$V2 == ids$V2))
-
-	covars <- data.frame(1, covars[,-c(1:2)])
-	write.table(covars, file=paste0(covariates_file, ".gemma"), row=F, col=F, qu=F, sep="\t")
 
 }
 
