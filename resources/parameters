@@ -8,6 +8,7 @@ intersect_ids="${home_directory}/processed_data/ids/intersect_ids.txt"
 control_snps="${home_directory}/resources/genetics/snpsforbuildandposcheck.txt"
 snpcheck="${home_directory}/log_files/check_data/no_snps_by_chr.txt"
 snpplot="${home_directory}/log_files/check_data/no_snps_by_chr_plot.pdf"
+quality_scores_plot="${home_directory}/log_files/check_data/snp_quality.pdf"
 cohort_descriptives="${home_directory}/log_files/check_data/cohort_descriptives.RData"
 ageplot="${home_directory}/log_files/check_data/age_distribution.pdf"
 

@@ -16,7 +16,8 @@ cnv_file <- as.character(args[12]);
 cohort_descriptives_file <- as.character(args[13])
 age_distribution_plot <- as.character(args[14])
 ewas_phenotype_list_file <- as.character(args[15])
-
+quality_file <- as.character(args[16])
+quality_plot <- as.character(args[17])
 
 # BIM file check
 message("Checking bim file: ", bim_file)
@@ -40,7 +41,7 @@ if(length(w) > 0)
 w <- which(names(chrno) %in% c(1:22))
 if(length(w)<22)
 {
-	stop("ERROR:  please change chromosome coding to 1-22")
+	stop("ERROR: please change chromosome coding to 1-22")
 }
 
 message("Checking alleles")
@@ -129,6 +130,60 @@ tmp <- dev.off()
 
 write.table(no.SNPs.bychr,snpsbychr_file,sep="\t",quote=F,row.names=F,col.names=F)
 
+
+
+##
+
+message("Checking imputation quality scores: ", quality_file)
+qual <- as.data.frame(fread(quality_file))
+
+if(ncol(qual) != 3)
+{
+	stop("ERROR: Expecting 3 columns in the imputation quality file: SNP ID, MAF and quality score.")
+}
+
+if(any(qual[,2] < 0) | any(qual[,2] > 1))
+{
+	stop("ERROR: second column of quality scores file should me MAF. Some of the provided values fall outside the range of 0-1")
+}
+
+if(any(qual[,3] > 1))
+{
+	stop("ERROR: third column of quality scores file should be the info score. Some of the provided values are above 1.")
+}
+
+prop <- sum(bim[,2] %in% qual[,1]) / nrow(bim)
+if(prop < 0.95)
+{
+	stop("ERROR: Less then 95% of SNPs in the genetic data have info scores provided.")
+}
+
+message(round(prop*100, 2), "% of the SNPs in the data have matching info scores.")
+qual <- qual[qual[,1] %in% bim[,2], ]
+message("Retaining ", nrow(qual), " quality scores.")
+
+
+names(qual) <- c("V1", "V2", "V3")
+index <- qual$V2 > 0.5
+qual$V2[index] <- 1 - qual$V2[index]
+
+prop <- sum(qual[,2] < 0.01) / nrow(qual)
+if(prop > 0.1)
+{
+	stop("ERROR: more than 10% of the retained quality scores have a MAF < 0.01. Please filter on MAF < 0.01")
+}
+
+prop <- sum(qual[,3] < 0.4) / nrow(qual)
+if(prop > 0.1)
+{
+	stop("ERROR: more than 10% of the retained quality scores have a quality score < 0.4. Please filter the data. The wiki has a guide for doing this.")
+}
+
+message("Plotting info scores")
+qual$mafbin <- cut(qual[,2], breaks=30)
+pdf(quality_plot)
+boxplot(V3 ~ mafbin, qual, xlab="MAF", ylab="Imputation quality")
+null <- dev.off()
 
 ##
 #FAM file check
