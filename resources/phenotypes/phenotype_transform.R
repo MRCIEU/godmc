@@ -47,7 +47,7 @@ data$trait <- as.numeric(data$trait)
 
 w.test=1
 if (length(which(names(data)%in%"Sex"))>0 & length(rownames(table(data$Sex)))>1){
-data <- data[which(data$Sex!="NA" &data$trait!="NA"& data$trait!="na"&data$trait!="0"),] 
+data <- data[which(data$Sex!="NA" &data$trait!="NA"& data$trait!="na"),] 
 data$Sex <- as.factor(data$Sex)
 sex_names <- rownames(table(data$Sex))
 
@@ -67,7 +67,7 @@ legend("topright",sex_names,col=colors,lty=1)
 #### plot the distribution of raw phenotypes
 par(mfrow=c(2,2))
 if (w.test>0.05|length(rownames(table(data$Sex)))==1){
-data <- data[which(data$trait!="NA"& data$trait!="na"&data$trait!="0"),]
+data <- data[which(data$trait!="NA"& data$trait!="na"),]
 plot(data$trait, xlab="", main=paste("raw ",trait_var," (N=", length(which(!is.na(data$trait))),")",sep=""),cex.main=0.7)
 hist(data$trait, xlab="", main=paste("raw ",trait_var," (N=", length(which(!is.na(data$trait))),")",sep=""),cex.main=0.7)
 abline(v=mean(data$trait,na.rm=T)-SD*sd(data$trait,na.rm=T),lty=2)
