@@ -73,11 +73,11 @@ ${plink} \
 rm temp_hm3snps.txt
 
 # Create pedigree matrix if family data, otherwise remove related individuals from existing kinship and data file
-if [ "${unrelated}" = "no" ]
+if [ "${related}" = "yes" ]
 then
 	echo "Creating pedigree GRM"
 	Rscript resources/relateds/grm_relateds.R ${grmfile_all} ${grmfile_relateds} ${rel_cutoff}
-elif [ "${unrelated}" = "yes" ]
+elif [ "${related}" = "no" ]
 then
 	echo "Removing any cryptic relateds"
 	${plink} \
@@ -94,7 +94,7 @@ then
 		--out ${bfile} \
 		--threads ${nthreads}
 else 
-	echo "Error: Set unrelated flag in config to yes or no"
+	echo "Error: Set related flag in config to yes or no"
 	exit 1
 fi
 
@@ -111,7 +111,7 @@ ${plink} \
 
 rm temp_hm3snpsnold.txt
 
-if [ "${unrelated}" = "yes" ]
+if [ "${related}" = "no" ]
 then
 	${plink} \
 		--bfile ${bfile} \

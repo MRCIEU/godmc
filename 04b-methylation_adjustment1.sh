@@ -23,7 +23,7 @@ else
 fi
 
 
-if [ "${unrelated}" = "yes" ]
+if [ "${related}" = "no" ]
 then
 	echo "You have specified that the data is not family data. Adjusting only for covariates..."
 	Rscript resources/methylation/adjust_covs.R \
@@ -34,7 +34,7 @@ then
 		${meth_chunks} \
 		${i}
 
-elif [ "${unrelated}" = "no" ]
+elif [ "${related}" = "yes" ]
 then
 	# For family data adjust methylation data for relatedness (take residuals after fitting pedigree matrix, i.e. GRAMMAR method)
 	echo "You have specified that the data is family data. Adjusting for pedigree and covariates..."

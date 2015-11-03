@@ -33,9 +33,9 @@ cellcounts_required="yes"
 # Otherwise leave it as NULL
 provided_cellcounts="NULL"
 
-# Are the samples unrelated? If so (even if there is possible cryptic relatedness) set this to "yes"
-# If there are relationships in the data then set this to "no"
-unrelated="no"
+# Are the samples related? e.g. Complex family data, twin data etc. If so set this to "yes"
+# If these samples are expected to be unrelated set this to "no" (even if there may be cryptic relatedness)
+related="yes"
 
 # Parallelisation parameters
 # Number of threads to use per node
