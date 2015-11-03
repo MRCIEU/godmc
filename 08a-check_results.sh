@@ -18,12 +18,27 @@ else
 fi
 
 
+
+if grep -i -q "success" ${snp_data_logfile}; then
+	echo "02a-snp_data.sh completed successfully."
+else
+	echo "Problem: 02a-snp_data.sh did not complete successfully"
+fi
+
+
+if grep -i -q "success" ${convert_snp_format_logfile}; then
+	echo "02b-convert_snp_format.sh completed successfully."
+else
+	echo "Problem: 02b-convert_snp_format.sh did not complete successfully"
+fi
+
+
 if [ ! "${phenotypes}" = "NULL" ]
 then
 	if grep -i -q "success" ${phenotype_data_logfile}; then
-		echo "02a-phenotype_data.sh completed successfully."
+		echo "03a-phenotype_data.sh completed successfully."
 	else
-		echo "Problem: 02a-phenotype_data.sh did not complete successfully"
+		echo "Problem: 03a-phenotype_data.sh did not complete successfully"
 	fi
 fi
 
@@ -31,25 +46,12 @@ fi
 if [ ! "${phenotypes}" = "NULL" ]
 then
 	if grep -i -q "success" ${height_prediction_logfile}; then
-		echo "02b-height_prediction.sh completed successfully."
+		echo "03b-height_prediction.sh completed successfully."
 	else
-		echo "Problem: 02b-height_prediction.sh did not complete successfully"
+		echo "Problem: 03b-height_prediction.sh did not complete successfully"
 	fi
 fi
 
-
-if grep -i -q "success" ${snp_data_logfile}; then
-	echo "03a-snp_data.sh completed successfully."
-else
-	echo "Problem: 03a-snp_data.sh did not complete successfully"
-fi
-
-
-if grep -i -q "success" ${convert_snp_format_logfile}; then
-	echo "03b-convert_snp_format.sh completed successfully."
-else
-	echo "Problem: 03b-convert_snp_format.sh did not complete successfully"
-fi
 
 
 if grep -i -q "success" ${methylation_variables_logfile}; then
