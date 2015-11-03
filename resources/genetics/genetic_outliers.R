@@ -100,7 +100,7 @@ removeOutliersFromData <- function(X, thresh, iterations)
 	n <- ncol(X)
 	for(i in 1:n)
 	{
-		cat(i, "\n")
+		# cat(i, "\n")
 		X[,i] <- remRec(X[,i], thresh, iterations)$x
 	}
 	return(X)
