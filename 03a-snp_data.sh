@@ -100,11 +100,24 @@ ${plink} \
 
 rm temp_hm3snpsnold.txt
 
-${plink} \
-	--bfile ${bfile} \
-	--extract ${pca}.prune.in \
-	--pca 20 \
-	--out ${pca}
+if [ "${unrelated}" = "yes" ]
+then
+	${plink} \
+		--bfile ${bfile} \
+		--extract ${pca}.prune.in \
+		--pca 20 \
+		--out ${pca}
+else
+
+	${plink} \
+		--bfile ${bfile} \
+		--extract ${pca}.prune.in \
+		--make-bed \
+		--out ${bfile}_ldpruned
+
+	R --no-save --args ${bfile}_ldpruned ${pca} < resources/genetics/pcs_relateds.R
+fi
+
 
 # Get genetic outliers
 echo "Detecting genetic outliers"
