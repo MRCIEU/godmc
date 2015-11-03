@@ -25,7 +25,8 @@ ${plink} \
 	--mind ${snp_imiss} \
 	--make-bed \
 	--autosome \
-	--out ${bfile}
+	--out ${bfile} \
+	--threads ${nthreads}
 
 
 # Change SNP ids to chr:position:{SNP/INDEL}
@@ -43,8 +44,14 @@ awk '{
 	}}' ${bfile}.bim.original2 > ${bfile}.bim
 
 grep "duplicate" ${bfile}.bim | awk '{ print $2 }' > ${bfile}.duplicates.txt
-plink1.90 --bfile ${bfile} --exclude ${bfile}.duplicates.txt --make-bed --out ${bfile}
+plink1.90 \
+	--bfile ${bfile} \
+	--exclude ${bfile}.duplicates.txt \
+	--make-bed \
+	--out ${bfile} \
+	--threads ${nthreads}
 
+rm ${bfile}.*~
 
 # Get frequencies
 plink1.90 --bfile ${bfile} --freq --hardy --out ${matrixeqtl_mqtl_dir}/data
@@ -61,7 +68,8 @@ ${plink} \
 	--extract temp_hm3snps.txt \
 	--maf ${grm_maf_cutoff} \
 	--make-grm-bin \
-	--out ${grmfile_all}
+	--out ${grmfile_all} \
+	--threads ${nthreads}
 rm temp_hm3snps.txt
 
 # Create pedigree matrix if family data, otherwise remove related individuals from existing kinship and data file
@@ -76,13 +84,15 @@ then
 		--grm-bin ${grmfile_all} \
 		--rel-cutoff ${rel_cutoff} \
 		--make-grm-bin \
-		--out ${grmfile_unrelateds}
+		--out ${grmfile_unrelateds} \
+		--threads ${nthreads}
 
 	${plink}  \
 		--bfile ${bfile} \
 		--keep ${grmfile_unrelateds}.grm.id \
 		--make-bed \
-		--out ${bfile}
+		--out ${bfile} \
+		--threads ${nthreads}
 else 
 	echo "Error: Set unrelated flag in config to yes or no"
 	exit 1
@@ -96,20 +106,45 @@ ${plink} \
 	--extract temp_hm3snpsnold.txt \
 	--indep-pairwise 10000 5 0.1 \
 	--maf 0.2 \
-	--out ${pca}
+	--out ${pca} \
+	--threads ${nthreads}
 
 rm temp_hm3snpsnold.txt
 
-${plink} \
-	--bfile ${bfile} \
-	--extract ${pca}.prune.in \
-	--pca 20 \
-	--out ${pca}
+if [ "${unrelated}" = "yes" ]
+then
+	${plink} \
+		--bfile ${bfile} \
+		--extract ${pca}.prune.in \
+		--pca 20 \
+		--out ${pca} \
+		--threads ${nthreads}
+else
+
+	${plink} \
+		--bfile ${bfile} \
+		--extract ${pca}.prune.in \
+		--make-bed \
+		--out ${bfile}_ldpruned \
+		--threads ${nthreads}
+
+	Rscript resources/genetics/pcs_relateds.R \
+		${bfile}_ldpruned \
+		${pca} \
+		${n_pcs} \
+		${nthreads}
+fi
+
 
 # Get genetic outliers
 echo "Detecting genetic outliers"
 
-Rscript resources/genetics/genetic_outliers.R ${pcs_all} ${pca_sd} ${n_pcs} ${genetic_outlier_ids} ${pcaplot} 
+Rscript resources/genetics/genetic_outliers.R \
+	${pcs_all} \
+	${pca_sd} \
+	${n_pcs} \
+	${genetic_outlier_ids} \
+	${pcaplot}
 
 # Remove genetic outliers from data
 echo "Removing genetic outliers"
@@ -117,13 +152,15 @@ ${plink} \
 	--bfile ${bfile} \
 	--remove ${genetic_outlier_ids} \
 	--make-bed \
-	--out ${bfile}
+	--out ${bfile} \
+	--threads ${nthreads}
 
 ${gcta} \
 	--grm ${grmfile_all} \
 	--remove ${genetic_outlier_ids} \
 	--make-grm-bin \
-	--out ${grmfile_all}
+	--out ${grmfile_all} \
+	--thread-num ${nthreads}
 
 
 
