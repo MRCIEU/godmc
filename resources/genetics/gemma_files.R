@@ -34,19 +34,19 @@ main <- function()
 	}
 
 	# Find variables with large number of missing values
-	index <- apply(cellcounts, 2, function(x)
-	{
-		(sum(is.na(x)) / length(x)) < 0.2
-	})
+	#index <- apply(cellcounts, 2, function(x)
+	#{
+#		(sum(is.na(x)) / length(x)) < 0.2
+	#})
 
-	cellcounts <- cellcounts[, index]
-	write.table(data.frame(ids, cellcounts), file=paste0(cellcounts_file, ".plink"), row=F, col=F, qu=F)
+	#cellcounts <- cellcounts[, index]
+	#write.table(data.frame(ids, cellcounts), file=paste0(cellcounts_file, ".plink"), row=F, col=F, qu=F)
 
 	# Replace missing values with mean values
-	for(i in 1:ncol(cellcounts))
-	{
-		cellcounts[is.na(cellcounts[,i]), i] <- mean(cellcounts[,i], na.rm=T)
-	}
+	#for(i in 1:ncol(cellcounts))
+	#{
+#		cellcounts[is.na(cellcounts[,i]), i] <- mean(cellcounts[,i], na.rm=T)
+	#}
 
 	write.table(round(cellcounts, 5), file=paste0(cellcounts_file, ".gemma"), row=F, col=F, qu=F, sep="\t")
 	write.table(data.frame(ids, entropy), file=paste0(cellcounts_file, ".entropy.plink"), row=F, col=F, qu=F)
