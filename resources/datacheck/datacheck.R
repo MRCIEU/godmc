@@ -542,6 +542,38 @@ cohort_summary$min_BMI <- min(ph$BMI)
 cohort_summary$n_snp <- nrow(bim)
 cohort_summary$covariates <- names(covar)[-1]
 
-save(cohort_summary, file=cohort_descriptives_file)
 
-cat("You successfully performed all datachecks!","\n")
+summariseMeth <- function(X, outlier_threshold)
+{
+	require(matrixStats)
+
+	message("Removing outliers")
+	sds <- rowSds(X, na.rm=T)
+	means <- rowMeans(X, na.rm=T)
+	X[X > means + sds*outlier_threshold | X < means - sds*outlier_threshold] <- NA
+
+	message("Estimating means")
+	means <- rowMeans(X, na.rm=T)
+
+	message("Estimating SDs")
+	sds <- rowVars(X, na.rm=T)
+
+	message("Estimating medians")
+	medians <- rowMedians(X, na.rm=T)
+
+	message("Counting outliers")
+	outliers <- apply(X, 1, function(x) sum(is.na(x)))
+
+	dat <- data.frame(cpg=rownames(X), mean=means, median=medians, sd=sds, outlier=outliers)
+	return(dat)
+}
+
+message("Generating summary stats of methylation")
+
+meth_summary <- summariseMeth(norm.beta, 5)
+
+save(cohort_summary, meth_summary, file=cohort_descriptives_file)
+
+
+
+message("You successfully performed all datachecks!")
