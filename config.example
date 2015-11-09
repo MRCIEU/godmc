@@ -6,6 +6,12 @@ study_name=""
 analyst_name=""
 analyst_email=""
 
+# This should be provided to you from the GoDMC developers (along with a password)
+sftp_username=""
+
+# This is the location your results will be uploaded
+# Note: No individual data will be uploaded to this location during the course of the pipeline
+sftp_address="sscmv-filetran.epi.bris.ac.uk"
 
 # Please put the full path to this directory
 # e.g. you can find this by using the pwd command in the terminal
