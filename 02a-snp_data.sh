@@ -44,20 +44,12 @@ awk '{
 	}}' ${bfile}.bim.original2 > ${bfile}.bim
 
 grep "duplicate" ${bfile}.bim | awk '{ print $2 }' > ${bfile}.duplicates.txt
-plink1.90 \
+${plink} \
 	--bfile ${bfile} \
 	--exclude ${bfile}.duplicates.txt \
 	--make-bed \
 	--out ${bfile} \
 	--threads ${nthreads}
-
-rm ${bfile}.*~
-
-# Get frequencies
-plink1.90 --bfile ${bfile} --freq --hardy --out ${matrixeqtl_mqtl_dir}/data
-gzip -f ${matrixeqtl_mqtl_dir}/data.frq
-gzip -f ${matrixeqtl_mqtl_dir}/data.hwe
-gzip -c ${quality_scores} > ${matrixeqtl_mqtl_dir}/data.info.gz
 
 
 # Make GRMs
@@ -162,10 +154,18 @@ ${gcta} \
 	--out ${grmfile_all} \
 	--thread-num ${nthreads}
 
+#From here on, we have clean data
 
+# Get frequencies
+${plink} --bfile ${bfile} --freq gz --hardy gz --missing gz --out ${matrixeqtl_mqtl_dir}/data
+gzip -f ${matrixeqtl_mqtl_dir}/data.frq
+gzip -f ${matrixeqtl_mqtl_dir}/data.hwe
+gzip -c ${quality_scores} > ${matrixeqtl_mqtl_dir}/data.info.gz
 
 #Update ids
 awk '{print $1,$2}' <${bfile}.fam >${intersect_ids_plink}
 awk '{print $2}' <${bfile}.fam >${intersect_ids}
+
+rm ${bfile}.*~
 
 echo "Successfully formatted SNP data"
