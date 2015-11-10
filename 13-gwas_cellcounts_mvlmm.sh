@@ -3,7 +3,7 @@
 set -e
 source config
 
-cd ${gwas_cellcounts_dir}
+cd ${section_13_dir}
 
 batch=${1}
 re='^[0-9]+$'
@@ -31,7 +31,7 @@ plink1.90 \
 cut -d " " -f 1-5 ${bfile}_${batch}.fam | tr ' ' '\t' > ${bfile}_${batch}.fam.temp
 paste -d "\t" ${bfile}_${batch}.fam.temp ${cellcounts_tf}.gemma > ${bfile}_${batch}.fam
 
-nval=`awk '{ print NR }' ${gwas_cellcounts_dir}/cellcounts_columns.txt | tr '\n' ' '`
+nval=`awk '{ print NR }' ${section_13_dir}/cellcounts_columns.txt | tr '\n' ' '`
 echo "Performing multivariate LMM on ${nval} cellcount phenotypes"
 
 ${gemma} \
@@ -43,7 +43,7 @@ ${gemma} \
 
 echo "Compressing results"
 gzip -f output/cellcounts_mvlmm_${batch}.assoc.txt
-mv output/cellcounts_mvlmm_${batch}.* ${gwas_cellcounts_dir}
+mv output/cellcounts_mvlmm_${batch}.* ${section_13_dir}
 
 rm ${bfile}_${batch}*
 

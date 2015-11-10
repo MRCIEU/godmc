@@ -16,7 +16,7 @@ geno="${tabfile}.tab.${batch_number}"
 phen="${methylation_adjusted_pcs}.txt"
 cov="NULL"
 threshold="${soft_threshold}"
-out="${matrixeqtl_mqtl_dir}/${resname}.${batch_number}.RData"
+out="${section_05_dir}/${resname}.${batch_number}.RData"
 
 
 nbatch=(${tabfile}.tab.*)

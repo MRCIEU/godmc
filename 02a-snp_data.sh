@@ -157,10 +157,8 @@ ${gcta} \
 #From here on, we have clean data
 
 # Get frequencies
-${plink} --bfile ${bfile} --freq gz --hardy gz --missing gz --out ${matrixeqtl_mqtl_dir}/data
-gzip -f ${matrixeqtl_mqtl_dir}/data.frq
-gzip -f ${matrixeqtl_mqtl_dir}/data.hwe
-gzip -c ${quality_scores} > ${matrixeqtl_mqtl_dir}/data.info.gz
+${plink} --bfile ${bfile} --freq gz --hardy gz --missing gz --out ${section_02_dir}/data
+
 
 #Update ids
 awk '{print $1,$2}' <${bfile}.fam >${intersect_ids_plink}

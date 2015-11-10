@@ -85,7 +85,7 @@ Rscript resources/genetics/create_covariates_files.R \
 Rscript resources/genetics/gemma_files.R \
 	${grmfile_all} \
 	${cellcounts_tf} \
-	${gwas_cellcounts_dir}/cellcounts_columns.txt \
+	${section_12_dir}/cellcounts_columns.txt \
 	${smoking_pred}.txt
 
 echo "Successfully created methylation-related variables"

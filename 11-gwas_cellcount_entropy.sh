@@ -9,10 +9,10 @@ ${gcta} \
 	--mlma-loco \
 	--pheno ${cellcounts_tf}.entropy.plink \
 	--qcovar ${gwas_covariates}.cellcounts \
-	--out ${gwas_cellcounts_dir}/cellcount_entropy \
+	--out ${section_11_dir}/cellcount_entropy \
 	--thread-num ${nthreads}
 
 echo "Compressing results"
-gzip -f ${gwas_cellcounts_dir}/cellcount_entropy.loco.mlma
+gzip -f ${section_11_dir}/cellcount_entropy.loco.mlma
 
 echo "Successfully performed GWAS"

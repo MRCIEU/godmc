@@ -4,7 +4,7 @@ set -e
 source config
 batch=${1}
 re='^[0-9]+$'
-ncellcounts=`wc -l ${gwas_cellcounts_dir}/cellcounts_columns.txt | awk '{ print $1 }'`
+ncellcounts=`wc -l ${section_12_dir}/cellcounts_columns.txt | awk '{ print $1 }'`
 if ! [[ $batch =~ $re ]] ; then
 	echo "error: Cell type variable is not valid"
 	echo "Please provide a number between 1 and ${ncellcounts}"
@@ -33,11 +33,11 @@ ${gcta} \
 	--mlma-loco \
 	--pheno ${cellcounts_tf}.plink \
 	--qcovar ${gwas_covariates}.cellcounts \
-	--out ${gwas_cellcounts_dir}/cellcount_${batch} \
+	--out ${section_12_dir}/cellcount_${batch} \
 	--thread-num ${nthreads} \
 	--mpheno ${batch}
 
 echo "Compressing results"
-gzip -f ${gwas_cellcounts_dir}/cellcount_${batch}.loco.mlma
+gzip -f ${section_12_dir}/cellcount_${batch}.loco.mlma
 
 echo "Successfully performed GWAS for cell type ${batch}"

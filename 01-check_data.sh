@@ -21,5 +21,6 @@ Rscript resources/datacheck/datacheck.R \
 	${ageplot} \
 	${ewas_results}.phenotype_list \
 	${quality_scores} \
-	${quality_scores_plot}
+	${quality_scores_plot} \
+	${methylation_summary}
 

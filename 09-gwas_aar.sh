@@ -9,10 +9,10 @@ ${gcta} \
 	--mlma-loco \
 	--pheno ${age_pred}.aar.plink \
 	--qcovar ${gwas_covariates}.aar \
-	--out ${gwas_aar_dir}/aar \
+	--out ${section_09_dir}/aar \
 	--thread-num ${nthreads}
 
 echo "Compressing results"
-gzip -f ${gwas_aar_dir}/aar.loco.mlma
+gzip -f ${section_09_dir}/aar.loco.mlma
 
 echo "Successfully performed GWAS"

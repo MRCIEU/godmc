@@ -9,10 +9,10 @@ ${gcta} \
 	--mlma-loco \
 	--pheno ${smoking_pred}.plink \
 	--qcovar ${gwas_covariates}.smoking \
-	--out ${gwas_smoking_dir}/smoking \
+	--out ${section_10_dir}/smoking \
 	--thread-num ${nthreads}
 
 echo "Compressing results"
-gzip -f ${gwas_smoking_dir}/smoking.loco.mlma
+gzip -f ${section_10_dir}/smoking.loco.mlma
 
 echo "Successfully performed GWAS"

@@ -18,6 +18,7 @@ age_distribution_plot <- as.character(args[14])
 ewas_phenotype_list_file <- as.character(args[15])
 quality_file <- as.character(args[16])
 quality_plot <- as.character(args[17])
+methylation_summary_file <- as.character(args[18])
 
 # BIM file check
 message("Checking bim file: ", bim_file)
@@ -572,8 +573,7 @@ message("Generating summary stats of methylation")
 
 meth_summary <- summariseMeth(norm.beta, 5)
 
-save(cohort_summary, meth_summary, file=cohort_descriptives_file)
-
-
+save(cohort_summary, file=cohort_descriptives_file)
+save(meth_summary, file=methylation_summary_file)
 
 message("You successfully performed all datachecks!")

@@ -1,115 +1,6 @@
 #!/usr/bin/env bash
 
-# ID lists
-intersect_ids_plink="${home_directory}/processed_data/ids/intersect_ids_plink.txt"
-intersect_ids="${home_directory}/processed_data/ids/intersect_ids.txt"
-
-# Check data
-control_snps="${home_directory}/resources/genetics/snpsforbuildandposcheck.txt"
-snpcheck="${home_directory}/log_files/check_data/no_snps_by_chr.txt"
-snpplot="${home_directory}/log_files/check_data/no_snps_by_chr_plot.pdf"
-quality_scores_plot="${home_directory}/log_files/check_data/snp_quality.pdf"
-cohort_descriptives="${home_directory}/results/01/cohort_descriptives.RData"
-ageplot="${home_directory}/log_files/check_data/age_distribution.pdf"
-
-# EWAS phenotypes
-ewasplot="${home_directory}/log_files/phenotype_data/ewas_phenotypes.pdf"
-ewastransformed="${home_directory}/processed_data/phenotypes/ewas.transformed.txt"
-ewas_sd="5"
-ewas_plink="${home_directory}/processed_data/phenotypes/ewas.plink"
-ewas_file="${home_directory}/processed_data/phenotypes/ewas"
-
-# Clean genetic data
-bfile="${home_directory}/processed_data/genetic_data/data"
-tabfile="${home_directory}/processed_data/genetic_data/tabfile/data"
-allele_ref="${home_directory}/results/02/data.allele_codes"
-bfile_hm3="${home_directory}/processed_data/genetic_data/data_hm3"
-tabfile_hm3="${home_directory}/processed_data/genetic_data/tabfile_hm3/data"
-allele_ref_hm3="${home_directory}/processed_data/genetic_data/data_hm3.allele_codes"
-
-pcaplot="${home_directory}/log_files/snp_data/pcaplot.pdf"
-
-# CNV file
-tabcnv="${home_directory}/processed_data/cnv_data/tabfile/data"
-
-# Kinship files
-grmfile_all="${home_directory}/processed_data/genetic_data/data"
-grmfile_relateds="${home_directory}/processed_data/genetic_data/data_relateds"
-grmfile_unrelateds="${home_directory}/processed_data/genetic_data/data_unrelateds"
-
-# PCA files
-pca="${home_directory}/processed_data/genetic_data/pca"
-pcs_all="${pca}.eigenvec"
-
-# Cell count
-cellcounts="${home_directory}/processed_data/methylation_data/cellcounts.txt"
-#cellcounts="${home_directory}/input_data/cellcounts.txt"
-#cellcount_reference="${home_directory}/resources/cellcounts/houseman-dmrs.txt"
-#cellcount_reference="${home_directory}/resources/cellcounts/gse35069complete.txt"
-cellcounts_reference="blood_gse35069_complete"
-cellcounts_tf="${home_directory}/processed_data/cellcounts/cellcounts.transformed.txt"
-cellcounts_entropy="${home_directory}/processed_data/cellcounts/cellcounts_entropy.txt"
-cellcounts_plink="${home_directory}/processed_data/genetic_data/cellcounts.transformed.plink"
-cellcounts_plink_raw="${home_directory}/processed_data/genetic_data/cellcounts.plink.raw"
-cellcounts_plot="${home_directory}/log_files/methylation_variables/cellcounts_plot.pdf"
-cellcounts_SD="5"
-
-# Covariates
-covariates_combined="${home_directory}/processed_data/methylation_data/all_covariates"
-
-meth_pcs="${home_directory}/processed_data/methylation_data/meth_pcs"
-nongenetic_meth_pcs="${home_directory}/processed_data/methylation_data/meth_pcs_nongenetic"
-gwas_covariates="${home_directory}/processed_data/genetic_data/gwas_covariates"
-
-# SNP list files
-hm3_snps="${home_directory}/resources/genetics/hapmap3_autosome.snplist.gz"
-ilmn_probesnps="${home_directory}/resources/qc/probesnps.txt"
-hm3_snps_no_ld="${home_directory}/resources/genetics/hapmap3_autosome.snplist_withoutlong-range.LDSNPs.txt.gz"
-
-# Sample mixup checks
-bfile_probesnps="${bfile}_probesnps"
-
-# ID lists
-genetic_outlier_ids="${home_directory}/processed_data/genetic_data/genetic_outliers.txt"
-methylation_ids="${home_directory}/processed_data/genetic_data/methylation_ids.txt"
-
-# Methylation files
-methylation_adjusted="${home_directory}/processed_data/methylation_data/methylation_adjusted"
-methylation_adjusted_pcs="${home_directory}/processed_data/methylation_data/methylation_adjusted_pcs"
-methylation_adjusted_pcs_sq="${home_directory}/processed_data/methylation_data/methylation_adjusted_pcs_sq"
-
-# Smoking prediction
-smoking_pred="${home_directory}/processed_data/methylation_data/smoking_prediction"
-smoking_pred_plot="${home_directory}/log_files/methylation_variables/smoking_prediction.pdf"
-smoking_pred_SD="5"
-
-
-# Age prediction
-age_pred="${home_directory}/processed_data/methylation_data/age_prediction"
-age_pred_plot="${home_directory}/log_files/methylation_variables/age_prediction.pdf"
-age_pred_SD="5"
-
-# Results locations
-matrixeqtl_mqtl_dir="${home_directory}/results/05"
-matrixeqtl_vmqtl_dir="${home_directory}/results/06"
-matrixeqtl_mcnv_dir="${home_directory}/results/07"
-ewas_results_dir="${home_directory}/results/08"
-gwas_aar_dir="${home_directory}/results/09"
-gwas_smoking_dir="${home_directory}/results/10"
-gwas_cellcount_entropy_dir="${home_directory}/results/11"
-gwas_cellcounts_dir="${home_directory}/results/12"
-gwas_cellcounts_mvlmm_dir="${home_directory}/results/13"
-
-resname="res"
-
-#height prediction
-height_snps_wood="${home_directory}/resources/genetics/wood.height.snps_af0.1"
-height_snps="${home_directory}/processed_data/genetic_data/height"
-height_plot="${home_directory}/log_files/height_prediction/heightcor_plot.pdf"
-
-
 # logfiles
-
 
 section_01_dir="${home_directory}/results/01"
 section_02_dir="${home_directory}/results/02"
@@ -124,7 +15,6 @@ section_10_dir="${home_directory}/results/10"
 section_11_dir="${home_directory}/results/11"
 section_12_dir="${home_directory}/results/12"
 section_13_dir="${home_directory}/results/13"
-
 
 section_01_logfile="${section_01_dir}/logs/log.txt"
 section_02a_logfile="${section_02_dir}/logs_a/log.txt"
@@ -148,27 +38,111 @@ section_13_logfile="${section_13_dir}/logs/log.txt"
 
 
 
-# section_01_logfile="${home_directory}/results/check_data/log.txt"
-# snp_data_logfile="${home_directory}/log_files/snp_data/log.txt"
-# height_prediction_logfile="${home_directory}/log_files/height_prediction/log.txt"
-# convert_methylation_format_logfile="${home_directory}/log_files/convert_methylation_format/log.txt"
-# convert_snp_format_logfile="${home_directory}/log_files/convert_snp_format/log.txt"
-# ewas_logfile="${home_directory}/log_files/ewas/log.txt"
-# gwas_aar_logfile="${home_directory}/log_files/gwas_aar/log.txt"
-# gwas_cellcounts_logfile="${home_directory}/log_files/gwas_cellcounts/log.txt"
-# gwas_cellcounts_gemma_logfile="${home_directory}/log_files/gwas_cellcounts/gemma_log.txt"
-# gwas_cellcount_entropy_logfile="${home_directory}/log_files/gwas_cellcount_entropy/log.txt"
-# gwas_smoking_logfile="${home_directory}/log_files/gwas_smoking/log.txt"
-# mcnv_logfile="${home_directory}/log_files/mcnv/log.txt"
-# methylation_adjustment1_logfile="${home_directory}/log_files/methylation_adjustment1/log.txt"
-# methylation_adjustment2_logfile="${home_directory}/log_files/methylation_adjustment2/log.txt"
-# methylation_pcs_logfile="${home_directory}/log_files/methylation_pcs/log.txt"
-# methylation_variables_logfile="${home_directory}/log_files/methylation_variables/log.txt"
-# mqtl_logfile="${home_directory}/log_files/mqtl/log.txt"
-# phenotype_data_logfile="${home_directory}/log_files/phenotype_data/log.txt"
-# snp_data_logfile="${home_directory}/log_files/snp_data/log.txt"
-# vmqtl_logfile="${home_directory}/log_files/vmqtl/log.txt"
-# check_results_logfile="${home_directory}/log_files/check_results/log.txt"
+# ID lists
+intersect_ids_plink="${home_directory}/processed_data/ids/intersect_ids_plink.txt"
+intersect_ids="${home_directory}/processed_data/ids/intersect_ids.txt"
+
+# Check data
+control_snps="${home_directory}/resources/genetics/snpsforbuildandposcheck.txt"
+snpcheck="${section_01_dir}/no_snps_by_chr.txt"
+snpplot="${section_01_dir}/no_snps_by_chr_plot.pdf"
+quality_scores_plot="${section_01_dir}/snp_quality.pdf"
+cohort_descriptives="${section_01_dir}/cohort_descriptives.RData"
+ageplot="${section_01_dir}/age_distribution.pdf"
+methylation_summary="${section_01_dir}/methylation_summary.RData"
+
+# EWAS phenotypes
+ewasplot="${section_03_dir}/ewas_phenotypes.pdf"
+ewastransformed="${home_directory}/processed_data/phenotypes/ewas.transformed.txt"
+ewas_sd="5"
+ewas_plink="${home_directory}/processed_data/phenotypes/ewas.plink"
+ewas_file="${home_directory}/processed_data/phenotypes/ewas"
+
+# Clean genetic data
+bfile="${home_directory}/processed_data/genetic_data/data"
+tabfile="${home_directory}/processed_data/genetic_data/tabfile/data"
+bfile_hm3="${home_directory}/processed_data/genetic_data/data_hm3"
+tabfile_hm3="${home_directory}/processed_data/genetic_data/tabfile_hm3/data"
+allele_ref_hm3="${home_directory}/processed_data/genetic_data/data_hm3.allele_codes"
+
+pcaplot="${section_02_dir}/pcaplot.pdf"
+allele_ref="${section_02_dir}/data.allele_codes"
+
+# CNV file
+tabcnv="${home_directory}/processed_data/cnv_data/tabfile/data"
+
+# Kinship files
+grmfile_all="${home_directory}/processed_data/genetic_data/data"
+grmfile_relateds="${home_directory}/processed_data/genetic_data/data_relateds"
+grmfile_unrelateds="${home_directory}/processed_data/genetic_data/data_unrelateds"
+
+# PCA files
+pca="${home_directory}/processed_data/genetic_data/pca"
+pcs_all="${pca}.eigenvec"
+
+# Cell count
+cellcounts="${home_directory}/processed_data/methylation_data/cellcounts.txt"
+cellcounts_reference="blood_gse35069_complete"
+cellcounts_tf="${home_directory}/processed_data/cellcounts/cellcounts.transformed.txt"
+cellcounts_entropy="${home_directory}/processed_data/cellcounts/cellcounts_entropy.txt"
+cellcounts_plink="${home_directory}/processed_data/genetic_data/cellcounts.transformed.plink"
+cellcounts_plink_raw="${home_directory}/processed_data/genetic_data/cellcounts.plink.raw"
+
+cellcounts_SD="5"
+cellcounts_plot="${section_04_dir}/cellcounts_plot.pdf"
+
+# Covariates
+covariates_combined="${home_directory}/processed_data/methylation_data/all_covariates"
+meth_pcs="${home_directory}/processed_data/methylation_data/meth_pcs"
+nongenetic_meth_pcs="${home_directory}/processed_data/methylation_data/meth_pcs_nongenetic"
+gwas_covariates="${home_directory}/processed_data/genetic_data/gwas_covariates"
+
+# SNP list files
+hm3_snps="${home_directory}/resources/genetics/hapmap3_autosome.snplist.gz"
+ilmn_probesnps="${home_directory}/resources/qc/probesnps.txt"
+hm3_snps_no_ld="${home_directory}/resources/genetics/hapmap3_autosome.snplist_withoutlong-range.LDSNPs.txt.gz"
+
+# Sample mixup checks
+bfile_probesnps="${bfile}_probesnps"
+
+# ID lists
+genetic_outlier_ids="${home_directory}/processed_data/genetic_data/genetic_outliers.txt"
+methylation_ids="${home_directory}/processed_data/genetic_data/methylation_ids.txt"
+
+# Methylation files
+methylation_adjusted="${home_directory}/processed_data/methylation_data/methylation_adjusted"
+methylation_adjusted_pcs="${home_directory}/processed_data/methylation_data/methylation_adjusted_pcs"
+methylation_adjusted_pcs_sq="${home_directory}/processed_data/methylation_data/methylation_adjusted_pcs_sq"
+
+# Smoking prediction
+smoking_pred="${home_directory}/processed_data/methylation_data/smoking_prediction"
+smoking_pred_plot="${section_04_dir}/smoking_prediction.pdf"
+smoking_pred_SD="5"
+
+
+# Age prediction
+age_pred="${home_directory}/processed_data/methylation_data/age_prediction"
+age_pred_plot="${section_04_dir}/age_prediction.pdf"
+age_pred_SD="5"
+
+# Results locations
+matrixeqtl_mqtl_dir="${home_directory}/results/05"
+matrixeqtl_vmqtl_dir="${home_directory}/results/06"
+matrixeqtl_mcnv_dir="${home_directory}/results/07"
+ewas_results_dir="${home_directory}/results/08"
+gwas_aar_dir="${home_directory}/results/09"
+gwas_smoking_dir="${home_directory}/results/10"
+gwas_cellcount_entropy_dir="${home_directory}/results/11"
+gwas_cellcounts_dir="${home_directory}/results/12"
+gwas_cellcounts_mvlmm_dir="${home_directory}/results/13"
+
+resname="res"
+
+#height prediction
+height_snps_wood="${home_directory}/resources/genetics/wood.height.snps_af0.1"
+height_snps="${home_directory}/processed_data/genetic_data/height"
+height_plot="${section_03_dir}/heightcor_plot.pdf"
+
 
 
 
