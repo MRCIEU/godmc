@@ -15,7 +15,7 @@ if ! [[ $batch_number =~ $re ]] ; then
 	echo "Usage: ${0} [batch number]"
 	exit 1
 fi
-exec &> >(tee ${mcnv_logfile}_${batch_number})
+exec &> >(tee ${section_07_logfile}${batch_number})
 
 geno="${tabcnv}.tab.${batch_number}"
 phen="${methylation_adjusted_pcs}.txt"

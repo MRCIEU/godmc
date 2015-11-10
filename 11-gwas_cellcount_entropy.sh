@@ -2,7 +2,7 @@
 
 set -e
 source config
-exec &> >(tee ${gwas_cellcount_entropy_logfile})
+exec &> >(tee ${section_11_logfile})
 
 ${gcta} \
 	--bfile ${bfile} \

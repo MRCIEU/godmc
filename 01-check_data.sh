@@ -2,7 +2,7 @@
 
 set -e
 source config
-exec &> >(tee ${check_data_logfile})
+exec &> >(tee ${section_01_logfile})
 
 Rscript resources/datacheck/datacheck.R \
 	${bfile_raw}.bim \

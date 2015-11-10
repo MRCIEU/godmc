@@ -4,15 +4,15 @@
 intersect_ids_plink="${home_directory}/processed_data/ids/intersect_ids_plink.txt"
 intersect_ids="${home_directory}/processed_data/ids/intersect_ids.txt"
 
-#check_data
+# Check data
 control_snps="${home_directory}/resources/genetics/snpsforbuildandposcheck.txt"
 snpcheck="${home_directory}/log_files/check_data/no_snps_by_chr.txt"
 snpplot="${home_directory}/log_files/check_data/no_snps_by_chr_plot.pdf"
 quality_scores_plot="${home_directory}/log_files/check_data/snp_quality.pdf"
-cohort_descriptives="${home_directory}/log_files/check_data/cohort_descriptives.RData"
+cohort_descriptives="${home_directory}/results/01/cohort_descriptives.RData"
 ageplot="${home_directory}/log_files/check_data/age_distribution.pdf"
 
-#EWAS phenotypes
+# EWAS phenotypes
 ewasplot="${home_directory}/log_files/phenotype_data/ewas_phenotypes.pdf"
 ewastransformed="${home_directory}/processed_data/phenotypes/ewas.transformed.txt"
 ewas_sd="5"
@@ -22,14 +22,14 @@ ewas_file="${home_directory}/processed_data/phenotypes/ewas"
 # Clean genetic data
 bfile="${home_directory}/processed_data/genetic_data/data"
 tabfile="${home_directory}/processed_data/genetic_data/tabfile/data"
-allele_ref="${home_directory}/results/matrixeqtl_mqtl/data.allele_codes"
+allele_ref="${home_directory}/results/02/data.allele_codes"
 bfile_hm3="${home_directory}/processed_data/genetic_data/data_hm3"
 tabfile_hm3="${home_directory}/processed_data/genetic_data/tabfile_hm3/data"
 allele_ref_hm3="${home_directory}/processed_data/genetic_data/data_hm3.allele_codes"
 
 pcaplot="${home_directory}/log_files/snp_data/pcaplot.pdf"
 
-# cnv file
+# CNV file
 tabcnv="${home_directory}/processed_data/cnv_data/tabfile/data"
 
 # Kinship files
@@ -90,14 +90,16 @@ age_pred_plot="${home_directory}/log_files/methylation_variables/age_prediction.
 age_pred_SD="5"
 
 # Results locations
-ewas_results="${home_directory}/results/ewas/results"
-ewas_qqplots="${home_directory}/log_files/ewas/qqplot"
-gwas_aar_dir="${home_directory}/results/gwas_aar"
-gwas_cellcounts_dir="${home_directory}/results/gwas_cellcounts"
-gwas_smoking_dir="${home_directory}/results/gwas_smoking"
-matrixeqtl_mcnv_dir="${home_directory}/results/matrixeqtl_mcnv"
-matrixeqtl_mqtl_dir="${home_directory}/results/matrixeqtl_mqtl"
-matrixeqtl_vmqtl_dir="${home_directory}/results/matrixeqtl_vmqtl"
+matrixeqtl_mqtl_dir="${home_directory}/results/05"
+matrixeqtl_vmqtl_dir="${home_directory}/results/06"
+matrixeqtl_mcnv_dir="${home_directory}/results/07"
+ewas_results_dir="${home_directory}/results/08"
+gwas_aar_dir="${home_directory}/results/09"
+gwas_smoking_dir="${home_directory}/results/10"
+gwas_cellcount_entropy_dir="${home_directory}/results/11"
+gwas_cellcounts_dir="${home_directory}/results/12"
+gwas_cellcounts_mvlmm_dir="${home_directory}/results/13"
+
 resname="res"
 
 #height prediction
@@ -107,27 +109,66 @@ height_plot="${home_directory}/log_files/height_prediction/heightcor_plot.pdf"
 
 
 # logfiles
-check_data_logfile="${home_directory}/log_files/check_data/log.txt"
-snp_data_logfile="${home_directory}/log_files/snp_data/log.txt"
-height_prediction_logfile="${home_directory}/log_files/height_prediction/log.txt"
-convert_methylation_format_logfile="${home_directory}/log_files/convert_methylation_format/log.txt"
-convert_snp_format_logfile="${home_directory}/log_files/convert_snp_format/log.txt"
-ewas_logfile="${home_directory}/log_files/ewas/log.txt"
-gwas_aar_logfile="${home_directory}/log_files/gwas_aar/log.txt"
-gwas_cellcounts_logfile="${home_directory}/log_files/gwas_cellcounts/log.txt"
-gwas_cellcounts_gemma_logfile="${home_directory}/log_files/gwas_cellcounts/gemma_log.txt"
-gwas_cellcount_entropy_logfile="${home_directory}/log_files/gwas_cellcount_entropy/log.txt"
-gwas_smoking_logfile="${home_directory}/log_files/gwas_smoking/log.txt"
-mcnv_logfile="${home_directory}/log_files/mcnv/log.txt"
-methylation_adjustment1_logfile="${home_directory}/log_files/methylation_adjustment1/log.txt"
-methylation_adjustment2_logfile="${home_directory}/log_files/methylation_adjustment2/log.txt"
-methylation_pcs_logfile="${home_directory}/log_files/methylation_pcs/log.txt"
-methylation_variables_logfile="${home_directory}/log_files/methylation_variables/log.txt"
-mqtl_logfile="${home_directory}/log_files/mqtl/log.txt"
-phenotype_data_logfile="${home_directory}/log_files/phenotype_data/log.txt"
-snp_data_logfile="${home_directory}/log_files/snp_data/log.txt"
-vmqtl_logfile="${home_directory}/log_files/vmqtl/log.txt"
-check_results_logfile="${home_directory}/log_files/check_results/log.txt"
+
+
+section_01_dir="${home_directory}/results/01"
+section_02_dir="${home_directory}/results/02"
+section_03_dir="${home_directory}/results/03"
+section_04_dir="${home_directory}/results/04"
+section_05_dir="${home_directory}/results/05"
+section_06_dir="${home_directory}/results/06"
+section_07_dir="${home_directory}/results/07"
+section_08_dir="${home_directory}/results/08"
+section_09_dir="${home_directory}/results/09"
+section_10_dir="${home_directory}/results/10"
+section_11_dir="${home_directory}/results/11"
+section_12_dir="${home_directory}/results/12"
+section_13_dir="${home_directory}/results/13"
+
+
+section_01_logfile="${section_01_dir}/logs/log.txt"
+section_02a_logfile="${section_02_dir}/logs_a/log.txt"
+section_02b_logfile="${section_02_dir}/logs_b/log.txt"
+section_03a_logfile="${section_03_dir}/logs_a/log.txt"
+section_03b_logfile="${section_03_dir}/logs_b/log.txt"
+section_04a_logfile="${section_04_dir}/logs_a/log.txt"
+section_04b_logfile="${section_04_dir}/logs_b/log.txt"
+section_04c_logfile="${section_04_dir}/logs_c/log.txt"
+section_04d_logfile="${section_04_dir}/logs_d/log.txt"
+section_04e_logfile="${section_04_dir}/logs_e/log.txt"
+section_05_logfile="${section_05_dir}/logs/log.txt"
+section_06_logfile="${section_06_dir}/logs/log.txt"
+section_07_logfile="${section_07_dir}/logs/log.txt"
+section_08_logfile="${section_08_dir}/logs/log.txt"
+section_09_logfile="${section_09_dir}/logs/log.txt"
+section_10_logfile="${section_10_dir}/logs/log.txt"
+section_11_logfile="${section_11_dir}/logs/log.txt"
+section_12_logfile="${section_12_dir}/logs/log.txt"
+section_13_logfile="${section_13_dir}/logs/log.txt"
+
+
+
+# section_01_logfile="${home_directory}/results/check_data/log.txt"
+# snp_data_logfile="${home_directory}/log_files/snp_data/log.txt"
+# height_prediction_logfile="${home_directory}/log_files/height_prediction/log.txt"
+# convert_methylation_format_logfile="${home_directory}/log_files/convert_methylation_format/log.txt"
+# convert_snp_format_logfile="${home_directory}/log_files/convert_snp_format/log.txt"
+# ewas_logfile="${home_directory}/log_files/ewas/log.txt"
+# gwas_aar_logfile="${home_directory}/log_files/gwas_aar/log.txt"
+# gwas_cellcounts_logfile="${home_directory}/log_files/gwas_cellcounts/log.txt"
+# gwas_cellcounts_gemma_logfile="${home_directory}/log_files/gwas_cellcounts/gemma_log.txt"
+# gwas_cellcount_entropy_logfile="${home_directory}/log_files/gwas_cellcount_entropy/log.txt"
+# gwas_smoking_logfile="${home_directory}/log_files/gwas_smoking/log.txt"
+# mcnv_logfile="${home_directory}/log_files/mcnv/log.txt"
+# methylation_adjustment1_logfile="${home_directory}/log_files/methylation_adjustment1/log.txt"
+# methylation_adjustment2_logfile="${home_directory}/log_files/methylation_adjustment2/log.txt"
+# methylation_pcs_logfile="${home_directory}/log_files/methylation_pcs/log.txt"
+# methylation_variables_logfile="${home_directory}/log_files/methylation_variables/log.txt"
+# mqtl_logfile="${home_directory}/log_files/mqtl/log.txt"
+# phenotype_data_logfile="${home_directory}/log_files/phenotype_data/log.txt"
+# snp_data_logfile="${home_directory}/log_files/snp_data/log.txt"
+# vmqtl_logfile="${home_directory}/log_files/vmqtl/log.txt"
+# check_results_logfile="${home_directory}/log_files/check_results/log.txt"
 
 
 

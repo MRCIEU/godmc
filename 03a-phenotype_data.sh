@@ -2,7 +2,7 @@
 
 set -e
 source config
-exec &> >(tee ${phenotype_data_logfile})
+exec &> >(tee ${section_03a_logfile})
 
 
 if [ ! "${phenotypes}" = "NULL" ]

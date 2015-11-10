@@ -3,7 +3,7 @@
 #Height prediction
 set -e
 source config
-exec &> >(tee ${height_prediction_logfile})
+exec &> >(tee ${section_03b_logfile})
 
 
 if [ ! "${phenotypes}" = "NULL" ]

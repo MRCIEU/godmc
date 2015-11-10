@@ -2,7 +2,7 @@
 
 set -e
 source config
-exec &> >(tee ${convert_snp_format_logfile})
+exec &> >(tee ${section_02b_logfile})
 
 function make_tab_format {
 

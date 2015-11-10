@@ -2,7 +2,7 @@
 
 set -e
 source config
-exec &> >(tee ${methylation_variables_logfile})
+exec &> >(tee ${section_04a_logfile})
 
 
 # Estimate cell counts

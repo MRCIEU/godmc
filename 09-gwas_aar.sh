@@ -2,7 +2,7 @@
 
 set -e
 source config
-exec &> >(tee ${gwas_aar_logfile})
+exec &> >(tee ${section_09_logfile})
 
 ${gcta} \
 	--bfile ${bfile} \

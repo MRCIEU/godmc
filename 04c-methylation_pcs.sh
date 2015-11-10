@@ -2,7 +2,7 @@
 
 set -e
 source config
-exec &> >(tee ${methylation_pcs_logfile})
+exec &> >(tee ${section_04c_logfile})
 
 # Calculate PCs for methylation, save in matrixeqtl format
 

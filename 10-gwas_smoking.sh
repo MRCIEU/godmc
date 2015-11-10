@@ -2,7 +2,7 @@
 
 set -e
 source config
-exec &> >(tee ${gwas_smoking_logfile})
+exec &> >(tee ${section_10_logfile})
 
 ${gcta} \
 	--bfile ${bfile} \

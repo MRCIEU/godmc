@@ -26,7 +26,7 @@ if [ "${batch}" -lt "1" ]; then
 	exit 1
 fi
 
-exec &> >(tee ${gwas_cellcounts_logfile}_${batch})
+exec &> >(tee ${section_12_logfile}${batch})
 
 ${gcta} \
 	--bfile ${bfile} \

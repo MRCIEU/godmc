@@ -2,7 +2,7 @@
 
 set -e
 source config
-exec &> >(tee ${ewas_logfile})
+exec &> >(tee ${section_08_logfile})
 
 if [ "${EWAS_phenotypes}" = "NULL" ]
 then
@@ -11,8 +11,8 @@ else
 	Rscript resources/methylation/ewas.R \
 		${methylation_adjusted_pcs}.RData \
 		${ewastransformed} \
-		${ewas_results} \
-		${ewas_qqplots}
+		${ewas_results_dir}/results \
+		${ewas_results_dir}/qqplot
 fi
 
 echo "Successfully performed EWAS"
