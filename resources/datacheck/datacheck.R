@@ -1,3 +1,28 @@
+message("Checking that all required packages are present")
+
+pkglist <- c(
+	"lattice",
+	"ggplot2",
+	"data.table",
+	"MatrixEQTL",
+	"parallel",
+	"GenABEL",
+	"matrixStats",
+	"plyr",
+	"SNPRelate",
+	"GENESIS",
+	"meffil"
+)
+
+index <- pkglist %in% rownames(installed.packages())
+if(any(!index))
+{
+	stop("The following packages need to be installed:\n", paste(pkglist[!index], collapse="\n"))
+} else {
+	message("All required packages installed")
+}
+
+
 library(data.table)
 
 args <- (commandArgs(TRUE));

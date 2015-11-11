@@ -8,7 +8,7 @@ exec &> >(tee ${section_03b_logfile})
 
 if [ ! "${phenotypes}" = "NULL" ]
 then
-	echo "calculating height allele score"
+	echo "Calculating height allele score"
 
     ${plink} \
 	    --bfile ${bfile} \

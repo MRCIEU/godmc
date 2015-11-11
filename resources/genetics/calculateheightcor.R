@@ -11,4 +11,6 @@ ph<-ph[m,]
 
 pdf(heightplotfile,height=6,width=6)
 plot(r$SCORE,ph$Height,cex=0.7,main=paste0("cor=",cor.test(ph$Height,r$SCORE)$estimate))
-dev.off()
+null <- dev.off()
+
+message("Correlation between actual and predicted height: ", cor(ph$Height, r$SCORE, use="pair"))

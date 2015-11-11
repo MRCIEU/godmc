@@ -208,7 +208,7 @@ par(mfrow=c(2,2))
 }
 outdata.all<-cbind(outdata.all,outdata$trait)
 }
-dev.off()
+null <- dev.off()
 
 colnames(outdata.all)<-c("IID",traits)
 m<-match(IID[,2],outdata.all[,1])

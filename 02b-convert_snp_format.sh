@@ -62,6 +62,6 @@ echo "Each chunk will contain ${chunksize} SNPs"
 make_tab_format ${bfile} ${allele_ref} ${chunksize} ${tabfile}
 
 # Convert CNV data
-Rscript resources/genetics/cnv_tabfile.R ${cnvs} ${tabcnv} ${genetic_chunks}
+Rscript resources/genetics/cnv_tabfile.R ${cnvs} ${tabcnv} ${intersect_ids} ${genetic_chunks}
 
 echo "Successfully converted genetic data"

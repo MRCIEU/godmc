@@ -3,7 +3,20 @@
 
 check_results_01 () {
 
-	echo "No results expected"
+	if [ -f "${cohort_descriptives}" ]; then
+		echo "Cohort descriptives file present"
+	else
+		echo "Cohort descriptives file absent. Please re-run."
+		exit 1
+	fi
+
+	if [ -f "${methylation_summary}" ]; then
+		echo "Methyation summary file present"
+	else
+		echo "Methyation summary file absent. Please re-run."
+		exit 1
+	fi
+
 }
 
 
@@ -98,7 +111,7 @@ check_results_08 () {
 		exit 1
 	fi
 
-	if grep -q "Height" ${section_08_dir}/results.phenotype_list; then
+	if grep -q "Height" ${phenotype_list}; then
 		if grep -l -q "Height" ${section_08_dir}*; then
 			echo "Height EWAS results present"
 		else
@@ -107,7 +120,7 @@ check_results_08 () {
 		fi
 	fi
 
-	if grep -q "BMI" ${section_08_dir}/results.phenotype_list; then
+	if grep -q "BMI" ${phenotype_list}; then
 		if grep -l -q "BMI" ${section_08_dir}*; then
 			echo "BMI EWAS results present"
 		else

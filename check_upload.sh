@@ -36,6 +36,9 @@ eval "check_logs_$1"
 echo "Checking results for $1"
 eval "check_results_$1"
 
+echo ""
+echo "Section $1 has been successfully completed!"
+
 if [ "$2" = "upload" ]
 then
 	echo "Uploading"

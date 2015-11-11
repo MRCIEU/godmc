@@ -159,10 +159,11 @@ ${gcta} \
 # Get frequencies
 ${plink} --bfile ${bfile} --freq gz --hardy gz --missing gz --out ${section_02_dir}/data
 
+gzip -f -c ${quality_scores} > ${section_02_dir}/data.info.gz
 
 #Update ids
-awk '{print $1,$2}' <${bfile}.fam >${intersect_ids_plink}
-awk '{print $2}' <${bfile}.fam >${intersect_ids}
+awk '{print $1,$2}' < ${bfile}.fam > ${intersect_ids_plink}
+awk '{print $2}' < ${bfile}.fam > ${intersect_ids}
 
 rm ${bfile}.*~
 
