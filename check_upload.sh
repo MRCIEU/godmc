@@ -30,9 +30,11 @@ checkFirstArg "$1" "${sections[@]}"
 actions=("check" "upload")
 checkSecondArg "$2" "${actions[@]}"
 
+echo ""
 echo "Checking log files for $1"
 eval "check_logs_$1"
 
+echo ""
 echo "Checking results for $1"
 eval "check_results_$1"
 
@@ -41,15 +43,20 @@ echo "Section $1 has been successfully completed!"
 
 if [ "$2" = "upload" ]
 then
-	echo "Uploading"
+	echo ""
+	echo "Tarring results and log files"
+	tar czf results/uploads_$1.tgz config resources/parameters results/$1
+	echo "Successfully created results archives"
+	echo "Generating md5 checksum"
+	md5sum results/uploads_$1.tgz > results/md5sum_$1.txt
+	
+	echo ""
 
-	# echo "Collecting log files"
-	# tar czf uploads_logfiles.tgz log_files config resources/parameters
-
-	# echo "Collecting results"
-	# tar czvf uploads_results.tgz results config resources/parameters
-
-	# echo "Successfully created results archives"
+sftp ${sftp_username}@${sftp_address}:/${sftp_username} <<EOF
+dir
+put results/md5sum_$1.txt
+put results/uploads_$1.tgz
+EOF
 
 fi
 

@@ -67,7 +67,7 @@ tabfile_hm3="${home_directory}/processed_data/genetic_data/tabfile_hm3/data"
 allele_ref_hm3="${home_directory}/processed_data/genetic_data/data_hm3.allele_codes"
 
 pcaplot="${section_02_dir}/pcaplot.pdf"
-allele_ref="${section_02_dir}/data.allele_codes"
+allele_ref="${section_02_dir}/data.allele_codes.gz"
 
 # CNV file
 tabcnv="${home_directory}/processed_data/cnv_data/tabfile/data"
@@ -86,8 +86,8 @@ cellcounts="${home_directory}/processed_data/methylation_data/cellcounts.txt"
 cellcounts_reference="blood_gse35069_complete"
 cellcounts_tf="${home_directory}/processed_data/cellcounts/cellcounts.transformed.txt"
 cellcounts_entropy="${home_directory}/processed_data/cellcounts/cellcounts_entropy.txt"
-cellcounts_plink="${home_directory}/processed_data/genetic_data/cellcounts.transformed.plink"
-cellcounts_plink_raw="${home_directory}/processed_data/genetic_data/cellcounts.plink.raw"
+cellcounts_plink="${home_directory}/processed_data/cellcounts/cellcounts.transformed.plink"
+cellcounts_plink_raw="${home_directory}/processed_data/cellcounts/cellcounts.raw.plink"
 
 cellcounts_SD="5"
 cellcounts_plot="${section_04_dir}/cellcounts_plot.pdf"

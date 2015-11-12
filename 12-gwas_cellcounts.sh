@@ -31,7 +31,7 @@ exec &> >(tee ${section_12_logfile}${batch})
 ${gcta} \
 	--bfile ${bfile} \
 	--mlma-loco \
-	--pheno ${cellcounts_tf}.plink \
+	--pheno ${cellcounts_plink} \
 	--qcovar ${gwas_covariates}.cellcounts \
 	--out ${section_12_dir}/cellcount_${batch} \
 	--thread-num ${nthreads} \

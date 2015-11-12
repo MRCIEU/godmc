@@ -14,7 +14,7 @@ function make_tab_format {
 	echo "Generating matrixeqtl format genetic data"
 
 	# Getting the allele references for the 012 coding
-	cut -f 2,5,6 ${transposed_file}.traw > ${allele_references}
+	cut -f 2,5,6 ${transposed_file}.traw | gzip -fc > ${allele_references}
 
 	# Get the header in the right format - just extract IID from the current header
 	head -n 1 ${transposed_file}.traw | cut -f 7- | tr '\t' '\n' | tr '_' '\t' | cut -f 2 | tr '\n' '\t' | awk '{ printf ("snpid\t%s\n", $0) }' > traw.header
