@@ -2,8 +2,59 @@
 
 
 
+vercomp () {
+	if [[ $1 == $2 ]]
+	then
+		echo "Correct script version"
+		return 0
+	fi
+	local IFS=.
+	local i ver1=($1) ver2=($2)
+	# fill empty fields in ver1 with zeros
+	for ((i=${#ver1[@]}; i<${#ver2[@]}; i++))
+	do
+		ver1[i]=0
+	done
+	for ((i=0; i<${#ver1[@]}; i++))
+	do
+		if [[ -z ${ver2[i]} ]]
+		then
+			# fill empty fields in ver2 with zeros
+			ver2[i]=0
+		fi
+		if ((10#${ver1[i]} > 10#${ver2[i]}))
+		then
+			echo "Script version greater than required"
+			return 0
+		fi
+		if ((10#${ver1[i]} < 10#${ver2[i]}))
+		then
+			echo "Problem: This analysis was performed on an outdated script."
+			echo "Expecting at least version $2"
+			echo "But the logs show that this was run on version $1"
+			echo "Please run 'git pull' and then re-run the analysis."
+			return 1
+		fi
+	done
+	echo "Correct script version"
+	return 0
+}
+
+
+compare_version () {
+
+	version_used=`grep "GoDMC version" $1 | cut -d " " -f 3`
+	version_required=`grep "section_$2" resources/logs/versions.txt | cut -d " " -f 2`
+	echo "Version required: ${version_required}"
+	echo "Version used: ${version_used}"
+	vercomp ${version_used} ${version_required}
+
+}
+
+
 check_logs_01 () {
 
+	compare_version ${section_01_logfile} 01
 	if grep -i -q "success" ${section_01_logfile}; then
 		echo "01-check_data.sh completed successfully."
 	else
@@ -17,6 +68,7 @@ check_logs_01 () {
 check_logs_02 () {
 
 
+	compare_version ${section_02a_logfile} 02a
 	if grep -i -q "success" ${section_02a_logfile}; then
 		echo "02a-snp_data.sh completed successfully."
 	else
@@ -25,7 +77,7 @@ check_logs_02 () {
 		exit 1
 	fi
 
-
+	compare_version ${section_02b_logfile} 02b
 	if grep -i -q "success" ${section_02b_logfile}; then
 		echo "02b-check_snp_format.sh completed successfully."
 	else
@@ -45,6 +97,7 @@ check_logs_03 () {
 		exit 1
 	fi
 
+	compare_version ${section_03a_logfile} 03a
 	if grep -i -q "success" ${section_03a_logfile}; then
 		echo "03a-phenotype_data.sh completed successfully."
 	else
@@ -52,6 +105,7 @@ check_logs_03 () {
 		exit 1
 	fi
 
+	compare_version ${section_03b_logfile} 03b
 	if grep -i -q "success" ${section_03b_logfile}; then
 		echo "03b-height_prediction.sh completed successfully."
 	else
@@ -64,6 +118,8 @@ check_logs_03 () {
 
 check_logs_04 () {
 
+
+	compare_version ${section_04a_logfile} 04a
 	if grep -i -q "success" ${section_04a_logfile}; then
 		echo "04a-methylation_variables.sh completed successfully."
 	else
@@ -72,6 +128,7 @@ check_logs_04 () {
 	fi
 
 
+	compare_version ${section_04b_logfile} 04b
 	if grep -i -q "success" ${section_04b_logfile}*; then
 		echo "04b-methylation_adjustment1.sh completed successfully."
 	else
@@ -80,6 +137,7 @@ check_logs_04 () {
 	fi
 
 
+	compare_version ${section_04c_logfile} 04c
 	if grep -i -q "success" ${section_04c_logfile}; then
 		echo "04c-methylation_pcs.sh completed successfully."
 	else
@@ -88,6 +146,7 @@ check_logs_04 () {
 	fi
 
 
+	compare_version ${section_04d_logfile} 04d
 	if grep -i -q "success" ${section_04d_logfile}*; then
 		echo "04d-methylation_adjustment2.sh completed successfully."
 	else
@@ -95,6 +154,7 @@ check_logs_04 () {
 		exit 1
 	fi
 
+	compare_version ${section_04e_logfile} 04e
 	if grep -i -q "success" ${section_04e_logfile}*; then
 		echo "04e-convert_methylation_format.sh completed successfully."
 	else

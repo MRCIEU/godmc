@@ -3,6 +3,7 @@
 set -e
 source config
 exec &> >(tee ${section_01_logfile})
+print_version
 
 Rscript resources/datacheck/datacheck.R \
 	${bfile_raw}.bim \

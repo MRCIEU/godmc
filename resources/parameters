@@ -151,3 +151,22 @@ height_plot="${section_03_dir}/heightcor_plot.pdf"
 plink="${home_directory}/resources/bin/plink1.90"
 gcta="${home_directory}/resources/bin/gcta64"
 gemma="${home_directory}/resources/bin/gemma"
+
+
+
+
+# Functions
+
+print_version () {
+
+	version=`git tag`
+	echo ""
+	echo ""
+	echo "GoDMC version ${version}"
+	echo "Please ensure your scripts are up to date."
+	echo "If in doubt, run 'git pull'"
+	echo ""
+	echo ""
+
+}
+
