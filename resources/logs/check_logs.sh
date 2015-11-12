@@ -43,8 +43,16 @@ vercomp () {
 
 compare_version () {
 
-	version_used=`grep "GoDMC version" $1 | cut -d " " -f 3`
-	version_required=`grep "section_$2" resources/logs/versions.txt | cut -d " " -f 2`
+	logfile="section_${1}_logfile"
+	version_used=`grep "GoDMC version" ${!logfile}* | head -n 1 | cut -d " " -f 3`
+	if [ "${version_used}" = "" ]
+	then
+		echo "No version number found."
+		echo "Scripts used were likely out of date."
+		echo "Please run 'git pull' and re-run"
+		return 1
+	fi
+	version_required=`grep "section_${1}" resources/logs/versions.txt | cut -d " " -f 2`
 	echo "Version required: ${version_required}"
 	echo "Version used: ${version_used}"
 	vercomp ${version_used} ${version_required}
@@ -54,7 +62,7 @@ compare_version () {
 
 check_logs_01 () {
 
-	compare_version ${section_01_logfile} 01
+	compare_version "01"
 	if grep -i -q "success" ${section_01_logfile}; then
 		echo "01-check_data.sh completed successfully."
 	else
@@ -68,7 +76,7 @@ check_logs_01 () {
 check_logs_02 () {
 
 
-	compare_version ${section_02a_logfile} 02a
+	compare_version "02a"
 	if grep -i -q "success" ${section_02a_logfile}; then
 		echo "02a-snp_data.sh completed successfully."
 	else
@@ -77,7 +85,7 @@ check_logs_02 () {
 		exit 1
 	fi
 
-	compare_version ${section_02b_logfile} 02b
+	compare_version "02b"
 	if grep -i -q "success" ${section_02b_logfile}; then
 		echo "02b-check_snp_format.sh completed successfully."
 	else
@@ -97,7 +105,7 @@ check_logs_03 () {
 		exit 1
 	fi
 
-	compare_version ${section_03a_logfile} 03a
+	compare_version "03a"
 	if grep -i -q "success" ${section_03a_logfile}; then
 		echo "03a-phenotype_data.sh completed successfully."
 	else
@@ -105,7 +113,7 @@ check_logs_03 () {
 		exit 1
 	fi
 
-	compare_version ${section_03b_logfile} 03b
+	compare_version "03b"
 	if grep -i -q "success" ${section_03b_logfile}; then
 		echo "03b-height_prediction.sh completed successfully."
 	else
@@ -119,7 +127,7 @@ check_logs_03 () {
 check_logs_04 () {
 
 
-	compare_version ${section_04a_logfile} 04a
+	compare_version "04a"
 	if grep -i -q "success" ${section_04a_logfile}; then
 		echo "04a-methylation_variables.sh completed successfully."
 	else
@@ -128,7 +136,7 @@ check_logs_04 () {
 	fi
 
 
-	compare_version ${section_04b_logfile} 04b
+	compare_version "04b"
 	if grep -i -q "success" ${section_04b_logfile}*; then
 		echo "04b-methylation_adjustment1.sh completed successfully."
 	else
@@ -137,7 +145,7 @@ check_logs_04 () {
 	fi
 
 
-	compare_version ${section_04c_logfile} 04c
+	compare_version "04c"
 	if grep -i -q "success" ${section_04c_logfile}; then
 		echo "04c-methylation_pcs.sh completed successfully."
 	else
@@ -146,7 +154,7 @@ check_logs_04 () {
 	fi
 
 
-	compare_version ${section_04d_logfile} 04d
+	compare_version "04d"
 	if grep -i -q "success" ${section_04d_logfile}*; then
 		echo "04d-methylation_adjustment2.sh completed successfully."
 	else
@@ -154,7 +162,7 @@ check_logs_04 () {
 		exit 1
 	fi
 
-	compare_version ${section_04e_logfile} 04e
+	compare_version "04e"
 	if grep -i -q "success" ${section_04e_logfile}*; then
 		echo "04e-convert_methylation_format.sh completed successfully."
 	else
@@ -167,6 +175,7 @@ check_logs_04 () {
 
 check_logs_05 () {
 
+	compare_version "05"
 	nbatch=`ls -l ${tabfile}.tab.* | wc -l`
 	nsuccess=`tail ${section_05_logfile}* | grep -i "success" | wc -l`
 	if [ "${nbatch}" = "${nsuccess}" ]; then
@@ -180,6 +189,7 @@ check_logs_05 () {
 
 check_logs_06 () {
 
+	compare_version "06"
 	nbatch=`ls -l ${tabfile}.tab.* | wc -l`
 	nsuccess=`tail ${section_06_logfile}* | grep -i "success" | wc -l`
 	if [ "${nbatch}" = "${nsuccess}" ]; then
@@ -193,6 +203,7 @@ check_logs_06 () {
 
 check_logs_07 () {
 
+	compare_version "07"
 	nbatch=`ls -l ${tabcnv}.tab.* | wc -l`
 	nsuccess=`tail ${section_07_logfile}* | grep -i "success" | wc -l`
 	if [ "${nbatch}" = "${nsuccess}" ]; then
@@ -201,6 +212,7 @@ check_logs_07 () {
 		echo "Problem: 07-mcnv.sh only ${nsuccess} of ${nbatch} CNV-mQTL batches completed"
 		exit 1
 	fi
+
 
 }
 
@@ -213,6 +225,7 @@ check_logs_08 () {
 		exit 1
 	fi
 
+	compare_version "08"
 	if grep -i -q "success" ${section_08_logfile}; then
 		echo "08-ewas.sh completed successfully."
 	else
@@ -226,6 +239,7 @@ check_logs_08 () {
 
 check_logs_09 () {
 
+	compare_version "09"
 	if grep -i -q "success" ${section_09_logfile}; then
 		echo "09-gwas_aar.sh completed successfully."
 	else
@@ -237,6 +251,7 @@ check_logs_09 () {
 
 check_logs_10 () {
 
+	compare_version "10"
 	if grep -i -q "success" ${section_10_logfile}; then
 		echo "10-gwas_smoking.sh completed successfully."
 	else
@@ -248,6 +263,7 @@ check_logs_10 () {
 
 check_logs_11 () {
 
+	compare_version "11"
 	if grep -i -q "success" ${section_11_logfile}; then
 		echo "11-gwas_cellcount_entropy.sh completed successfully."
 	else
@@ -259,8 +275,9 @@ check_logs_11 () {
 
 check_logs_12 () {
 
+	compare_version "12"
 	nbatch=`wc -l ${gwas_cellcounts_dir}/cellcounts_columns.txt | awk '{ print $1 }'`
-	nsuccess=`tail ${section_12_logfile}_* | grep -i "success" | wc -l`
+	nsuccess=`tail ${section_12_logfile}* | grep -i "success" | wc -l`
 	if [ "${nbatch}" = "${nsuccess}" ]; then
 		echo "12-gwas_cellcounts.sh completed successfully for all cell types"
 	else
@@ -272,6 +289,7 @@ check_logs_12 () {
 
 check_logs_13 () {
 
+	compare_version "13"
 	nsuccess=`grep -i "success" ${section_13_logfile}* | wc -l`
 	if [ "${nsuccess}" = "${genetic_chunks}" ]; then
 		echo "13-gwas_cellcounts_mvlmm.sh completed successfully on all chromosomes."

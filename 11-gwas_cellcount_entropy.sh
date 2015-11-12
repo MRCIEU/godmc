@@ -3,6 +3,8 @@
 set -e
 source config
 exec &> >(tee ${section_11_logfile})
+print_version
+
 
 ${gcta} \
 	--bfile ${bfile} \

@@ -3,6 +3,7 @@
 set -e
 source config
 exec &> >(tee ${section_04c_logfile})
+print_version
 
 # Calculate PCs for methylation, save in matrixeqtl format
 

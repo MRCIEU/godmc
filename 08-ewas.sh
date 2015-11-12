@@ -3,6 +3,8 @@
 set -e
 source config
 exec &> >(tee ${section_08_logfile})
+print_version
+
 
 if [ "${EWAS_phenotypes}" = "NULL" ]
 then

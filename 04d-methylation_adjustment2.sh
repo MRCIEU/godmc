@@ -5,6 +5,7 @@ source config
 
 batch_number=${1}
 exec &> >(tee ${section_04d_logfile}_${batch_number})
+print_version
 
 echo "Adjusting methylation for meth PCs"
 

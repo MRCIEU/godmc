@@ -27,6 +27,8 @@ if [ "${batch}" -lt "1" ]; then
 fi
 
 exec &> >(tee ${section_12_logfile}${batch})
+print_version
+
 
 ${gcta} \
 	--bfile ${bfile} \

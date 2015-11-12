@@ -5,7 +5,7 @@ source config
 
 batch_number=${1}
 exec &> >(tee ${section_04b_logfile}${batch_number})
-
+print_version
 
 
 if [ -n "${1}" ]

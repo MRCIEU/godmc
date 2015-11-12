@@ -4,7 +4,7 @@
 set -e
 source config
 exec &> >(tee ${section_03b_logfile})
-
+print_version
 
 if [ ! "${phenotypes}" = "NULL" ]
 then

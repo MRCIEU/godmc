@@ -11,6 +11,8 @@ if ! [[ $batch_number =~ $re ]] ; then
 	exit 1
 fi
 exec &> >(tee ${section_05_logfile}${batch_number})
+print_version
+
 
 geno="${tabfile}.tab.${batch_number}"
 phen="${methylation_adjusted_pcs}.txt"

@@ -3,7 +3,7 @@
 set -e
 source config
 exec &> >(tee ${section_02a_logfile})
-
+print_version
 
 # Provision for having dosage data and convert to best guess if the analyst doesn't have this
 

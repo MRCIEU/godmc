@@ -3,6 +3,7 @@
 set -e
 source config
 exec &> >(tee ${section_02b_logfile})
+print_version
 
 function make_tab_format {
 

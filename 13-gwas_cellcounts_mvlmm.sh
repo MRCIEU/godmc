@@ -14,6 +14,8 @@ if ! [[ $batch =~ $re ]] ; then
 	exit 1
 fi
 exec &> >(tee ${section_13_logfile}${batch})
+print_version
+
 
 # Get SNP list
 echo "Data is split into ${genetic_chunks} chunks"
