@@ -19,7 +19,7 @@ Rscript resources/datacheck/datacheck.R \
 	${cnvs} \
 	${cohort_descriptives} \
 	${ageplot} \
-	${phenotyp_list} \
+	${phenotype_list} \
 	${quality_scores} \
 	${quality_scores_plot} \
 	${methylation_summary}

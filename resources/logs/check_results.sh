@@ -112,7 +112,7 @@ check_results_08 () {
 	fi
 
 	if grep -q "Height" ${phenotype_list}; then
-		if grep -l -q "Height" ${section_08_dir}*; then
+		if [ -f "${section_08_dir}/results.Height.RData" ]; then
 			echo "Height EWAS results present"
 		else
 			echo "Problem: Height EWAS results absent"
@@ -121,7 +121,7 @@ check_results_08 () {
 	fi
 
 	if grep -q "BMI" ${phenotype_list}; then
-		if grep -l -q "BMI" ${section_08_dir}*; then
+		if [ -f "${section_08_dir}/results.BMI.RData" ]; then
 			echo "BMI EWAS results present"
 		else
 			echo "Problem: BMI EWAS results absent"

@@ -57,7 +57,7 @@ ewastransformed="${home_directory}/processed_data/phenotypes/ewas.transformed.tx
 ewas_sd="5"
 ewas_plink="${home_directory}/processed_data/phenotypes/ewas.plink"
 ewas_file="${home_directory}/processed_data/phenotypes/ewas"
-phenotyp_list="${section_01_dir}/phenotype_list.txt"
+phenotype_list="${section_01_dir}/phenotype_list.txt"
 
 # Clean genetic data
 bfile="${home_directory}/processed_data/genetic_data/data"
