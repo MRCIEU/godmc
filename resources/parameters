@@ -160,9 +160,16 @@ gemma="${home_directory}/resources/bin/gemma"
 print_version () {
 
 	version=`git tag`
+	commit=`git rev-parse HEAD`
+	commit_date=`git show -s --format=%ci`
+	current_time=`date`
 	echo ""
 	echo ""
 	echo "GoDMC version ${version}"
+	echo "Commit: ${commit}"	
+	echo "Commit date: ${commit_date}"
+	echo "Current time: ${current_time}"
+	echo ""
 	echo "Please ensure your scripts are up to date."
 	echo "If in doubt, run 'git pull'"
 	echo ""
