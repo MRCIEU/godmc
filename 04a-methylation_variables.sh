@@ -5,7 +5,16 @@ source config
 exec &> >(tee ${section_04a_logfile})
 print_version
 
-
+# Predict smoking
+echo "Estimating smoking"
+Rscript resources/smoking/smoking_predictor.R \
+	${betas} \
+	${bfile}.fam \
+	${smoking_pred} \
+	${smoking_pred_plot} \
+	${smoking_pred_SD} \
+	${covariates}
+	
 # Estimate cell counts
 if [ "${cellcounts_required}" = "yes" ]
 then
@@ -54,15 +63,7 @@ Rscript resources/dnamage/dnamage.R \
 	${age_pred_plot} \
 	${age_pred_SD}
 
-# Predict smoking
-echo "Estimating smoking"
-Rscript resources/smoking/smoking_predictor.R \
-	${betas} \
-	${bfile}.fam \
-	${smoking_pred} \
-	${smoking_pred_plot} \
-	${smoking_pred_SD} \
-	${covariates}
+
 
 # Organise covariates
 echo "Organising covariates"

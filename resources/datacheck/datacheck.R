@@ -161,7 +161,7 @@ write.table(no.SNPs.bychr,snpsbychr_file,sep="\t",quote=F,row.names=F,col.names=
 ##
 
 message("Checking imputation quality scores: ", quality_file)
-qual <- as.data.frame(fread(quality_file))
+qual <- as.data.frame(fread(quality_file,header=T))
 
 if(ncol(qual) != 3)
 {
