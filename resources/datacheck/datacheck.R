@@ -526,8 +526,8 @@ if(d1 < d2)
     stop("ERROR: please transpose cnv matrix (cnvs in rows; samples in columns)")
 }
 
-message("Number of individuals with CNV data: ", d1)
-message("Number of positions in CNV data: ", d2)
+message("Number of positions with CNV data: ", d1)
+message("Number of individuals in CNV data: ", d2)
 
 #are individuals unique
 if(any(duplicated(colnames(cnv))))
