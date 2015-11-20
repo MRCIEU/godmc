@@ -159,7 +159,7 @@ gemma="${home_directory}/resources/bin/gemma"
 
 print_version () {
 
-	version=`git tag`
+	version=`git tag | tail -n 1`
 	commit=`git rev-parse HEAD`
 	commit_date=`git show -s --format=%ci`
 	current_time=`date`

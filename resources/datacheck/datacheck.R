@@ -544,28 +544,38 @@ if(any(is.na(cnv)))
 commonids <- Reduce(intersect, list(colnames(cnv), covar$IID, colnames(norm.beta)))
 message(length(commonids), " samples in common between CNV, covariate and methylation data")
 
+if(length(commonids) < 50)
+{
+	stop("ERROR: fewer than 50 subjects with methylation, CNV and covariate data")
+}
+
+if(d2 != dim(norm.beta)[2])
+{
+    stop("ERROR: number of subject with CNV data is not the same as number of subjects with methylation data")
+}
+
 # Cohort characteristics
 
 cohort_summary <- list()
 cohort_summary$sample_size <- length(ids)
-cohort_summary$n_males <- sum(covar$Sex == "M")
-cohort_summary$n_females <- sum(covar$Sex == "F")
-cohort_summary$mean_age <- mean(covar$Age)
-cohort_summary$median_age <- median(covar$Age)
-cohort_summary$sd_age <- sd(covar$Age)
-cohort_summary$max_age <- max(covar$Age)
-cohort_summary$min_age <- min(covar$Age)
-cohort_summary$mean_Height <- mean(ph$Height)
-cohort_summary$median_Height <- median(ph$Height)
-cohort_summary$sd_Height <- sd(ph$Height)
-cohort_summary$max_Height <- max(ph$Height)
-cohort_summary$min_Height <- min(ph$Height)
-cohort_summary$mean_BMI <- mean(ph$BMI)
-cohort_summary$median_BMI <- median(ph$BMI)
-cohort_summary$sd_BMI <- sd(ph$BMI)
-cohort_summary$max_BMI <- max(ph$BMI)
-cohort_summary$min_BMI <- min(ph$BMI)
-cohort_summary$n_snp <- nrow(bim)
+cohort_summary$n_males <- sum(covar$Sex == "M",na.rm=T)
+cohort_summary$n_females <- sum(covar$Sex == "F",na.rm=T)
+cohort_summary$mean_age <- mean(covar$Age,na.rm=T)
+cohort_summary$median_age <- median(covar$Age,na.rm=T)
+cohort_summary$sd_age <- sd(covar$Age,na.rm=T)
+cohort_summary$max_age <- max(covar$Age,na.rm=T)
+cohort_summary$min_age <- min(covar$Age,na.rm=T)
+cohort_summary$mean_Height <- mean(ph$Height,na.rm=T)
+cohort_summary$median_Height <- median(ph$Height,na.rm=T)
+cohort_summary$sd_Height <- sd(ph$Height,na.rm=T)
+cohort_summary$max_Height <- max(ph$Height,na.rm=T)
+cohort_summary$min_Height <- min(ph$Height,na.rm=T)
+cohort_summary$mean_BMI <- mean(ph$BMI,na.rm=T)
+cohort_summary$median_BMI <- median(ph$BMI,na.rm=T)
+cohort_summary$sd_BMI <- sd(ph$BMI,na.rm=T)
+cohort_summary$max_BMI <- max(ph$BMI,na.rm=T)
+cohort_summary$min_BMI <- min(ph$BMI,na.rm=T)
+cohort_summary$n_CpGs <- nrow(bim)
 cohort_summary$covariates <- names(covar)[-1]
 
 
@@ -573,7 +583,7 @@ summariseMeth <- function(X, outlier_threshold)
 {
 	require(matrixStats)
 
-	message("Removing outliers")
+	message("Removing outliers from methylation matrix")
 	sds <- rowSds(X, na.rm=T)
 	means <- rowMeans(X, na.rm=T)
 	X[X > means + sds*outlier_threshold | X < means - sds*outlier_threshold] <- NA
@@ -596,7 +606,7 @@ summariseMeth <- function(X, outlier_threshold)
 
 message("Generating summary stats of methylation")
 
-meth_summary <- summariseMeth(norm.beta, 5)
+meth_summary <- summariseMeth(norm.beta, 3)
 
 save(cohort_summary, file=cohort_descriptives_file)
 save(meth_summary, file=methylation_summary_file)

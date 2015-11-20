@@ -11,9 +11,9 @@ check_results_01 () {
 	fi
 
 	if [ -f "${methylation_summary}" ]; then
-		echo "Methyation summary file present"
+		echo "Methylation summary file present"
 	else
-		echo "Methyation summary file absent. Please re-run."
+		echo "Methylation summary file absent. Please re-run."
 		exit 1
 	fi
 
