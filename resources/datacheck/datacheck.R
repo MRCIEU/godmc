@@ -606,7 +606,7 @@ summariseMeth <- function(X, outlier_threshold)
 
 message("Generating summary stats of methylation")
 
-meth_summary <- summariseMeth(norm.beta, 3)
+meth_summary <- summariseMeth(norm.beta, 5)
 
 save(cohort_summary, file=cohort_descriptives_file)
 save(meth_summary, file=methylation_summary_file)
