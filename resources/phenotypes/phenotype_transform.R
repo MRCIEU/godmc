@@ -85,15 +85,15 @@ if (length(outlier)>0){data<-data[-outlier,]}
 data$trait <- qnorm((rank(data$trait,na.last="keep")-0.5)/sum(!is.na(data$trait)))
 
 #adjust for age
-if(length(which(names(data)%in%c("age")))==1){
+if(length(which(names(data)%in%c("Age")))==1){
 
-fit1<- lm(trait ~ age, data=data)
-fit2<- lm(trait ~ age+I(age^2), data=data)
+fit1<- lm(trait ~ Age, data=data)
+fit2<- lm(trait ~ Age+I(Age^2), data=data)
 
-if(coefficients(summary(fit1))[,"Pr(>|t|)"]["age"]<0.05){
+if(coefficients(summary(fit1))[,"Pr(>|t|)"]["Age"]<0.05){
 data$trait<-resid(fit1)}
 
-if(coefficients(summary(fit2))[,"Pr(>|t|)"]["I(age^2)"]<0.05){
+if(coefficients(summary(fit2))[,"Pr(>|t|)"]["I(Age^2)"]<0.05){
 data$trait<-resid(fit2)}
 }
 #standardise
@@ -147,24 +147,24 @@ female$trait<-qnorm((rank(female$trait,na.last="keep")-0.5)/sum(!is.na(female$tr
 
 #adjust for covariates
 
-if(length(which(names(data)%in%"age"))>0){
+if(length(which(names(data)%in%"Age"))>0){
 
-fit1<- lm(trait ~ age, data=male)
-fit2<- lm(trait ~ age+I(age^2), data=male)
+fit1<- lm(trait ~ Age, data=male)
+fit2<- lm(trait ~ Age+I(Age^2), data=male)
 
-if(coefficients(summary(fit1))[,"Pr(>|t|)"]["age"]<0.05){
+if(coefficients(summary(fit1))[,"Pr(>|t|)"]["Age"]<0.05){
 male$trait<-resid(fit1)}
 
-if(coefficients(summary(fit2))[,"Pr(>|t|)"]["I(age^2)"]<0.05){
+if(coefficients(summary(fit2))[,"Pr(>|t|)"]["I(Age^2)"]<0.05){
 male$trait<-resid(fit2)}
 
-fit1<- lm(trait ~ age, data=female)
-fit2<- lm(trait ~ age+I(age^2), data=female)
+fit1<- lm(trait ~ Age, data=female)
+fit2<- lm(trait ~ Age+I(Age^2), data=female)
 
-if(coefficients(summary(fit1))[,"Pr(>|t|)"]["age"]<0.05){
+if(coefficients(summary(fit1))[,"Pr(>|t|)"]["Age"]<0.05){
 female$trait<-resid(fit1)}
 
-if(coefficients(summary(fit2))[,"Pr(>|t|)"]["I(age^2)"]<0.05){
+if(coefficients(summary(fit2))[,"Pr(>|t|)"]["I(Age^2)"]<0.05){
 female$trait<-resid(fit2)}
 
 }
