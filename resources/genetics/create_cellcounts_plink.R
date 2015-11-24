@@ -120,23 +120,32 @@ if (length(outlier)>0){data<-data[-outlier,]}
 data$trait <- qnorm((rank(data$trait,na.last="keep")-0.5)/sum(!is.na(data$trait)))
 data$trait_smokadj<-data$trait
 #adjust for age
-if(length(which(names(data)%in%c("age")))==1){
+if(length(which(names(data)%in%c("Age")))==1){
 
-fit1<- lm(trait ~ age, data=data)
-fit2<- lm(trait ~ age+I(age^2), data=data)
-fit3<- lm(trait ~ age + Smoking, data=data)
-fit4<- lm(trait ~ age+I(age^2)+Smoking, data=data)
+fit1<- lm(trait ~ Age, data=data)
+fit2<- lm(trait ~ Age+I(Age^2), data=data)
+fit3<- lm(trait ~ Age + Smoking, data=data)
+fit4<- lm(trait ~ Age+I(Age^2)+Smoking, data=data)
+fit5<- lm(trait ~ Smoking, data=data)
 
-
-if(coefficients(summary(fit1))[,"Pr(>|t|)"]["age"]<0.05){
+if(coefficients(summary(fit1))[,"Pr(>|t|)"]["Age"]<0.05){
 data$trait<-resid(fit1)
 data$trait_smokadj<-resid(fit3)
 }
 
-if(coefficients(summary(fit2))[,"Pr(>|t|)"]["I(age^2)"]<0.05){
+if(coefficients(summary(fit2))[,"Pr(>|t|)"]["I(Age^2)"]<0.05){
 data$trait<-resid(fit2)
 data$trait_smokadj<-resid(fit4)
 }
+
+if(coefficients(summary(fit2))[,"Pr(>|t|)"]["I(Age^2)"]>0.05 & coefficients(summary(fit1))[,"Pr(>|t|)"]["Age"]>0.05){
+data$trait_smokadj<-resid(fit5)
+}
+
+if(length(which(names(data)%in%c("Age")))!=1){
+data$trait_smokadj<-resid(fit5)
+}
+
 }
 #standardise
 nmiss<-which(!is.na(data[,"trait"]))
@@ -189,41 +198,59 @@ if (length(outlierf)>0){female<-female[-outlierf,]}
 #transform
 male$trait <-qnorm((rank(male$trait,na.last="keep")-0.5)/sum(!is.na(male$trait)))
 female$trait<-qnorm((rank(female$trait,na.last="keep")-0.5)/sum(!is.na(female$trait)))
-
+male$trait_smokadj<-male$trait
+female$trait_smokadj<-female$trait
 #adjust for covariates
 
-if(length(which(names(data)%in%"age"))>0){
+if(length(which(names(data)%in%"Age"))>0){
 
-fit1<- lm(trait ~ age, data=male)
-fit2<- lm(trait ~ age+I(age^2), data=male)
-fit3<- lm(trait ~ age + Smoking, data=male)
-fit4<- lm(trait ~ age+I(age^2)+Smoking, data=male)
+fit1<- lm(trait ~ Age, data=male)
+fit2<- lm(trait ~ Age+I(Age^2), data=male)
+fit3<- lm(trait ~ Age + Smoking, data=male)
+fit4<- lm(trait ~ Age+I(Age^2)+Smoking, data=male)
+fit5<- lm(trait ~ Smoking, data=male)
 
-if(coefficients(summary(fit1))[,"Pr(>|t|)"]["age"]<0.05){
+if(coefficients(summary(fit1))[,"Pr(>|t|)"]["Age"]<0.05){
 male$trait<-resid(fit1)
 male$trait_smokadj<-resid(fit3)
 }
 
-if(coefficients(summary(fit2))[,"Pr(>|t|)"]["I(age^2)"]<0.05){
+if(coefficients(summary(fit2))[,"Pr(>|t|)"]["I(Age^2)"]<0.05){
 male$trait<-resid(fit2)
 male$trait_smokadj<-resid(fit4)
 }
 
-fit1<- lm(trait ~ age, data=female)
-fit2<- lm(trait ~ age+I(age^2), data=female)
-fit3<- lm(trait ~ age + Smoking, data=female)
-fit4<- lm(trait ~ age+I(age^2)+Smoking, data=female)
+if(coefficients(summary(fit2))[,"Pr(>|t|)"]["I(Age^2)"]>0.05 & coefficients(summary(fit1))[,"Pr(>|t|)"]["Age"]>0.05){
+male$trait_smokadj<-resid(fit5)
+}
 
-if(coefficients(summary(fit1))[,"Pr(>|t|)"]["age"]<0.05){
+if(length(which(names(male)%in%c("Age")))!=1){
+male$trait_smokadj<-resid(fit5)
+}
+
+fit1<- lm(trait ~ Age, data=female)
+fit2<- lm(trait ~ Age+I(Age^2), data=female)
+fit3<- lm(trait ~ Age + Smoking, data=female)
+fit4<- lm(trait ~ Age+I(Age^2)+Smoking, data=female)
+fit5<- lm(trait ~ Smoking, data=female)
+
+if(coefficients(summary(fit1))[,"Pr(>|t|)"]["Age"]<0.05){
 female$trait<-resid(fit1)
 female$trait_smokadj<-resid(fit3)
 }
 
-if(coefficients(summary(fit2))[,"Pr(>|t|)"]["I(age^2)"]<0.05){
+if(coefficients(summary(fit2))[,"Pr(>|t|)"]["I(Age^2)"]<0.05){
 female$trait<-resid(fit2)
 female$trait_smokadj<-resid(fit4)
 }
 
+if(coefficients(summary(fit2))[,"Pr(>|t|)"]["I(Age^2)"]>0.05 & coefficients(summary(fit1))[,"Pr(>|t|)"]["Age"]>0.05){
+female$trait_smokadj<-resid(fit5)
+}
+
+if(length(which(names(female)%in%c("Age")))!=1){
+female$trait_smokadj<-resid(fit5)
+}
 }
 
 #standardise
@@ -240,7 +267,6 @@ female[nmiss_female,"trait_smokadj"]<-(female[nmiss_female,"trait_smokadj"]-mean
 
 outdata<-rbind(male,female)
 m<-match(IID[,2],outdata$IID)
-outdata<-data.frame(IID=IID[,2],trait=outdata$trait[m])
 outdata<-data.frame(IID=IID[,2],trait=outdata$trait[m],trait_smokadj=outdata$trait_smokadj[m])
 
 #after transformation
