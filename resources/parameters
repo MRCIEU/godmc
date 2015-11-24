@@ -85,10 +85,11 @@ pcs_all="${pca}.eigenvec"
 cellcounts="${home_directory}/processed_data/methylation_data/cellcounts.txt"
 cellcounts_reference="blood_gse35069_complete"
 cellcounts_tf="${home_directory}/processed_data/cellcounts/cellcounts.transformed.txt"
+cellcounts_tf_smok="${home_directory}/processed_data/cellcounts/cellcounts.transformed.smokingadj.txt"
 cellcounts_entropy="${home_directory}/processed_data/cellcounts/cellcounts_entropy.txt"
 cellcounts_plink="${home_directory}/processed_data/cellcounts/cellcounts.transformed.plink"
 cellcounts_plink_raw="${home_directory}/processed_data/cellcounts/cellcounts.raw.plink"
-
+cellcounts_plink_smokadj="${home_directory}/processed_data/cellcounts/cellcounts.transformed.smokadj.plink"
 cellcounts_SD="5"
 cellcounts_plot="${section_04_dir}/cellcounts_plot.pdf"
 

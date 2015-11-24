@@ -8,6 +8,9 @@
     SD = as.numeric(args[7]);
     transformed.cellcounts = as.character(args[8]);
     cellcounts.entropy = as.character(args[9]);
+    smoking.pred = as.character(args[10]);
+    transformed.cellcounts.smokadj = as.character(args[11]);
+    cellcounts.smokadj.plink = as.character(args[12]);
 #cellcount_file <- "./input_data/cellcounts.txt"
 #ids<-("./processed_data/ids/ids_plink.txt")
 #cellcounts.plot<-"cellcountsplots.pdf"
@@ -53,6 +56,9 @@ library(lattice)
 
 traits<-names(cellcounts)[-1]
 outdata.all<-as.character(IID[,2])
+outdata.all2<-as.character(IID[,2])
+
+
 
 pdf(cellcounts.plot, width=12, height=8)
 par(mfrow=c(2,2))
@@ -62,6 +68,9 @@ data<- cellcounts
 cov<-read.table(covfile,header=T,stringsAsFactors =F)
 m<-match(data$IID,cov$IID)
 data<-data.frame(data,cov[m,-1])
+smoking<-read.table(paste(smoking.pred,".txt",sep=""),header=T)
+m<-match(data$IID,smoking$IID)
+data<-data.frame(data,cov[m,-1],Smoking=smoking[m,-1])
 
 trait_var =traits[tr]
 
@@ -109,26 +118,36 @@ if (length(outlier)>0){data<-data[-outlier,]}
 
 #transform data
 data$trait <- qnorm((rank(data$trait,na.last="keep")-0.5)/sum(!is.na(data$trait)))
-
+data$trait_smokadj<-data$trait
 #adjust for age
 if(length(which(names(data)%in%c("age")))==1){
 
 fit1<- lm(trait ~ age, data=data)
 fit2<- lm(trait ~ age+I(age^2), data=data)
+fit3<- lm(trait ~ age + Smoking, data=data)
+fit4<- lm(trait ~ age+I(age^2)+Smoking, data=data)
+
 
 if(coefficients(summary(fit1))[,"Pr(>|t|)"]["age"]<0.05){
-data$trait<-resid(fit1)}
+data$trait<-resid(fit1)
+data$trait_smokadj<-resid(fit3)
+}
 
 if(coefficients(summary(fit2))[,"Pr(>|t|)"]["I(age^2)"]<0.05){
-data$trait<-resid(fit2)}
+data$trait<-resid(fit2)
+data$trait_smokadj<-resid(fit4)
+}
 }
 #standardise
 nmiss<-which(!is.na(data[,"trait"]))
 data[nmiss,"trait"]<-(data[nmiss,"trait"]-mean(data[nmiss,"trait"]))/sd(data[nmiss,"trait"])
 
-outdata<-data.frame(IID=data$IID,trait=data$trait)
+nmiss<-which(!is.na(data[,"trait_smokadj"]))
+data[nmiss,"trait_smokadj"]<-(data[nmiss,"trait_smokadj"]-mean(data[nmiss,"trait_smokadj"]))/sd(data[nmiss,"trait_smokadj"])
+
+outdata<-data.frame(IID=data$IID,trait=data$trait,trait_smokadj=data$trait_smokadj)
 m<-match(IID[,2],outdata$IID)
-outdata<-data.frame(IID=IID,trait=outdata$trait[m])
+outdata<-data.frame(IID=IID[,2],trait=outdata$trait[m],trait_smokadj=outdata$trait_smokadj[m])
 
 #### plot the distribution of transformed phenotypes
 par(mfrow=c(2,2))
@@ -177,21 +196,33 @@ if(length(which(names(data)%in%"age"))>0){
 
 fit1<- lm(trait ~ age, data=male)
 fit2<- lm(trait ~ age+I(age^2), data=male)
+fit3<- lm(trait ~ age + Smoking, data=male)
+fit4<- lm(trait ~ age+I(age^2)+Smoking, data=male)
 
 if(coefficients(summary(fit1))[,"Pr(>|t|)"]["age"]<0.05){
-male$trait<-resid(fit1)}
+male$trait<-resid(fit1)
+male$trait_smokadj<-resid(fit3)
+}
 
 if(coefficients(summary(fit2))[,"Pr(>|t|)"]["I(age^2)"]<0.05){
-male$trait<-resid(fit2)}
+male$trait<-resid(fit2)
+male$trait_smokadj<-resid(fit4)
+}
 
 fit1<- lm(trait ~ age, data=female)
 fit2<- lm(trait ~ age+I(age^2), data=female)
+fit3<- lm(trait ~ age + Smoking, data=female)
+fit4<- lm(trait ~ age+I(age^2)+Smoking, data=female)
 
 if(coefficients(summary(fit1))[,"Pr(>|t|)"]["age"]<0.05){
-female$trait<-resid(fit1)}
+female$trait<-resid(fit1)
+female$trait_smokadj<-resid(fit3)
+}
 
 if(coefficients(summary(fit2))[,"Pr(>|t|)"]["I(age^2)"]<0.05){
-female$trait<-resid(fit2)}
+female$trait<-resid(fit2)
+female$trait_smokadj<-resid(fit4)
+}
 
 }
 
@@ -201,9 +232,16 @@ male[nmiss_male,"trait"]<-(male[nmiss_male,"trait"]-mean(male[nmiss_male,"trait"
 nmiss_female<-which(!is.na(female[,"trait"]))
 female[nmiss_female,"trait"]<-(female[nmiss_female,"trait"]-mean(female[nmiss_female,"trait"]))/sd(female[nmiss_female,"trait"])
 
+
+nmiss_male<-which(!is.na(male[,"trait_smokadj"]))
+male[nmiss_male,"trait_smokadj"]<-(male[nmiss_male,"trait_smokadj"]-mean(male[nmiss_male,"trait_smokadj"]))/sd(male[nmiss_male,"trait_smokadj"])
+nmiss_female<-which(!is.na(female[,"trait_smokadj"]))
+female[nmiss_female,"trait_smokadj"]<-(female[nmiss_female,"trait_smokadj"]-mean(female[nmiss_female,"trait_smokadj"]))/sd(female[nmiss_female,"trait_smokadj"])
+
 outdata<-rbind(male,female)
 m<-match(IID[,2],outdata$IID)
-outdata<-data.frame(IID=IID,trait=outdata$trait[m])
+outdata<-data.frame(IID=IID[,2],trait=outdata$trait[m])
+outdata<-data.frame(IID=IID[,2],trait=outdata$trait[m],trait_smokadj=outdata$trait_smokadj[m])
 
 #after transformation
 par(mfrow=c(2,2))
@@ -233,18 +271,27 @@ par(mfrow=c(2,2))
 
 }
 outdata.all<-cbind(outdata.all,outdata$trait)
+outdata.all2<-cbind(outdata.all2,outdata$trait_smokadj)
 }
 dev.off()
 
 colnames(outdata.all)<-c("IID",traits)
+colnames(outdata.all2)<-c("IID",traits)
 write.table(outdata.all,transformed.cellcounts,sep="\t",quote=F,row.names=F,col.names=T)
+write.table(outdata.all2,transformed.cellcounts.smokadj,sep="\t",quote=F,row.names=F,col.names=T)
 
-names(outdata.all)
+
 m<-match(IID[,2],outdata.all[,1])
 outdata.all<-data.frame(FID=IID[,1],outdata.all[m,])
 names(outdata.all)
-cat(cellcounts.plink,"\n")
+
 write.table(outdata.all,file=cellcounts.plink,sep="\t",quote=F,row.names=F,col.names=F)
 
+names(outdata.all2)
+m<-match(IID[,2],outdata.all2[,1])
+outdata.all2<-data.frame(FID=IID[,1],outdata.all2[m,])
+names(outdata.all2)
+
+write.table(outdata.all2,file=cellcounts.smokadj.plink,sep="\t",quote=F,row.names=F,col.names=F)
 
 

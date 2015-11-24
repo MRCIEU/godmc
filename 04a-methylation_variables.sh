@@ -43,7 +43,9 @@ then
 		${cellcounts_plink} \
 		${cellcounts_SD} \
 		${cellcounts_tf} \
-		${cellcounts_entropy}
+		${cellcounts_entropy} \
+		${smoking_pred} \
+		${cellcounts_tf_smok}
 
 elif [ "${cellcounts_required}" = "no" ]
 then
