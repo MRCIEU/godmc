@@ -18,34 +18,35 @@ Rscript resources/smoking/smoking_predictor.R \
 # Estimate cell counts
 if [ "${cellcounts_required}" = "yes" ]
 then
-	if [ "${provided_cellcounts}" = "NULL" ]
-	then
-		echo "Estimating cell counts"
-		Rscript resources/cellcounts/estimate_cellcountsbybeta.R \
-			${betas} \
-			${cellcounts} \
-			${cellcounts_reference} \
-			${bfile}.fam
-		elif [ -f "${provided_cellcounts}" ]
-	then
+    if [ "${provided_cellcounts}" = "NULL" ]
+    then
+        echo "Estimating cell counts"
+        Rscript resources/cellcounts/estimate_cellcountsbybeta.R \
+            ${betas} \
+            ${cellcounts} \
+            ${cellcounts_reference} \
+            ${bfile}.fam
+    elif [ -f "${provided_cellcounts}" ]
+    then
 		echo "Using the cellcounts provided in ${provided_cellcounts}."
-		cp ${provided_cellcounts} ${cellcounts}
-	else
-		echo "Error: The file ${provided_cellcounts} doesn't exist. You have specified that cell counts are required. Please set 'provided_cellcounts' to NULL if you want them to be estimated now, or specify a path to a file with the pre-specified cell counts."
-	fi
+        cp ${provided_cellcounts} ${cellcounts}
+    else
+        echo "Error: The file ${provided_cellcounts} doesn't exist. You have specified that cell counts are required. Please set 'provided_cellcounts' to NULL if you want them to be estimated now, or specify a path to a file with the pre-specified cell counts."
+    fi
 	echo "Transforming cell counts"
 	Rscript resources/genetics/create_cellcounts_plink.R \
-		${cellcounts} \
-		${cellcounts_plink_raw} \
-		${intersect_ids_plink} \
-		${cellcounts_plot} \
-		${covariates} \
-		${cellcounts_plink} \
-		${cellcounts_SD} \
-		${cellcounts_tf} \
-		${cellcounts_entropy} \
-		${smoking_pred} \
-		${cellcounts_tf_smok}
+	    ${cellcounts} \
+	    ${cellcounts_plink_raw} \
+        ${intersect_ids_plink} \
+        ${cellcounts_plot} \
+	    ${covariates} \
+	    ${cellcounts_plink} \
+	    ${cellcounts_SD} \
+	    ${cellcounts_tf} \
+	    ${cellcounts_entropy} \
+	    ${smoking_pred} \
+	    ${cellcounts_tf_smok} \
+	    ${cellcounts_plink_smokadj}
 
 elif [ "${cellcounts_required}" = "no" ]
 then
