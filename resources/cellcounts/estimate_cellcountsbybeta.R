@@ -16,6 +16,8 @@ cellcountref <- gsub("_"," ",cellcountref)
 message("Using '", cellcountref, "' reference")
 
 cellcounts <- meffil.estimate.cell.counts.from.betas(norm.beta,cell.type.reference=cellcountref,verbose=T)
+tol <- 1e-5
+cellcounts[cellcounts < tol] <- 0
 cellcounts <- data.frame(IID=row.names(cellcounts),cellcounts)
 fam <- read.table(fam_file, stringsAsFactors=FALSE)
 m <- match(fam[,2],cellcounts$IID)
