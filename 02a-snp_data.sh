@@ -101,8 +101,6 @@ ${plink} \
 	--out ${pca} \
 	--threads ${nthreads}
 
-rm temp_hm3snpsnold.txt
-
 if [ "${related}" = "no" ]
 then
 	${plink} \
@@ -138,23 +136,62 @@ Rscript resources/genetics/genetic_outliers.R \
 	${genetic_outlier_ids} \
 	${pcaplot}
 
-# Remove genetic outliers from data
-echo "Removing genetic outliers"
-${plink} \
-	--bfile ${bfile} \
-	--remove ${genetic_outlier_ids} \
-	--make-bed \
-	--out ${bfile} \
-	--threads ${nthreads}
 
-${gcta} \
-	--grm ${grmfile_all} \
-	--remove ${genetic_outlier_ids} \
-	--make-grm-bin \
-	--out ${grmfile_all} \
-	--thread-num ${nthreads}
+
+# If there are any genetic outliers then remove them and recalculate PCs
+# Otherwise don't do anything
+
+n_outliers=`wc -l ${genetic_outlier_ids} | awk '{ print $1 }'`
+if [ "${n_outliers}" = "0" ]
+then
+	echo "No genetic outliers detected"
+else 
+	# Remove genetic outliers from data
+	echo "Removing ${n_outliers} genetic outliers from data"
+	${plink} \
+		--bfile ${bfile} \
+		--remove ${genetic_outlier_ids} \
+		--make-bed \
+		--out ${bfile} \
+		--threads ${nthreads}
+
+	${gcta} \
+		--grm ${grmfile_all} \
+		--remove ${genetic_outlier_ids} \
+		--make-grm-bin \
+		--out ${grmfile_all} \
+		--thread-num ${nthreads}
+
+	echo "Recalculating PCs with outliers removed"
+
+	if [ "${related}" = "no" ]
+	then
+		${plink} \
+			--bfile ${bfile} \
+			--extract ${pca}.prune.in \
+			--pca 20 \
+			--out ${pca} \
+			--threads ${nthreads}
+	else
+
+		${plink} \
+			--bfile ${bfile} \
+			--extract ${pca}.prune.in \
+			--make-bed \
+			--out ${bfile}_ldpruned \
+			--threads ${nthreads}
+
+		Rscript resources/genetics/pcs_relateds.R \
+			${bfile}_ldpruned \
+			${pca} \
+			${n_pcs} \
+			${nthreads}
+	fi
+
+fi
 
 #From here on, we have clean data
+
 
 # Get frequencies
 ${plink} --bfile ${bfile} --freq gz --hardy gz --missing gz --out ${section_02_dir}/data
@@ -165,6 +202,8 @@ gzip -f -c ${quality_scores} > ${section_02_dir}/data.info.gz
 awk '{print $1,$2}' < ${bfile}.fam > ${intersect_ids_plink}
 awk '{print $2}' < ${bfile}.fam > ${intersect_ids}
 
-rm ${bfile}.*~
+rm -f ${bfile}.*~
+rm temp_hm3snpsnold.txt
+
 
 echo "Successfully formatted SNP data"
