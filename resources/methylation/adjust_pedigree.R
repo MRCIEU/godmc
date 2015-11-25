@@ -145,6 +145,8 @@ makeGRMmatrix <- function(grm)
 
 adjust.relatedness.1 <- function(x, covs, kin, quiet=TRUE)
 {
+	x <- remRec(x, 10, 3)$x
+	print(sum(is.na(x)))
 	d <- data.frame(X=rntransform(x), covs)
 	rownames(d) <- colnames(kin)
 	form <- as.formula(paste0("X ~ ", paste(names(d)[-1], collapse=" + ")))
@@ -203,6 +205,35 @@ get.index.list <- function(n, mc.cores)
 	if(rem != 0) l1[[div+1]] <- l1[[div]][mc.cores] + 1:rem
 	return(l1)
 }
+
+removeOutliers <- function(x, thresh, remove=FALSE)
+{
+	m <- mean(x, na.rm=T)
+	s <- sd(x, na.rm=T)
+	index <- x > m + thresh*s | x < m - thresh*s
+
+	if(remove)
+	{
+		x <- x[!index]
+	} else {
+		x[index] <- NA
+	}
+	return(x)
+}
+
+
+remRec <- function(x, thresh, iterations)
+{
+	d <- array(0, iterations+1)
+	d[1] <- sum(!is.na(x))
+	for(i in 1:iterations)
+	{
+		x <- removeOutliers(x, thresh)
+		d[i+1] <- sum(!is.na(x))
+	}
+	return(list(x=x, its=d))
+}
+
 
 
 main()

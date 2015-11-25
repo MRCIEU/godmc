@@ -53,9 +53,10 @@ main <- function()
 
 adjust.covs.1 <- function(x, covs)
 {
+	x <- remRec(x, 10, 3)$x
 	d <- data.frame(X=rntransform(x), covs)
 	form <- as.formula(paste0("X ~ ", paste(names(d)[-1], collapse=" + ")))
-	as.numeric(rntransform(residuals(lm(form, data=d))))
+	as.numeric(rntransform(residuals(lm(form, data=d, na.action=na.exclude))))
 }
 
 adjust.covs <- function(B, covs, mc.cores=mc.cores)
@@ -107,5 +108,34 @@ rntransform <- function(x)
 	out <- scale(qnorm(out))
 	out
 }
+
+removeOutliers <- function(x, thresh, remove=FALSE)
+{
+	m <- mean(x, na.rm=T)
+	s <- sd(x, na.rm=T)
+	index <- x > m + thresh*s | x < m - thresh*s
+
+	if(remove)
+	{
+		x <- x[!index]
+	} else {
+		x[index] <- NA
+	}
+	return(x)
+}
+
+remRec <- function(x, thresh, iterations)
+{
+	d <- array(0, iterations+1)
+	d[1] <- sum(!is.na(x))
+	for(i in 1:iterations)
+	{
+		x <- removeOutliers(x, thresh)
+		d[i+1] <- sum(!is.na(x))
+	}
+	return(list(x=x, its=d))
+}
+
+
 
 main()
