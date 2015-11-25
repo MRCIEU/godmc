@@ -87,7 +87,7 @@ data$Sex <- as.factor(data$Sex)
 
 sex_names <- rownames(table(data$Sex))
 w.test<-wilcox.test(data$trait[data$Sex=="M"], data$trait[data$Sex=="F"] )[3]
-
+par(mfrow=c(2,2))
 colors <- 1:length(sex_names)
 plot(density( data$trait[which(data$Sex==sex_names[1])],na.rm=T),xlab="",main=paste(trait_var," density plot by Sex",sep=""), col=colors[1])
 for (j in 2:3) { ## a maximum of 3 types of Sex including unknown
@@ -142,7 +142,7 @@ if(coefficients(summary(fit2))[,"Pr(>|t|)"]["I(Age^2)"]>0.05 & coefficients(summ
 data$trait_smokadj<-resid(fit5)
 }
 
-if(length(which(names(data)%in%c("Age")))!=1){
+if(length(table(na.omit(data$Age)))==1){
 data$trait_smokadj<-resid(fit5)
 }
 
@@ -167,6 +167,15 @@ abline(v=mean(outdata$trait,na.rm=T)+SD*sd(outdata$trait,na.rm=T),lty=2)
 qqnorm(outdata$trait, main=paste("transformed ",trait_var," (N=", length(which(!is.na(outdata$trait))),"; shapiroP=",signif(as.numeric(shapiro.test(outdata$trait)[2]),2),")",sep=""),cex.main=0.7)
 qqline(outdata$trait)
 par(mfrow=c(2,2))
+
+par(mfrow=c(2,2))
+plot(outdata$trait_smokadj, xlab="", main=paste("transformed smoking adj",trait_var," (N=", length(which(!is.na(outdata$trait_smokadj))),")",sep=""),cex.main=0.7)
+hist(outdata$trait_smokadj, xlab="", main=paste("transformed smoking adj",trait_var," (N=", length(which(!is.na(outdata$trait_smokadj))),")",sep=""),cex.main=0.7)
+abline(v=mean(outdata$trait_smokadj,na.rm=T)-SD*sd(outdata$trait_smokadj,na.rm=T),lty=2)
+abline(v=mean(outdata$trait_smokadj,na.rm=T)+SD*sd(outdata$trait_smokadj,na.rm=T),lty=2)
+qqnorm(outdata$trait_smokadj, main=paste("transformed ",trait_var," (N=", length(which(!is.na(outdata$trait_smokadj))),"; shapiroP=",signif(as.numeric(shapiro.test(outdata$trait_smokadj)[2]),2),")",sep=""),cex.main=0.7)
+qqline(outdata$trait_smokadj)
+
 
 }else{
 
@@ -224,8 +233,9 @@ if(coefficients(summary(fit2))[,"Pr(>|t|)"]["I(Age^2)"]>0.05 & coefficients(summ
 male$trait_smokadj<-resid(fit5)
 }
 
-if(length(which(names(male)%in%c("Age")))!=1){
+if(length(table(na.omit(male$Age)))==1){
 male$trait_smokadj<-resid(fit5)
+
 }
 
 fit1<- lm(trait ~ Age, data=female)
@@ -248,7 +258,7 @@ if(coefficients(summary(fit2))[,"Pr(>|t|)"]["I(Age^2)"]>0.05 & coefficients(summ
 female$trait_smokadj<-resid(fit5)
 }
 
-if(length(which(names(female)%in%c("Age")))!=1){
+if(length(table(na.omit(female$Age)))==1){
 female$trait_smokadj<-resid(fit5)
 }
 }
@@ -293,7 +303,14 @@ abline(v=mean(outdata$trait,na.rm=T)-SD*sd(outdata$trait,na.rm=T),lty=2)
 abline(v=mean(outdata$trait,na.rm=T)+SD*sd(outdata$trait,na.rm=T),lty=2)
 qqnorm(outdata$trait, main=paste("transformed combined ",trait_var," (N=", length(which(!is.na(outdata$trait))),"; shapiroP=",signif(as.numeric(shapiro.test(outdata$trait)[2]),2),")",sep=""),cex.main=0.7)
 qqline(outdata$trait)
+
 par(mfrow=c(2,2))
+plot(outdata$trait_smokadj, xlab="", main=paste("transformed combined smoking adj",trait_var," (N=", length(which(!is.na(outdata$trait_smokadj))),")",sep=""),cex.main=0.7)
+hist(outdata$trait_smokadj, xlab="", main=paste("transformed combined smoking adj",trait_var," (N=", length(which(!is.na(outdata$trait_smokadj))),")",sep=""),cex.main=0.7)
+abline(v=mean(outdata$trait_smokadj,na.rm=T)-SD*sd(outdata$trait_smokadj,na.rm=T),lty=2)
+abline(v=mean(outdata$trait_smokadj,na.rm=T)+SD*sd(outdata$trait_smokadj,na.rm=T),lty=2)
+qqnorm(outdata$trait_smokadj, main=paste("transformed combined ",trait_var," (N=", length(which(!is.na(outdata$trait_smokadj))),"; shapiroP=",signif(as.numeric(shapiro.test(outdata$trait_smokadj)[2]),2),")",sep=""),cex.main=0.7)
+qqline(outdata$trait_smokadj)
 
 }
 outdata.all<-cbind(outdata.all,outdata$trait)
