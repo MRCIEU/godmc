@@ -85,7 +85,7 @@ if (length(outlier)>0){data<-data[-outlier,]}
 data$trait <- qnorm((rank(data$trait,na.last="keep")-0.5)/sum(!is.na(data$trait)))
 
 #adjust for age
-if(length(which(names(data)%in%c("Age")))==1){
+if(length(which(names(data)%in%c("Age")))==1 & length(table(na.omit(data$Age)))!=1){
 
 fit1<- lm(trait ~ Age, data=data)
 fit2<- lm(trait ~ Age+I(Age^2), data=data)
@@ -147,7 +147,7 @@ female$trait<-qnorm((rank(female$trait,na.last="keep")-0.5)/sum(!is.na(female$tr
 
 #adjust for covariates
 
-if(length(which(names(data)%in%"Age"))>0){
+if(length(which(names(data)%in%"Age"))>0 & length(table(na.omit(data$Age)))!=1){
 
 fit1<- lm(trait ~ Age, data=male)
 fit2<- lm(trait ~ Age+I(Age^2), data=male)
