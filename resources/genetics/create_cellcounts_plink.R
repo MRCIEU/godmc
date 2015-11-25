@@ -316,7 +316,7 @@ qqline(outdata$trait_smokadj)
 outdata.all<-cbind(outdata.all,outdata$trait)
 outdata.all2<-cbind(outdata.all2,outdata$trait_smokadj)
 }
-dev.off()
+null <- dev.off()
 
 colnames(outdata.all)<-c("IID",traits)
 colnames(outdata.all2)<-c("IID",traits)
@@ -326,14 +326,14 @@ write.table(outdata.all2,transformed.cellcounts.smokadj,sep="\t",quote=F,row.nam
 
 m<-match(IID[,2],outdata.all[,1])
 outdata.all<-data.frame(FID=IID[,1],outdata.all[m,])
-names(outdata.all)
+# names(outdata.all)
 
 write.table(outdata.all,file=cellcounts.plink,sep="\t",quote=F,row.names=F,col.names=F)
 
-names(outdata.all2)
+# names(outdata.all2)
 m<-match(IID[,2],outdata.all2[,1])
 outdata.all2<-data.frame(FID=IID[,1],outdata.all2[m,])
-names(outdata.all2)
+# names(outdata.all2)
 
 write.table(outdata.all2,file=cellcounts.smokadj.plink,sep="\t",quote=F,row.names=F,col.names=F)
 

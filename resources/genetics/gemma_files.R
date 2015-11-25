@@ -6,7 +6,6 @@ main <- function()
 	grm_file <- arguments[1]
 	cellcounts_file <- arguments[2]
 	cellcounts_annotation <- arguments[3]
-	smoking_file <- arguments[4]
 
 	message("Converting GRM into GEMMA format")
 	grm <- readGRM(grm_file)
@@ -16,37 +15,12 @@ main <- function()
 	message("Writing GRM")
 	write.table(round(grm, 5), file=paste0(grm_file, ".gemma"), row=F, col=F, qu=F, sep="\t")
 
-	message("Adjusting cellcounts for smoking and converting into GEMMA format")
+	message("Converting cellcounts into GEMMA format")
 	cellcounts <- read.table(cellcounts_file, he=T, stringsAsFactors=FALSE)
-	cellcounts <- cellcounts[match(cellcounts$IID, ids$V2), ]
-
-	smok <- read.table(smoking_file, header=TRUE)
-	smok <- smok[match(smok$IID, cellcounts$IID), ]
-	stopifnot(all(smok$IID == cellcounts$IID))
+	cellcounts <- cellcounts[match(ids$V2, cellcounts$IID), ]
 
 	entropy <- cellcounts$entropy
 	cellcounts <- subset(cellcounts, select=-c(IID, entropy))
-
-	# Adjust for smoking
-	for(i in 1:ncol(cellcounts))
-	{
-		cellcounts[,i] <- residuals(lm(cellcounts[,i] ~ smok$Smoking, na.action=na.exclude))
-	}
-
-	# Find variables with large number of missing values
-	#index <- apply(cellcounts, 2, function(x)
-	#{
-#		(sum(is.na(x)) / length(x)) < 0.2
-	#})
-
-	#cellcounts <- cellcounts[, index]
-	#write.table(data.frame(ids, cellcounts), file=paste0(cellcounts_file, ".plink"), row=F, col=F, qu=F)
-
-	# Replace missing values with mean values
-	#for(i in 1:ncol(cellcounts))
-	#{
-#		cellcounts[is.na(cellcounts[,i]), i] <- mean(cellcounts[,i], na.rm=T)
-	#}
 
 	write.table(round(cellcounts, 5), file=paste0(cellcounts_file, ".gemma"), row=F, col=F, qu=F, sep="\t")
 	write.table(data.frame(ids, entropy), file=paste0(cellcounts_file, ".entropy.plink"), row=F, col=F, qu=F)

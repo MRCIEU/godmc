@@ -32,6 +32,7 @@ then
         cp ${provided_cellcounts} ${cellcounts}
     else
         echo "Error: The file ${provided_cellcounts} doesn't exist. You have specified that cell counts are required. Please set 'provided_cellcounts' to NULL if you want them to be estimated now, or specify a path to a file with the pre-specified cell counts."
+        exit 1
     fi
 	echo "Transforming cell counts"
 	Rscript resources/genetics/create_cellcounts_plink.R \
@@ -90,7 +91,6 @@ Rscript resources/genetics/create_covariates_files.R \
 Rscript resources/genetics/gemma_files.R \
 	${grmfile_all} \
 	${cellcounts_tf} \
-	${section_12_dir}/cellcounts_columns.txt \
-	${smoking_pred}.txt
+	${section_12_dir}/cellcounts_columns.txt
 
 echo "Successfully created methylation-related variables"
