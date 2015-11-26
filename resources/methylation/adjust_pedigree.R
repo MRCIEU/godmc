@@ -1,4 +1,5 @@
 library(parallel)
+suppressMessages(library(matrixStats))
 suppressMessages(library(GenABEL))
 
 main <- function()
@@ -45,6 +46,21 @@ main <- function()
 	stopifnot(all(rownames(kin) == colnames(norm.beta)))
 	stopifnot(all(rownames(covs) == colnames(norm.beta)))
 
+	message("Setting methylation outliers to missing")
+
+	niter <- 3
+	outlier_threshold <- 10
+	for(i in 1:niter)
+	{
+		sds <- rowSds(norm.beta, na.rm=T)
+		means <- rowMeans(norm.beta, na.rm=T)
+		norm.beta[norm.beta > means + sds*outlier_threshold | norm.beta < means - sds*outlier_threshold] <- NA
+	}
+
+	outlier_count <- apply(norm.beta, 1, function(x) sum(is.na(x)))
+	norm.beta.orig <- norm.beta
+	print(table(outlier_count))
+
 	message("Data size: ", ncol(norm.beta), " individuals and ", nrow(norm.beta), " CpGs.")
 
 	if(is.na(nthreads) | nthreads == 1)
@@ -54,6 +70,19 @@ main <- function()
 		message("Running with ", nthreads, " threads")
 		norm.beta <- adjust.relatedness(norm.beta, covs, kin, nthreads)
 	}
+
+	message("Checking for any issues with parallelisation")
+	outlier_count2 <- apply(norm.beta, 1, function(x) sum(is.na(x)))
+	problems <- which(outlier_count != outlier_count2)
+	message("Number of parallelisation issues: ", length(problems))
+
+	if(length(problems) > 0)
+	{
+		message("Recalculating problem probes serially")
+		norm.beta.problems <- adjust.relatedness.serial(norm.beta[problems, ], covs, kin)
+		norm.beta[problems, ] <- norm.beta.problems
+	}
+
 	save(norm.beta, file=out_file)
 }
 
@@ -145,8 +174,7 @@ makeGRMmatrix <- function(grm)
 
 adjust.relatedness.1 <- function(x, covs, kin, quiet=TRUE)
 {
-	x <- remRec(x, 10, 3)$x
-	print(sum(is.na(x)))
+	# x <- remRec(x, 10, 3)$x
 	d <- data.frame(X=rntransform(x), covs)
 	rownames(d) <- colnames(kin)
 	form <- as.formula(paste0("X ~ ", paste(names(d)[-1], collapse=" + ")))
