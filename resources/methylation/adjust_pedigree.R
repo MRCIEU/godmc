@@ -71,10 +71,17 @@ main <- function()
 		norm.beta <- adjust.relatedness(norm.beta, covs, kin, nthreads)
 	}
 
+	save(norm.beta, norm.beta.orig, covs, kin, file=paste0(out_file, ".debug"))
+
 	message("Checking for any issues with parallelisation")
 	outlier_count2 <- apply(norm.beta, 1, function(x) sum(is.na(x)))
 	problems <- which(outlier_count != outlier_count2)
 	message("Number of parallelisation issues: ", length(problems))
+
+	print(table(outlier_count2))
+	print(head(covs))
+	print(kin[1:10,1:10])
+	print(problems)
 
 	if(length(problems) > 0)
 	{
