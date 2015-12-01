@@ -38,21 +38,13 @@ elif [ "${related}" = "yes" ]
 then
 	# For family data adjust methylation data for relatedness (take residuals after fitting pedigree matrix, i.e. GRAMMAR method)
 	echo "You have specified that the data is family data. Adjusting for pedigree and covariates..."
-	# Rscript resources/methylation/adjust_pedigree.R \
-	# 	${betas} \
-	# 	${grmfile_relateds} \
-	# 	${covariates_combined}.txt \
-	# 	${methylation_adjusted} \
-	# 	${nthreads} \
-	# 	${meth_chunks} \
-	# 	${i}
-
 	Rscript resources/methylation/adjust_pedigree.R \
-		${HOME}/sandpit/godmc/relateds/processed_data/input.RData \
+		${betas} \
+		${grmfile_relateds} \
+		${covariates_combined}.txt \
 		${methylation_adjusted} \
 		${nthreads} \
 		${meth_chunks} \
 		${i}
-
 
 fi

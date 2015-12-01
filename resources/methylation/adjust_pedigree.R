@@ -6,20 +6,19 @@ main <- function()
 {
 	arguments <- commandArgs(T)
 
-	# methylationfile <- arguments[1]
-	# grmfile <- arguments[2]
-	# cov_file <- arguments[3]
-	infile <- arguments[1]
-	out_file <- arguments[2]
-	nthreads <- as.numeric(arguments[3])
-	chunks <- as.numeric(arguments[4])
-	jid <- as.numeric(arguments[5])
+	methylationfile <- arguments[1]
+	grmfile <- arguments[2]
+	cov_file <- arguments[3]
+	out_file <- arguments[4]
+	nthreads <- as.numeric(arguments[5])
+	chunks <- as.numeric(arguments[6])
+	jid <- as.numeric(arguments[7])
 
 
 	time1 <- Sys.time()
 
 	message("Reading methylation data...")
-	load(infile)
+	load(methylationfile)
 
 	if(!is.na(jid))
 	{
@@ -33,19 +32,19 @@ main <- function()
 	}
 
 	# Remove all IDs that have any NAs in the covariate file
-	# covs <- read.table(cov_file, he=T)
-	# index <- apply(covs, 1, function(x) any(is.na(x) | is.nan(x) | is.infinite(x)))
-	# covs <- covs[!index, ]
-	# rownames(covs) <- covs$IID
-	# covs <- subset(covs, IID %in% colnames(norm.beta), select=-c(IID))
-	# norm.beta <- norm.beta[, colnames(norm.beta) %in% rownames(covs)]
+	covs <- read.table(cov_file, he=T)
+	index <- apply(covs, 1, function(x) any(is.na(x) | is.nan(x) | is.infinite(x)))
+	covs <- covs[!index, ]
+	rownames(covs) <- covs$IID
+	covs <- subset(covs, IID %in% colnames(norm.beta), select=-c(IID))
+	norm.beta <- norm.beta[, colnames(norm.beta) %in% rownames(covs)]
 
-	# grm <- readGRM(grmfile)
-	# kin <- makeGRMmatrix(grm)
-	# kin <- kin[rownames(kin) %in% colnames(norm.beta), colnames(kin) %in% colnames(norm.beta)]
-	# index <- match(rownames(kin), colnames(norm.beta))
-	# norm.beta <- norm.beta[,index]
-	# covs <- covs[match(colnames(norm.beta), rownames(covs)), ]
+	grm <- readGRM(grmfile)
+	kin <- makeGRMmatrix(grm)
+	kin <- kin[rownames(kin) %in% colnames(norm.beta), colnames(kin) %in% colnames(norm.beta)]
+	index <- match(rownames(kin), colnames(norm.beta))
+	norm.beta <- norm.beta[,index]
+	covs <- covs[match(colnames(norm.beta), rownames(covs)), ]
 	stopifnot(all(rownames(kin) == colnames(norm.beta)))
 	stopifnot(all(rownames(covs) == colnames(norm.beta)))
 
@@ -84,7 +83,7 @@ main <- function()
 
 	norm.beta[norm.beta.copy] <- NA
 	save(norm.beta, file=out_file)
-	message("Successfully completed analysis in ", )
+	message("Successfully completed adjustments")
 }
 
 
