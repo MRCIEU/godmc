@@ -6,17 +6,20 @@ main <- function()
 {
 	arguments <- commandArgs(T)
 
-	methylationfile <- arguments[1]
-	grmfile <- arguments[2]
-	cov_file <- arguments[3]
-	out_file <- arguments[4]
-	nthreads <- as.numeric(arguments[5])
-	chunks <- as.numeric(arguments[6])
-	jid <- as.numeric(arguments[7])
+	# methylationfile <- arguments[1]
+	# grmfile <- arguments[2]
+	# cov_file <- arguments[3]
+	infile <- arguments[1]
+	out_file <- arguments[2]
+	nthreads <- as.numeric(arguments[3])
+	chunks <- as.numeric(arguments[4])
+	jid <- as.numeric(arguments[5])
 
+
+	time1 <- Sys.time()
 
 	message("Reading methylation data...")
-	load(methylationfile)
+	load(infile)
 
 	if(!is.na(jid))
 	{
@@ -30,67 +33,58 @@ main <- function()
 	}
 
 	# Remove all IDs that have any NAs in the covariate file
-	covs <- read.table(cov_file, he=T)
-	index <- apply(covs, 1, function(x) any(is.na(x) | is.nan(x) | is.infinite(x)))
-	covs <- covs[!index, ]
-	rownames(covs) <- covs$IID
-	covs <- subset(covs, IID %in% colnames(norm.beta), select=-c(IID))
-	norm.beta <- norm.beta[, colnames(norm.beta) %in% rownames(covs)]
+	# covs <- read.table(cov_file, he=T)
+	# index <- apply(covs, 1, function(x) any(is.na(x) | is.nan(x) | is.infinite(x)))
+	# covs <- covs[!index, ]
+	# rownames(covs) <- covs$IID
+	# covs <- subset(covs, IID %in% colnames(norm.beta), select=-c(IID))
+	# norm.beta <- norm.beta[, colnames(norm.beta) %in% rownames(covs)]
 
-	grm <- readGRM(grmfile)
-	kin <- makeGRMmatrix(grm)
-	kin <- kin[rownames(kin) %in% colnames(norm.beta), colnames(kin) %in% colnames(norm.beta)]
-	index <- match(rownames(kin), colnames(norm.beta))
-	norm.beta <- norm.beta[,index]
-	covs <- covs[match(colnames(norm.beta), rownames(covs)), ]
+	# grm <- readGRM(grmfile)
+	# kin <- makeGRMmatrix(grm)
+	# kin <- kin[rownames(kin) %in% colnames(norm.beta), colnames(kin) %in% colnames(norm.beta)]
+	# index <- match(rownames(kin), colnames(norm.beta))
+	# norm.beta <- norm.beta[,index]
+	# covs <- covs[match(colnames(norm.beta), rownames(covs)), ]
 	stopifnot(all(rownames(kin) == colnames(norm.beta)))
 	stopifnot(all(rownames(covs) == colnames(norm.beta)))
 
-	message("Setting methylation outliers to missing")
+	message("Identifying methylation outliers")
 
 	niter <- 3
 	outlier_threshold <- 10
+	norm.beta.copy <- norm.beta
 	for(i in 1:niter)
 	{
-		sds <- rowSds(norm.beta, na.rm=T)
-		means <- rowMeans(norm.beta, na.rm=T)
-		norm.beta[norm.beta > means + sds*outlier_threshold | norm.beta < means - sds*outlier_threshold] <- NA
+		sds <- rowSds(norm.beta.copy, na.rm=T)
+		means <- rowMeans(norm.beta.copy, na.rm=T)
+		norm.beta.copy[norm.beta.copy > means + sds*outlier_threshold | norm.beta.copy < means - sds*outlier_threshold] <- NA
 	}
+	outlier_count <- apply(norm.beta.copy, 1, function(x) sum(is.na(x)))
+	norm.beta.copy <- is.na(norm.beta.copy)
 
-	outlier_count <- apply(norm.beta, 1, function(x) sum(is.na(x)))
-	norm.beta.orig <- norm.beta
-	print(table(outlier_count))
+	message("Calculating eigenvectors")
+
+	relmat <- kin * 2
+	tmp <- t(relmat)
+	relmat[upper.tri(relmat)] <- tmp[upper.tri(tmp)]
+	eig <- eigen(relmat, symmetric=TRUE)
+	rm(tmp, relmat)
+
 
 	message("Data size: ", ncol(norm.beta), " individuals and ", nrow(norm.beta), " CpGs.")
 
 	if(is.na(nthreads) | nthreads == 1)
 	{
-		norm.beta <- adjust.relatedness.serial(norm.beta, covs, kin)
+		norm.beta <- adjust.relatedness.serial(norm.beta, covs, kin, eig)
 	} else {
 		message("Running with ", nthreads, " threads")
-		norm.beta <- adjust.relatedness(norm.beta, covs, kin, nthreads)
+		norm.beta <- adjust.relatedness(norm.beta, covs, kin, eig, nthreads)
 	}
 
-	save(norm.beta, norm.beta.orig, covs, kin, file=paste0(out_file, ".debug"))
-
-	message("Checking for any issues with parallelisation")
-	outlier_count2 <- apply(norm.beta, 1, function(x) sum(is.na(x)))
-	problems <- which(outlier_count != outlier_count2)
-	message("Number of parallelisation issues: ", length(problems))
-
-	print(table(outlier_count2))
-	print(head(covs))
-	print(kin[1:10,1:10])
-	print(problems)
-
-	if(length(problems) > 0)
-	{
-		message("Recalculating problem probes serially")
-		norm.beta.problems <- adjust.relatedness.serial(norm.beta[problems, ], covs, kin)
-		norm.beta[problems, ] <- norm.beta.problems
-	}
-
+	norm.beta[norm.beta.copy] <- NA
 	save(norm.beta, file=out_file)
+	message("Successfully completed analysis in ", )
 }
 
 
@@ -179,14 +173,23 @@ makeGRMmatrix <- function(grm)
 	return(mat)
 }
 
-adjust.relatedness.1 <- function(x, covs, kin, quiet=TRUE)
+
+adjust.relatedness.fast.1 <- function(x, covs, kin, eig, quiet=TRUE)
 {
-	# x <- remRec(x, 10, 3)$x
+	x[!is.finite(x)] <- mean(x, na.rm=T)
 	d <- data.frame(X=rntransform(x), covs)
 	rownames(d) <- colnames(kin)
 	form <- as.formula(paste0("X ~ ", paste(names(d)[-1], collapse=" + ")))
-	as.numeric(rntransform(polygenic(form, data=d, kinship.matrix=kin, quiet=quiet)$grresidualY))
+	d$X <- residuals(lm(form, d))
+	p_out <- try(polygenic(X, data=d, kinship.matrix=kin, eigenOfRel=eig, quiet=quiet))
+	if(class(p_out) == "try-error")
+	{
+		return(d$X)
+	} else {
+		return(as.numeric(rntransform(p_out$grresidualY)))
+	}
 }
+
 
 rntransform <- function(x)
 {
@@ -198,7 +201,7 @@ rntransform <- function(x)
 	out
 }
 
-adjust.relatedness <- function(B, covs, kin, mc.cores=mc.cores)
+adjust.relatedness <- function(B, covs, kin, eig, mc.cores=mc.cores)
 {
 
 	l1 <- get.index.list(nrow(B), mc.cores)
@@ -206,9 +209,10 @@ adjust.relatedness <- function(B, covs, kin, mc.cores=mc.cores)
 	{
 		res <- mclapply(ii, function(i)
 		{
-			if( i %% 100 == 0) message("Probe ", i, " of ", nrow(B))
-			adjust.relatedness.1(B[i,], covs, kin)
-		})
+			# if( i %% 100 == 0) message("Probe ", i, " of ", nrow(B))
+			message("Probe ", i, " of ", nrow(B))
+			adjust.relatedness.fast.1(B[i,], covs, kin, eig)
+		}, mc.cores=mc.cores)
 		return(do.call(rbind, res))
 	})
 	l <- do.call(rbind, l)
@@ -219,12 +223,31 @@ adjust.relatedness <- function(B, covs, kin, mc.cores=mc.cores)
 
 
 
-adjust.relatedness.serial <- function(B, covs, kin)
+adjust.relatedness.fast <- function(B, covs, kin, eig, mc.cores=mc.cores)
+{
+
+	res <- mclapply.safe(1:nrow(B), function(i)
+	{
+		# if( i %% 100 == 0) message("Probe ", i, " of ", nrow(B))
+		message("Probe ", i, " of ", nrow(B))
+		adjust.relatedness.fast.1(B[i,], covs, kin, eig)
+	}, mc.cores=mc.cores)
+
+	res <- do.call(rbind, res)
+	rownames(res) <- rownames(B)
+	colnames(res) <- colnames(B)
+	return(res)
+}
+
+
+
+
+adjust.relatedness.serial <- function(B, covs, kin, eig)
 {
 	for(i in 1:nrow(B))
 	{
 		cat(i, "\n")
-		B[i, ] <- adjust.relatedness.1(B[i,], covs, kin)
+		B[i, ] <- adjust.relatedness.fast.1(B[i,], covs, kin, eig)
 	}
 	return(B)
 
