@@ -1,4 +1,5 @@
 library(parallel)
+suppressMessages(library(matrixStats))
 
 
 main <- function()
@@ -39,6 +40,20 @@ main <- function()
 	covs <- covs[match(colnames(norm.beta), rownames(covs)), ]
 	stopifnot(all(rownames(covs) == colnames(norm.beta)))
 
+	message("Identifying methylation outliers")
+
+	niter <- 3
+	outlier_threshold <- 10
+	norm.beta.copy <- norm.beta
+	for(i in 1:niter)
+	{
+		sds <- rowSds(norm.beta.copy, na.rm=T)
+		means <- rowMeans(norm.beta.copy, na.rm=T)
+		norm.beta.copy[norm.beta.copy > means + sds*outlier_threshold | norm.beta.copy < means - sds*outlier_threshold] <- NA
+	}
+	outlier_count <- apply(norm.beta.copy, 1, function(x) sum(is.na(x)))
+	norm.beta.copy <- is.na(norm.beta.copy)
+
 	if(is.na(nthreads) | nthreads == 1)
 	{
 		norm.beta <- adjust.covs.serial(norm.beta, covs)
@@ -47,13 +62,14 @@ main <- function()
 		norm.beta <- adjust.covs(norm.beta, covs, nthreads)	
 	}
 	
+	norm.beta[norm.beta.copy] <- NA
 	save(norm.beta, file=out_file)
+	message("Successfully completed adjustments")
 }
 
 
 adjust.covs.1 <- function(x, covs)
 {
-	x <- remRec(x, 10, 3)$x
 	d <- data.frame(X=rntransform(x), covs)
 	form <- as.formula(paste0("X ~ ", paste(names(d)[-1], collapse=" + ")))
 	as.numeric(rntransform(residuals(lm(form, data=d, na.action=na.exclude))))
@@ -66,9 +82,9 @@ adjust.covs <- function(B, covs, mc.cores=mc.cores)
 	{
 		res <- mclapply(ii, function(i)
 		{
-			if( i %% 100 == 0) message("Probe ", i, " of ", nrow(B))
+			message("Probe ", i, " of ", nrow(B))
 			adjust.covs.1(B[i,], covs)
-		})
+		}, mc.cores=mc.cores)
 		return(do.call(rbind, res))
 	})
 	l <- do.call(rbind, l)

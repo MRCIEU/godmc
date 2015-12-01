@@ -14,9 +14,6 @@ main <- function()
 	chunks <- as.numeric(arguments[6])
 	jid <- as.numeric(arguments[7])
 
-
-	time1 <- Sys.time()
-
 	message("Reading methylation data...")
 	load(methylationfile)
 
