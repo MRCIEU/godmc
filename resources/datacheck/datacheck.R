@@ -378,57 +378,75 @@ if(cov2<3)
 	stop("ERROR: are there any covariates missing in the covariates file? Sex and Age are required")
 }
 
+g1<-grep("_factor",names(covar))
+g2<-grep("_numeric",names(covar))
+g<-unique(c(g1,g2))
+
+if(length(g)!=(cov2-1))
+{
+   stop("ERROR: have you specified whether your covariates are factors or numeric in the header of the covariates file?")
+}
+
+
+for (i in 1:length(g1))
+{
+if(length(table(na.omit(covar[,g1[i]])))==(cov1))
+{
+   stop("ERROR: one of your covariates is a factor but has the same number of levels as individuals")
+}
+}
+
 a <- apply(covar,2,function(x) y<-length(which(is.na(x))))
 if(length(which(a>0.1*nid_meth)))
 {
 	stop("ERROR: more than 10% of missingness in one of the covariates","\n")   
 }
 
-if(! "Sex" %in% names(covar))
+if(! "Sex_factor" %in% names(covar))
 {
 	stop("ERROR:  There is no Sex variable in the covariate file. Please provide M/F values, even if they are all the same sex.")
 }
 
-if(any(is.na(covar$Sex)))
+if(any(is.na(covar$Sex_factor)))
 {
 	stop("ERROR:  There are some values in the Sex column that are neither M nor F. Please make sure all individuals have data for this column.")
 }
 
-index <- covar$Sex %in% c("M", "F")
+index <- covar$Sex_factor %in% c("M", "F")
 if(any(!index))
 {
 	stop("ERROR:  There are some values in the Sex column that are neither M nor F. Please make sure all individuals have data for this column.")
 }
 
-if(! "Age" %in% names(covar))
+if(! "Age_numeric" %in% names(covar))
 {
 	stop("ERROR:  There is no Age variable in the covariate file. Please provide age in years, even if they are all the same age.")
 }
 
 pdf(age_distribution_plot, height=6, width=6)
-hist(covar$Age, breaks=50, xlab="Age", main=paste("age distribution (N=", length(which(!is.na(covar$Age))),")",sep=""),cex.main=0.7)
+hist(covar$Age_numeric, breaks=50, xlab="Age", main=paste("age distribution (N=", length(which(!is.na(covar$Age_numeric))),")",sep=""),cex.main=0.7)
 dev.off()
 
 
-if(any(is.na(covar$Age)))
+if(any(is.na(covar$Age_numeric)))
 {
 	stop("ERROR:  Some individuals don't have ages. Please make sure there are no missing values.")
 }
 
-if(any(covar$Age < 0))
+if(any(covar$Age_numeric < 0))
 {
 	stop("ERROR:  Some negative values in the age column.")
 }
 
-if(mean(covar$Age, na.rm=T) > 100)
+if(mean(covar$Age_numeric, na.rm=T) > 100)
 {
 	stop("ERROR:  Average age is above 100, please make sure age is provided in years.")
 }
 message("Number of individuals with covariate data: ", cov1)
 message("Covariates provided:\n", paste(names(covar)[-1], collapse="\n"))
-message("Average age: ", mean(covar$Age))
-message("Number of males: ", sum(covar$Sex == "M"))
-message("Number of females: ", sum(covar$Sex == "F"))
+message("Average age: ", mean(covar$Age_numeric))
+message("Number of males: ", sum(covar$Sex_factor == "M"))
+message("Number of females: ", sum(covar$Sex_factor == "F"))
 
 
 #EWAS phenotypes
@@ -558,13 +576,13 @@ if(d2 != dim(norm.beta)[2])
 
 cohort_summary <- list()
 cohort_summary$sample_size <- length(ids)
-cohort_summary$n_males <- sum(covar$Sex == "M",na.rm=T)
-cohort_summary$n_females <- sum(covar$Sex == "F",na.rm=T)
-cohort_summary$mean_age <- mean(covar$Age,na.rm=T)
-cohort_summary$median_age <- median(covar$Age,na.rm=T)
-cohort_summary$sd_age <- sd(covar$Age,na.rm=T)
-cohort_summary$max_age <- max(covar$Age,na.rm=T)
-cohort_summary$min_age <- min(covar$Age,na.rm=T)
+cohort_summary$n_males <- sum(covar$Sex_factor == "M",na.rm=T)
+cohort_summary$n_females <- sum(covar$Sex_factor == "F",na.rm=T)
+cohort_summary$mean_age <- mean(covar$Age_numeric,na.rm=T)
+cohort_summary$median_age <- median(covar$Age_numeric,na.rm=T)
+cohort_summary$sd_age <- sd(covar$Age_numeric,na.rm=T)
+cohort_summary$max_age <- max(covar$Age_numeric,na.rm=T)
+cohort_summary$min_age <- min(covar$Age_numeric,na.rm=T)
 cohort_summary$mean_Height <- mean(ph$Height,na.rm=T)
 cohort_summary$median_Height <- median(ph$Height,na.rm=T)
 cohort_summary$sd_Height <- sd(ph$Height,na.rm=T)

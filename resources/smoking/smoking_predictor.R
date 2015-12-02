@@ -47,7 +47,7 @@ main <- function()
 	qqnorm(smok$Smoking, main=paste("Smoking prediction (N=", length(which(!is.na(smok$Smoking))),"; shapiroP=",signif(as.numeric(shapiro.test(smok$Smoking)[2]),2),")",sep=""),cex.main=0.7)
 	qqline(smok$Smoking)
     par(mfrow=c(2,2))
-	plot(covs$Age,smok$Smoking, xlab="Age", ylab="predicted smoking",main="Age vs Smoking prediction",cex.main=0.7)
+	plot(covs$Age_numeric,smok$Smoking, xlab="Age", ylab="predicted smoking",main="Age vs Smoking prediction",cex.main=0.7)
 	
     quiet <- dev.off()
     

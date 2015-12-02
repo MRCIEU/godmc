@@ -29,12 +29,19 @@ main <- function()
 	}
 
 	# Remove all IDs that have any NAs in the covariate file
-	covs <- read.table(cov_file, he=T)
+	covs <- read.table(cov_file, he=T,stringsAsFactors=F)
 	index <- apply(covs, 1, function(x) any(is.na(x) | is.nan(x) | is.infinite(x)))
 	covs <- covs[!index, ]
 	rownames(covs) <- covs$IID
 	covs <- subset(covs, IID %in% colnames(norm.beta), select=-c(IID))
 	norm.beta <- norm.beta[, colnames(norm.beta) %in% rownames(covs)]
+    
+    g<-grep("_factor",names(covs))
+    
+    for (i in 1:length(g))
+    {
+    covs[,g[i]]<-as.factor(covs[,g[i]])
+	}
 
 	grm <- readGRM(grmfile)
 	kin <- makeGRMmatrix(grm)

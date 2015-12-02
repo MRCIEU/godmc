@@ -81,17 +81,17 @@ data$trait <- data[[trait_var]]
 data$trait <- as.numeric(data$trait)
 
 w.test=1
-if (length(which(names(data)%in%"Sex"))>0 & length(rownames(table(data$Sex)))>1){
-data <- data[which(data$Sex!="NA" &data$trait!="NA"& data$trait!="na"),] 
-data$Sex <- as.factor(data$Sex)
+if (length(which(names(data)%in%"Sex_factor"))>0 & length(rownames(table(data$Sex_factor)))>1){
+data <- data[which(data$Sex_factor!="NA" &data$trait!="NA"& data$trait!="na"),] 
+data$Sex_factor <- as.factor(data$Sex_factor)
 
-sex_names <- rownames(table(data$Sex))
-w.test<-wilcox.test(data$trait[data$Sex=="M"], data$trait[data$Sex=="F"] )[3]
+sex_names <- rownames(table(data$Sex_factor))
+w.test<-wilcox.test(data$trait[data$Sex_factor=="M"], data$trait[data$Sex_factor=="F"] )[3]
 par(mfrow=c(2,2))
 colors <- 1:length(sex_names)
-plot(density( data$trait[which(data$Sex==sex_names[1])],na.rm=T),xlab="",main=paste(trait_var," density plot by Sex",sep=""), col=colors[1])
+plot(density( data$trait[which(data$Sex_factor==sex_names[1])],na.rm=T),xlab="",main=paste(trait_var," density plot by Sex",sep=""), col=colors[1])
 for (j in 2:3) { ## a maximum of 3 types of Sex including unknown
-	subset <- data$trait[which(data$Sex==sex_names[j] & !is.na(data$trait))]
+	subset <- data$trait[which(data$Sex_factor==sex_names[j] & !is.na(data$trait))]
 	if (length(sex_names) >=j & length(subset) >0) {
 		lines(density(subset,na.rm=T),xlab="",col=colors[j], main="")
 	}
@@ -101,7 +101,7 @@ legend("topright",sex_names,col=colors,lty=1)
 
 #### plot the distribution of raw phenotypes
 par(mfrow=c(2,2))
-if (w.test>0.05|length(rownames(table(data$Sex)))==1){
+if (w.test>0.05|length(rownames(table(data$Sex_factor)))==1){
 data <- data[which(data$trait!="NA"& data$trait!="na"),]
 plot(data$trait, xlab="", main=paste("raw ",trait_var," (N=", length(which(!is.na(data$trait))),")",sep=""),cex.main=0.7)
 hist(data$trait, xlab="", main=paste("raw ",trait_var," (N=", length(which(!is.na(data$trait))),")",sep=""),cex.main=0.7)
@@ -120,29 +120,29 @@ if (length(outlier)>0){data<-data[-outlier,]}
 data$trait <- qnorm((rank(data$trait,na.last="keep")-0.5)/sum(!is.na(data$trait)))
 data$trait_smokadj<-data$trait
 #adjust for age
-if(length(which(names(data)%in%c("Age")))==1){
+if(length(which(names(data)%in%c("Age_numeric")))==1){
 
-fit1<- lm(trait ~ Age, data=data)
-fit2<- lm(trait ~ Age+I(Age^2), data=data)
-fit3<- lm(trait ~ Age + Smoking, data=data)
-fit4<- lm(trait ~ Age+I(Age^2)+Smoking, data=data)
+fit1<- lm(trait ~ Age_numeric, data=data)
+fit2<- lm(trait ~ Age_numeric+I(Age_numeric^2), data=data)
+fit3<- lm(trait ~ Age_numeric + Smoking, data=data)
+fit4<- lm(trait ~ Age_numeric+I(Age_numeric^2)+Smoking, data=data)
 fit5<- lm(trait ~ Smoking, data=data)
 
-if(coefficients(summary(fit1))[,"Pr(>|t|)"]["Age"]<0.05){
+if(coefficients(summary(fit1))[,"Pr(>|t|)"]["Age_numeric"]<0.05){
 data$trait<-resid(fit1)
 data$trait_smokadj<-resid(fit3)
 }
 
-if(coefficients(summary(fit2))[,"Pr(>|t|)"]["I(Age^2)"]<0.05){
+if(coefficients(summary(fit2))[,"Pr(>|t|)"]["I(Age_numeric^2)"]<0.05){
 data$trait<-resid(fit2)
 data$trait_smokadj<-resid(fit4)
 }
 
-if(coefficients(summary(fit2))[,"Pr(>|t|)"]["I(Age^2)"]>0.05 & coefficients(summary(fit1))[,"Pr(>|t|)"]["Age"]>0.05){
+if(coefficients(summary(fit2))[,"Pr(>|t|)"]["I(Age_numeric^2)"]>0.05 & coefficients(summary(fit1))[,"Pr(>|t|)"]["Age_numeric"]>0.05){
 data$trait_smokadj<-resid(fit5)
 }
 
-if(length(table(na.omit(data$Age)))==1){
+if(length(table(na.omit(data$Age_numeric)))==1){
 data$trait_smokadj<-resid(fit5)
 }
 
@@ -179,8 +179,8 @@ qqline(outdata$trait_smokadj)
 
 }else{
 
-male <- data[which(data$Sex=="M"),]
-female <- data[which(data$Sex=="F"),]
+male <- data[which(data$Sex_factor=="M"),]
+female <- data[which(data$Sex_factor=="F"),]
 
 par(mfrow=c(2,2))
 plot(male$trait, xlab="", main=paste("raw ",trait_var," (males, N=", length(which(!is.na(male$trait))),")",sep=""),cex.main=0.7)
@@ -211,54 +211,54 @@ male$trait_smokadj<-male$trait
 female$trait_smokadj<-female$trait
 #adjust for covariates
 
-if(length(which(names(data)%in%"Age"))>0){
+if(length(which(names(data)%in%"Age_numeric"))>0){
 
-fit1<- lm(trait ~ Age, data=male)
-fit2<- lm(trait ~ Age+I(Age^2), data=male)
-fit3<- lm(trait ~ Age + Smoking, data=male)
-fit4<- lm(trait ~ Age+I(Age^2)+Smoking, data=male)
+fit1<- lm(trait ~ Age_numeric, data=male)
+fit2<- lm(trait ~ Age_numeric+I(Age_numeric^2), data=male)
+fit3<- lm(trait ~ Age_numeric + Smoking, data=male)
+fit4<- lm(trait ~ Age_numeric+I(Age_numeric^2)+Smoking, data=male)
 fit5<- lm(trait ~ Smoking, data=male)
 
-if(coefficients(summary(fit1))[,"Pr(>|t|)"]["Age"]<0.05){
+if(coefficients(summary(fit1))[,"Pr(>|t|)"]["Age_numeric"]<0.05){
 male$trait<-resid(fit1)
 male$trait_smokadj<-resid(fit3)
 }
 
-if(coefficients(summary(fit2))[,"Pr(>|t|)"]["I(Age^2)"]<0.05){
+if(coefficients(summary(fit2))[,"Pr(>|t|)"]["I(Age_numeric^2)"]<0.05){
 male$trait<-resid(fit2)
 male$trait_smokadj<-resid(fit4)
 }
 
-if(coefficients(summary(fit2))[,"Pr(>|t|)"]["I(Age^2)"]>0.05 & coefficients(summary(fit1))[,"Pr(>|t|)"]["Age"]>0.05){
+if(coefficients(summary(fit2))[,"Pr(>|t|)"]["I(Age_numeric^2)"]>0.05 & coefficients(summary(fit1))[,"Pr(>|t|)"]["Age_numeric"]>0.05){
 male$trait_smokadj<-resid(fit5)
 }
 
-if(length(table(na.omit(male$Age)))==1){
+if(length(table(na.omit(male$Age_numeric)))==1){
 male$trait_smokadj<-resid(fit5)
 
 }
 
-fit1<- lm(trait ~ Age, data=female)
-fit2<- lm(trait ~ Age+I(Age^2), data=female)
-fit3<- lm(trait ~ Age + Smoking, data=female)
-fit4<- lm(trait ~ Age+I(Age^2)+Smoking, data=female)
+fit1<- lm(trait ~ Age_numeric, data=female)
+fit2<- lm(trait ~ Age_numeric+I(Age_numeric^2), data=female)
+fit3<- lm(trait ~ Age_numeric + Smoking, data=female)
+fit4<- lm(trait ~ Age_numeric+I(Age_numeric^2)+Smoking, data=female)
 fit5<- lm(trait ~ Smoking, data=female)
 
-if(coefficients(summary(fit1))[,"Pr(>|t|)"]["Age"]<0.05){
+if(coefficients(summary(fit1))[,"Pr(>|t|)"]["Age_numeric"]<0.05){
 female$trait<-resid(fit1)
 female$trait_smokadj<-resid(fit3)
 }
 
-if(coefficients(summary(fit2))[,"Pr(>|t|)"]["I(Age^2)"]<0.05){
+if(coefficients(summary(fit2))[,"Pr(>|t|)"]["I(Age_numeric^2)"]<0.05){
 female$trait<-resid(fit2)
 female$trait_smokadj<-resid(fit4)
 }
 
-if(coefficients(summary(fit2))[,"Pr(>|t|)"]["I(Age^2)"]>0.05 & coefficients(summary(fit1))[,"Pr(>|t|)"]["Age"]>0.05){
+if(coefficients(summary(fit2))[,"Pr(>|t|)"]["I(Age_numeric^2)"]>0.05 & coefficients(summary(fit1))[,"Pr(>|t|)"]["Age_numeric"]>0.05){
 female$trait_smokadj<-resid(fit5)
 }
 
-if(length(table(na.omit(female$Age)))==1){
+if(length(table(na.omit(female$Age_numeric)))==1){
 female$trait_smokadj<-resid(fit5)
 }
 }

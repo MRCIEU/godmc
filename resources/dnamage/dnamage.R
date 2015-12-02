@@ -57,12 +57,12 @@ main <- function()
 	m<-match(fam[,2],covs[,1])
 	covs<-covs[m,]
 
-	index <- grep("^age$", names(covs), ignore.case=TRUE)
+	index <- grep("^age_numeric$", names(covs), ignore.case=TRUE)
 	if(length(index) != 1)
 	{
-		stop("There should be only one column in the covariate file called 'Age', regardless of case.")
+		stop("There should be only one column in the covariate file called 'Age_numeric', regardless of case.")
 	}
-	names(covs)[index] <- "Age"
+	names(covs)[index] <- "Age_numeric"
 	if("FID" %in% names(covs)) covs <- subset(covs, select=-c(FID))
 	load(beta_file)
     m<-match(fam[,2],colnames(norm.beta))
@@ -77,7 +77,7 @@ main <- function()
 
 	pdf(age.acceleration.plot, width=12, height=8)
 	par(mfrow=c(2,2))
-	plot(phen$Age,phen$DNAmAge,cex.main=0.7,cex=0.7, main=paste("correlation between predicted age and actual age=",cor(phen$Age, phen$DNAmAge,use="pair"),sep=""))
+	plot(phen$Age_numeric,phen$DNAmAge,cex.main=0.7,cex=0.7, main=paste("correlation between predicted age and actual age=",cor(phen$Age_numeric, phen$DNAmAge,use="pair"),sep=""))
 
     write.table(phen, file=paste0(out_file, ".txt"), row=F, col=T, qu=F)
 
@@ -328,9 +328,9 @@ generate.aar <- function(agepred, phen)
 	agepred <- subset(agepred, select=c(SampleID, DNAmAge))
 	phen <- merge(phen, agepred, by.x="IID", by.y="SampleID", all.x=TRUE)
 
-	message("The correlation between predicted age and actual age is ", cor(phen$Age, phen$DNAmAge, use="pair"))
+	message("The correlation between predicted age and actual age is ", cor(phen$Age_numeric, phen$DNAmAge, use="pair"))
 
-	phen$AAR <- residuals(lm(Age ~ DNAmAge, phen, na.action=na.exclude))
+	phen$AAR <- residuals(lm(Age_numeric ~ DNAmAge, phen, na.action=na.exclude))
 	phen <- phen[order(phen$index), ]
 	phen <- subset(phen, select=-c(index))
 	return(phen)

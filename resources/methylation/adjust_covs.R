@@ -40,6 +40,13 @@ main <- function()
 	covs <- covs[match(colnames(norm.beta), rownames(covs)), ]
 	stopifnot(all(rownames(covs) == colnames(norm.beta)))
 
+    g<-grep("_factor",names(covs))
+    
+    for (i in 1:length(g))
+    {
+    covs[,g[i]]<-as.factor(covs[,g[i]])
+	}
+
 	message("Identifying methylation outliers")
 
 	niter <- 3

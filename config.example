@@ -39,7 +39,7 @@ cellcounts_required="yes"
 
 # If cellcounts_required="yes" and you have pre-measured cell counts already 
 # then set this variable to be the text filename that contains that data
-# If you want the pipeline to estimate the cell counts for you then leave this as "NULL"
+# If you want the pipeline to estimate the cell counts for you using whole blood reference data then leave this as "NULL". 
 provided_cellcounts="NULL"
 
 # Are the samples related? e.g. Complex family data, twin data etc. If so set this to "yes"
