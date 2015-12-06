@@ -23,8 +23,12 @@ if(!is.na(jid))
 	samplesheet <- samplesheet[i1:i2, ]
 }
 
-l <- meffil.calculate.cnv(samplesheet, verbose=TRUE)
-cnv <- meffil.cnv.matrix(l)
+library(minfi)
+library(CopyNumber450kData)
+meffil.add.copynumber450k.references()
+
+segment.lists <- meffil.calculate.cnv(samplesheet, cnv.reference="copynumber450k", chip="450k", verbose=TRUE)
+cnv <- meffil.cnv.matrix(segment.lists, "450k")
 
 # Save
 if(!is.na(jid))

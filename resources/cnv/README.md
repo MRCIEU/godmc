@@ -25,10 +25,9 @@ You also need the following CRAN libraries:
 - `plyr`
 - `splitstackshape`
 
-The following Bioconductor libraries:
+The following Bioconductor library:
 
-- `CopyNumber450k`
-- `CopyNumber450kData`
+- `DNAcopy`
 
 And the `meffil` package. e.g.:
 
@@ -36,8 +35,7 @@ And the `meffil` package. e.g.:
     install.packages("splitstackshape")
     install.packages("devtools")
     source("http://bioconductor.org/biocLite.R")
-    biocLite("CopyNumber450k")
-    biocLite("CopyNumber450kData")
+    biocLite("DNAcopy")
     library(devtools)
     install_github("perishky/meffil")
 
