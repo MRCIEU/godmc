@@ -10,6 +10,11 @@ pc_out <- arguments[4]
 message("Loading methylation data")
 load(beta_file)
 
+index <- which(is.na(norm.beta), arr.ind = TRUE) 
+message("Replace ",length(index)," missing values with rowmeans")
+
+norm.beta[index] <- rowMeans(norm.beta, na.rm = TRUE)[index[, "row"]] 
+
 message("Extracting most variable probes")
 norm.beta <- norm.beta[meffil.most.variable.cpgs(norm.beta, n=20000), ]
 
