@@ -71,17 +71,16 @@ grm_maf_cutoff=0.01
 
 # PCA paramaters
 n_pcs=20
-pca_sd=3
+pca_sd=5
 
 # Methylation PCs
 n_meth_pcs=50
 meth_pc_cutoff="0.8"
-meth_pc_threshold="1e-8"
+meth_pc_threshold="1e-6"
 
 # Matrixeqtl parameters
 soft_threshold="1e-5"
 soft_threshold_cnv="1e-5"
-
 
 # DO NOT MODIFY
 source ${home_directory}/resources/parameters
