@@ -67,14 +67,53 @@ if(length(w) > 0)
 w <- which(names(chrno) %in% c(1:22))
 if(length(w)<22)
 {
-	stop("ERROR: please change chromosome coding to 1-22")
+	stop("ERROR: please change chromosome coding to 1-22, please dont use chr1, chr2 etc.")
 }
 
-message("Checking alleles")
+
+message("Checking strand")
+
+bim2<-data.frame(bim,alleles=paste(bim[,5],bim[,6],sep=""))
+w<-which(bim2$alleles=="GA")
+bim2$alleles[w]<-"AG"
+w<-which(bim2$alleles=="CA")
+bim2$alleles[w]<-"AC"
+w<-which(bim2$alleles=="TC")
+bim2$alleles[w]<-"CT"
+w<-which(bim2$alleles=="TG")
+bim2$alleles[w]<-"GT"
+
+message("Checking strand against control SNPs")
+for (i in 1:22)
+{
+	chr <- bim2[which(bim2[,1] %in% i),]
+	controlsnps.chr <- na.omit(controlsnps[which(controlsnps$V2 %in% i), ])
+	controlsnps.chr$V6<-as.character(controlsnps.chr$V6)
+	w<-which(controlsnps.chr$V5=="-"&controlsnps.chr$V6=="AG")
+	if(length(w)>0){controlsnps.chr$V6[w]<-"CT"}
+    w<-which(controlsnps.chr$V5=="-"&controlsnps.chr$V6=="AC")
+	if(length(w)>0){controlsnps.chr$V6[w]<-"GT"}
+
+	m<-match(controlsnps.chr$V3,chr$V4)
+	chr<-chr[na.omit(m),]
+	m<-match(chr$V4,controlsnps.chr$V3)
+	controlsnps.chr<-controlsnps.chr[m,]
+    strand.check<-sum(controlsnps.chr$V6==chr$alleles,na.rm=T)/nrow(controlsnps.chr)
+    message("Chr ", i, " proportion in agreement: ", strand.check)	
+	if(strand.check<0.95)
+	{
+		stop("ERROR: please check strand for chromosome ",i," as more than 5% of your SNPs have strand issues")
+	}
+}
+
+
+
+message("Checking allele coding")
 a1 <- data.frame(table(bim[,5]))
 a2 <- data.frame(table(bim[,6]))
 
 allele.out <- NULL
+allele.out2 <- NULL
 for (t in 1:nrow(a1))
 {
 	testa1 <- unlist(strsplit(as.character(a1$Var1[t]), split="", fixed=T))
@@ -84,26 +123,58 @@ for (t in 1:nrow(a1))
 		allele <- which(bim[,5] %in% a1$Var[t])
 		allele.out <- rbind(allele.out,bim[allele,])
 	}
+
+w <- which( testa1 %in% c("I","R","D"))
+	if(length(w) > 0)
+	{
+		allele <- which(bim[,5] %in% a1$Var[t])
+		allele.out2 <- rbind(allele.out2,bim[allele,])
+	}
 }
 
+if(!is.null(allele.out2))
+{
+	perc.miscoding <- nrow(allele.out2)/nrow(bim)
+	if(perc.miscoding > 0.01)
+	{
+		stop("ERROR: more than 1% of miscoding alleles, please change allele coding to A,C,T,G. Please don't use I,R,D coding for your INDEL alleles")
+	}
+}
 if(!is.null(allele.out))
 {
 	perc.miscoding <- nrow(allele.out)/nrow(bim)
 	if(perc.miscoding > 0.01)
 	{
-		stop("ERROR: more than 1% of miscoding alleles, please change allele coding to A,C,T,G")
+		stop("ERROR: more than 1% of miscoding alleles, please change allele coding to A,C,T,G. Please use full allele coding for your INDEL alleles.")
 	}
 }
 
 allele.out <- NULL
+allele.out2 <- NULL
 for (t in 1:nrow(a2))
 {
 	testa2 <- unlist(strsplit(as.character(a2$Var1[t]), split="", fixed=T))
 	w <- which(! testa2 %in% c("A","C","T","G"))
 	if(length(w) > 0)
 	{
-		allele <- which(bim[,5] %in% a2$Var[t])
+		allele <- which(bim[,6] %in% a2$Var[t])
 		allele.out <- rbind(allele.out,bim[allele,])
+	}
+
+w <- which( testa2 %in% c("I","R","D"))
+	if(length(w) > 0)
+	{
+		allele <- which(bim[,6] %in% a1$Var[t])
+		allele.out2 <- rbind(allele.out2,bim[allele,])
+	}
+}
+
+if(!is.null(allele.out2))
+{
+	perc.miscoding <- nrow(allele.out2)/nrow(bim)
+	if(perc.miscoding > 0.01)
+	{
+		stop("ERROR: more than 1% of miscoding alleles, please change allele coding to A,C,T,G. Please don't use I,R,D coding for your INDEL alleles.")
 	}
 }
 
@@ -112,7 +183,7 @@ if(!is.null(allele.out))
 	perc.miscoding <- nrow(allele.out)/nrow(bim)
 	if(perc.miscoding > 0.01)
 	{
-		stop("ERROR: more than 1% of miscoding alleles, please change allele coding to A,C,T,G")
+		stop("ERROR: more than 1% of miscoding alleles, please change allele coding to A,C,T,G. Please use full allele coding for your INDEL alleles.")
 	}
 }
 
@@ -134,7 +205,7 @@ if(any(duplicated(bim[,2])))
 
 #######################################################
 
-message("Checking position and alleles for chromosome against control SNPs")
+message("Checking build against control SNPs")
 no.SNPs.bychr <- NULL
 for (i in 1:22)
 {
@@ -487,7 +558,7 @@ if(phenotypes_file != "NULL")
 	if(any(a > 0.1*nid_meth))
 	{
 		nom <- names(ph)[a > 0.1*nid_meth]
-		stop("ERROR: more than 10% of missingness in at least one of the EWAS phenotypes:\n", paste(nom, collapse="\n"))
+		stop("WARNING: more than 10% of missingness in at least one of the EWAS phenotypes:\n", paste(nom, collapse="\n"))
 	}
 
 	if("Height" %in% nom)
