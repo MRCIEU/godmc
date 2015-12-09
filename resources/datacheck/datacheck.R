@@ -24,6 +24,7 @@ if(any(!index))
 
 
 library(data.table)
+library(matrixStats)
 
 args <- (commandArgs(TRUE));
 bim_file <- as.character(args[1]);
@@ -668,34 +669,51 @@ cohort_summary$n_CpGs <- nrow(bim)
 cohort_summary$covariates <- names(covar)[-1]
 
 
-summariseMeth <- function(X, outlier_threshold)
+niter <- 3
+	outlier_threshold <- 10
+	norm.beta.copy <- norm.beta
+	for(i in 1:niter)
+	{
+		sds <- rowSds(norm.beta.copy, na.rm=T)
+		means <- rowMeans(norm.beta.copy, na.rm=T)
+		norm.beta.copy[norm.beta.copy > means + sds*outlier_threshold | norm.beta.copy < means - sds*outlier_threshold] <- NA
+	}
+	outlier_count <- apply(norm.beta.copy, 1, function(x) sum(is.na(x)))
+
+
+summariseMeth <- function(X, outlier_threshold,niter)
 {
-	require(matrixStats)
+	
 
 	message("Removing outliers from methylation matrix")
-	sds <- rowSds(X, na.rm=T)
-	means <- rowMeans(X, na.rm=T)
-	X[X > means + sds*outlier_threshold | X < means - sds*outlier_threshold] <- NA
-
+	
+    norm.beta.copy <- X
+	for(i in 1:niter)
+	{
+		sds <- rowSds(norm.beta.copy, na.rm=T)
+		means <- rowMeans(norm.beta.copy, na.rm=T)
+		norm.beta.copy[norm.beta.copy > means + sds*outlier_threshold | norm.beta.copy < means - sds*outlier_threshold] <- NA
+	}
+	
 	message("Estimating means")
-	means <- rowMeans(X, na.rm=T)
+	means <- rowMeans(norm.beta.copy, na.rm=T)
 
 	message("Estimating SDs")
-	sds <- rowVars(X, na.rm=T)
+	sds <- rowSds(norm.beta.copy, na.rm=T)
 
 	message("Estimating medians")
-	medians <- rowMedians(X, na.rm=T)
+	medians <- rowMedians(norm.beta.copy, na.rm=T)
 
 	message("Counting outliers")
-	outliers <- apply(X, 1, function(x) sum(is.na(x)))
+	outliers <- apply(norm.beta.copy, 1, function(x) sum(is.na(x)))
 
-	dat <- data.frame(cpg=rownames(X), mean=means, median=medians, sd=sds, outlier=outliers)
+	dat <- data.frame(cpg=rownames(norm.beta.copy), mean=means, median=medians, sd=sds, outlier=outliers)
 	return(dat)
 }
 
 message("Generating summary stats of methylation")
 
-meth_summary <- summariseMeth(norm.beta, 10)
+meth_summary <- summariseMeth(norm.beta, 10, 3)
 
 save(cohort_summary, file=cohort_descriptives_file)
 save(meth_summary, file=methylation_summary_file)
