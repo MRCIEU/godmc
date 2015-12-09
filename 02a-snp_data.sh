@@ -198,6 +198,16 @@ ${plink} --bfile ${bfile} --freq gz --hardy gz --missing gz --out ${section_02_d
 
 gzip -f -c ${quality_scores} > ${section_02_dir}/data.info.gz
 
+nrow=`zcat ./results/02/data.imiss.gz |awk 'NR>1 && $4==0 {print $0}'  |wc -l`
+if [ ! "${nrow}" != "0" ]
+then
+	echo "Error: Your genotype data contains missing values. Please don't use a genotype probability cut-off."
+    exit 1
+else
+    echo "You successfully converted genotype data to bestguess format without any missing values"
+fi
+
+
 #Update ids
 awk '{print $1,$2}' < ${bfile}.fam > ${intersect_ids_plink}
 awk '{print $2}' < ${bfile}.fam > ${intersect_ids}
