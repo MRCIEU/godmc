@@ -42,11 +42,12 @@ main <- function()
 
     g<-grep("_factor",names(covs))
     
+    if(length(g)>0){
     for (i in 1:length(g))
     {
     covs[,g[i]]<-as.factor(covs[,g[i]])
 	}
-
+    }
 	message("Identifying methylation outliers")
 
 	niter <- 3
@@ -70,6 +71,11 @@ main <- function()
 	}
 	
 	norm.beta[norm.beta.copy] <- NA
+	
+	index <- which(is.na(norm.beta), arr.ind = TRUE) 
+    message("Replace ",length(index)," missing values with rowmeans")
+    norm.beta[index] <- rowMeans(norm.beta, na.rm = TRUE)[index[, "row"]] 
+
 	save(norm.beta, file=out_file)
 	message("Successfully completed adjustments")
 }
