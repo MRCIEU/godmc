@@ -195,11 +195,13 @@ adjust.relatedness.fast.1 <- function(x, covs, kin, eig, quiet=TRUE)
 	failures<-append(failures,class(p_out))
 	if(class(p_out) == "try-error")
 	{
-		out<- list(d$X, failures)
-		return(out)
+		#out<- list(d$X, failures)
+		#return(out)
+	    return(d$X)
 	} else {
-		out<-list(as.numeric(rntransform(p_out$grresidualY)),failures)
-		return(out)
+		#out<-list(as.numeric(rntransform(p_out$grresidualY)),failures)
+		#return(out)
+		return(as.numeric(rntransform(p_out$grresidualY)))
 	}
 }
 
