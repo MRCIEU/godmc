@@ -37,11 +37,12 @@ main <- function()
 	norm.beta <- norm.beta[, colnames(norm.beta) %in% rownames(covs)]
     
     g<-grep("_factor",names(covs))
-    
+    if(length(g)>0){
     for (i in 1:length(g))
     {
     covs[,g[i]]<-as.factor(covs[,g[i]])
 	}
+    }
 
 	grm <- readGRM(grmfile)
 	kin <- makeGRMmatrix(grm)
@@ -184,17 +185,21 @@ makeGRMmatrix <- function(grm)
 
 adjust.relatedness.fast.1 <- function(x, covs, kin, eig, quiet=TRUE)
 {
+	failures<-NULL
 	x[!is.finite(x)] <- mean(x, na.rm=T)
 	d <- data.frame(X=rntransform(x), covs)
 	rownames(d) <- colnames(kin)
 	form <- as.formula(paste0("X ~ ", paste(names(d)[-1], collapse=" + ")))
 	d$X <- residuals(lm(form, d))
 	p_out <- try(polygenic(X, data=d, kinship.matrix=kin, eigenOfRel=eig, quiet=quiet))
+	failures<-append(failures,class(p_out))
 	if(class(p_out) == "try-error")
 	{
-		return(d$X)
+		out<- list(d$X, failures)
+		return(out)
 	} else {
-		return(as.numeric(rntransform(p_out$grresidualY)))
+		out<-list(as.numeric(rntransform(p_out$grresidualY)),failures)
+		return(out)
 	}
 }
 

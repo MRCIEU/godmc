@@ -161,7 +161,7 @@ else
 		--make-grm-bin \
 		--out ${grmfile_all} \
 		--thread-num ${nthreads}
-
+#From here on, we have clean data
 	echo "Recalculating PCs with outliers removed"
 
 	if [ "${related}" = "no" ]
@@ -190,8 +190,13 @@ else
 
 fi
 
-#From here on, we have clean data
+#Recode alleles
+cp ${bfile}.bim ${bfile}.bim.original3
 
+Rscript resources/genetics/harmonization.R \
+	${bfile}.bim \
+	${SNPfail_allelecoding}
+	 
 
 # Get frequencies
 ${plink} --bfile ${bfile} --freq gz --hardy gz --missing gz --out ${section_02_dir}/data

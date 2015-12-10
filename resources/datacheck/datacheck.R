@@ -114,77 +114,78 @@ a1 <- data.frame(table(bim[,5]))
 a2 <- data.frame(table(bim[,6]))
 
 allele.out <- NULL
-allele.out2 <- NULL
+#allele.out2 <- NULL
 for (t in 1:nrow(a1))
 {
 	testa1 <- unlist(strsplit(as.character(a1$Var1[t]), split="", fixed=T))
-	w <- which(! testa1 %in% c("A","C","T","G"))
+	w <- which(! testa1 %in% c("A","C","T","G","I","R","D"))
 	if(length(w) > 0)
 	{
 		allele <- which(bim[,5] %in% a1$Var[t])
 		allele.out <- rbind(allele.out,bim[allele,])
 	}
 
-w <- which( testa1 %in% c("I","R","D"))
-	if(length(w) > 0)
-	{
-		allele <- which(bim[,5] %in% a1$Var[t])
-		allele.out2 <- rbind(allele.out2,bim[allele,])
-	}
-}
+#w <- which( testa1 %in% c("I","R","D"))
+#	if(length(w) > 0)
+#	{
+#		allele <- which(bim[,5] %in% a1$Var[t])
+#		allele.out2 <- rbind(allele.out2,bim[allele,])
+#	}
+#}
 
-if(!is.null(allele.out2))
-{
-	perc.miscoding <- nrow(allele.out2)/nrow(bim)
-	if(perc.miscoding > 0.01)
-	{
-		stop("ERROR: more than 1% of miscoding alleles, please change allele coding to A,C,T,G. Please don't use I,R,D coding for your INDEL alleles")
-	}
-}
+#if(!is.null(allele.out2))
+#{
+#	perc.miscoding <- nrow(allele.out2)/nrow(bim)
+#	if(perc.miscoding > 0.01)
+#	{
+#		stop("ERROR: more than 1% of miscoding alleles, please change allele coding to A,C,T,G or I,R,D. Please don't use other coding for your INDEL alleles")
+#	}
+#}
+
 if(!is.null(allele.out))
 {
 	perc.miscoding <- nrow(allele.out)/nrow(bim)
-	if(perc.miscoding > 0.01)
+    if(perc.miscoding > 0.01)
 	{
 		stop("ERROR: more than 1% of miscoding alleles, please change allele coding to A,C,T,G. Please use full allele coding for your INDEL alleles.")
 	}
 }
 
 allele.out <- NULL
-allele.out2 <- NULL
+#allele.out2 <- NULL
 for (t in 1:nrow(a2))
 {
 	testa2 <- unlist(strsplit(as.character(a2$Var1[t]), split="", fixed=T))
-	w <- which(! testa2 %in% c("A","C","T","G"))
+	w <- which(! testa2 %in% c("A","C","T","G","I","R","D"))
 	if(length(w) > 0)
 	{
 		allele <- which(bim[,6] %in% a2$Var[t])
 		allele.out <- rbind(allele.out,bim[allele,])
 	}
 
-w <- which( testa2 %in% c("I","R","D"))
-	if(length(w) > 0)
-	{
-		allele <- which(bim[,6] %in% a1$Var[t])
-		allele.out2 <- rbind(allele.out2,bim[allele,])
-	}
-}
+#w <- which( testa2 %in% c("I","R","D"))
+#	if(length(w) > 0)
+#	{
+#		allele <- which(bim[,6] %in% a1$Var[t])
+#		allele.out2 <- rbind(allele.out2,bim[allele,])
+#	}
+#}
 
-if(!is.null(allele.out2))
-{
-	perc.miscoding <- nrow(allele.out2)/nrow(bim)
-	if(perc.miscoding > 0.01)
-	{
-		stop("ERROR: more than 1% of miscoding alleles, please change allele coding to A,C,T,G. Please don't use I,R,D coding for your INDEL alleles.")
-	}
-}
+#if(!is.null(allele.out2))
+#{
+#	perc.miscoding <- nrow(allele.out2)/nrow(bim)
+#	if(perc.miscoding > 0.01)
+#	{
+#		stop("ERROR: more than 1% of miscoding alleles, please change allele coding to A,C,T,G. Please don't use I,R,D coding for your INDEL alleles.")
+#	}
+#}
 
 if(!is.null(allele.out))
 {
 	perc.miscoding <- nrow(allele.out)/nrow(bim)
 	if(perc.miscoding > 0.01)
 	{
-		stop("ERROR: more than 1% of miscoding alleles, please change allele coding to A,C,T,G. Please use full allele coding for your INDEL alleles.")
+		stop("ERROR: more than 1% of miscoding alleles, please change allele coding to A,C,T,G,I,R,D. Please use full allele coding for your INDEL alleles.")
 	}
 }
 
