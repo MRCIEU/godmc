@@ -28,7 +28,7 @@ phenotypes="${home_directory}/input_data/phenotypes.txt"
 # This should be a file with three columns, SNP, MAF and quality scores
 quality_scores="${home_directory}/input_data/data.info"
 
-# The software used to to estimate imputation quality
+# The software used to to estimate imputation quality. eg. impute2 or minimac
 quality_type="impute2"
 
 # Cellcounts

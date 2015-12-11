@@ -16,6 +16,7 @@ echo "Copying genetic data to processing folder"
 # cp ${bfile_raw}.bim ${bfile}.bim
 # cp ${bfile_raw}.fam ${bfile}.fam
 
+
 ${plink} \
 	--bfile ${bfile_raw} \
 	--keep ${intersect_ids_plink} \
@@ -28,22 +29,30 @@ ${plink} \
 	--out ${bfile} \
 	--threads ${nthreads}
 
+#Recode alleles
+cp ${bfile}.bim ${bfile}.bim.original
+
+Rscript resources/genetics/harmonization.R \
+	${bfile}.bim \
+	${SNPfail_allelecoding}
+
 
 # Change SNP ids to chr:position:{SNP/INDEL}
 echo "Updating SNP ID coding"
-cp ${bfile}.bim ${bfile}.bim.original
-awk '{if (length($5) == "1" && length($6) == "1") print $1, "chr"$1":"$4":SNP", $3, $4, $5, $6;else print $1, "chr"$1":"$4":INDEL", $3, $4, $5, $6;}' ${bfile}.bim.original > ${bfile}.bim
+cp ${bfile}.bim ${bfile}.bim.original2
+awk '{if (($5 == "A" || $5 == "T" || $5 == "C" || $5=="G") &&  ($6 == "A" || $6 == "T" || $6 == "C" || $6=="G")) print $1, "chr"$1":"$4":SNP", $3, $4, $5, $6;else print $1, "chr"$1":"$4":INDEL", $3, $4, $5, $6;}' ${bfile}.bim.original2 > ${bfile}.bim
 
 # Checking for any duplicate SNPs
-cp ${bfile}.bim ${bfile}.bim.original2
+cp ${bfile}.bim ${bfile}.bim.original3
 awk '{
 	if (++dup[$2] > 1) { 
 		print $1, $2".duplicate."dup[$2], $3, $4, $5, $6 
 	} else {
 		print $0 
-	}}' ${bfile}.bim.original2 > ${bfile}.bim
+	}}' ${bfile}.bim.original3 > ${bfile}.bim
 
 grep "duplicate" ${bfile}.bim | awk '{ print $2 }' > ${bfile}.duplicates.txt
+
 ${plink} \
 	--bfile ${bfile} \
 	--exclude ${bfile}.duplicates.txt \
@@ -161,7 +170,7 @@ else
 		--make-grm-bin \
 		--out ${grmfile_all} \
 		--thread-num ${nthreads}
-
+#From here on, we have clean data
 	echo "Recalculating PCs with outliers removed"
 
 	if [ "${related}" = "no" ]
@@ -190,8 +199,7 @@ else
 
 fi
 
-#From here on, we have clean data
-
+	 
 
 # Get frequencies
 ${plink} --bfile ${bfile} --freq gz --hardy gz --missing gz --out ${section_02_dir}/data
