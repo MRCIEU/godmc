@@ -35,12 +35,12 @@ main <- function()
 	rownames(covs) <- covs$IID
 	covs <- subset(covs, IID %in% colnames(norm.beta), select=-c(IID))
 	norm.beta <- norm.beta[, colnames(norm.beta) %in% rownames(covs)]
-    
-    g<-grep("_factor",names(covs))
-    
-    for (i in 1:length(g))
-    {
-    covs[,g[i]]<-as.factor(covs[,g[i]])
+
+	g <- grep("_factor",names(covs))
+
+	for (i in g)
+	{
+		covs[,g]<-as.factor(covs[,g])
 	}
 
 	grm <- readGRM(grmfile)
@@ -82,9 +82,11 @@ main <- function()
 		norm.beta <- adjust.relatedness.serial(norm.beta, covs, kin, eig)
 	} else {
 		message("Running with ", nthreads, " threads")
-		norm.beta <- adjust.relatedness(norm.beta, covs, kin, eig, nthreads)
+		out <- adjust.relatedness(norm.beta, covs, kin, eig, nthreads)
 	}
 
+	norm.beta <- out$x
+	classes <- out$cl
 	norm.beta[norm.beta.copy] <- NA
 
 	index <- which(is.na(norm.beta), arr.ind = TRUE) 
@@ -92,6 +94,7 @@ main <- function()
     norm.beta[index] <- rowMeans(norm.beta, na.rm = TRUE)[index[, "row"]] 
 
 	save(norm.beta, file=out_file)
+	save(classes, file=paste0(out_file, "_failures"))
 	message("Successfully completed adjustments")
 }
 
@@ -192,10 +195,11 @@ adjust.relatedness.fast.1 <- function(x, covs, kin, eig, quiet=TRUE)
 	p_out <- try(polygenic(X, data=d, kinship.matrix=kin, eigenOfRel=eig, quiet=quiet))
 	if(class(p_out) == "try-error")
 	{
-		return(d$X)
+		a <- d$X
 	} else {
-		return(as.numeric(rntransform(p_out$grresidualY)))
+		a <- as.numeric(rntransform(p_out$grresidualY))
 	}
+	return(list(x=a, cl=class(p_out)))
 }
 
 
@@ -219,14 +223,17 @@ adjust.relatedness <- function(B, covs, kin, eig, mc.cores=mc.cores)
 		{
 			# if( i %% 100 == 0) message("Probe ", i, " of ", nrow(B))
 			message("Probe ", i, " of ", nrow(B))
-			adjust.relatedness.fast.1(B[i,], covs, kin, eig)
+			out <- adjust.relatedness.fast.1(B[i,], covs, kin, eig)
 		}, mc.cores=mc.cores)
-		return(do.call(rbind, res))
+		a <- do.call(rbind, lapply(res, function(x) x$x))
+		b <- sapply(res, function(x) x$cl)
+		return(list(x=a, cl=b))
 	})
-	l <- do.call(rbind, l)
-	rownames(l) <- rownames(B)
-	colnames(l) <- colnames(B)
-	return(l)
+	x <- do.call(rbind, lapply(l, function(x) x$x))
+	y <- unlist(lapply(l, function(x) x$cl))
+	rownames(x) <- rownames(B)
+	colnames(x) <- colnames(B)
+	return(list(x=x, cl=y))
 }
 
 
