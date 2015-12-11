@@ -124,7 +124,7 @@ for (t in 1:nrow(a1))
 		allele <- which(bim[,5] %in% a1$Var[t])
 		allele.out <- rbind(allele.out,bim[allele,])
 	}
-
+}
 #w <- which( testa1 %in% c("I","R","D"))
 #	if(length(w) > 0)
 #	{
@@ -162,7 +162,7 @@ for (t in 1:nrow(a2))
 		allele <- which(bim[,6] %in% a2$Var[t])
 		allele.out <- rbind(allele.out,bim[allele,])
 	}
-
+}
 #w <- which( testa2 %in% c("I","R","D"))
 #	if(length(w) > 0)
 #	{
