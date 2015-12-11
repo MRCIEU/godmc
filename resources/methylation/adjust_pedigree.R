@@ -79,7 +79,7 @@ main <- function()
 
 	if(is.na(nthreads) | nthreads == 1)
 	{
-		norm.beta <- adjust.relatedness.serial(norm.beta, covs, kin, eig)
+		out <- adjust.relatedness.serial(norm.beta, covs, kin, eig)
 	} else {
 		message("Running with ", nthreads, " threads")
 		out <- adjust.relatedness(norm.beta, covs, kin, eig, nthreads)
@@ -230,10 +230,10 @@ adjust.relatedness <- function(B, covs, kin, eig, mc.cores=mc.cores)
 		return(list(x=a, cl=b))
 	})
 	x <- do.call(rbind, lapply(l, function(x) x$x))
-	y <- unlist(lapply(l, function(x) x$cl))
+	cl <- unlist(lapply(l, function(x) x$cl))
 	rownames(x) <- rownames(B)
 	colnames(x) <- colnames(B)
-	return(list(x=x, cl=y))
+	return(list(x=x, cl=cl))
 }
 
 
@@ -259,12 +259,15 @@ adjust.relatedness.fast <- function(B, covs, kin, eig, mc.cores=mc.cores)
 
 adjust.relatedness.serial <- function(B, covs, kin, eig)
 {
+	cl <- array(0, nrow(B))
 	for(i in 1:nrow(B))
 	{
 		cat(i, "\n")
-		B[i, ] <- adjust.relatedness.fast.1(B[i,], covs, kin, eig)
+		out <- adjust.relatedness.fast.1(B[i,], covs, kin, eig)
+		B[i, ] <- out$x
+		cl[i] <- out$cl
 	}
-	return(B)
+	return(list(x=B, cl=cl))
 
 	# apply(B, 1, function(x) adjust.relatedness.1(x, kin))
 }
