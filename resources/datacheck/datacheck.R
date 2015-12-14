@@ -17,7 +17,7 @@ pkglist <- c(
 index <- pkglist %in% rownames(installed.packages())
 if(any(!index))
 {
-	stop("The following packages need to be installed:\n", paste(pkglist[!index], collapse="\n"))
+	warning("The following packages need to be installed:\n", paste(pkglist[!index], collapse="\n"))
 } else {
 	message("All required packages installed")
 }
@@ -68,7 +68,7 @@ if(length(w) > 0)
 w <- which(names(chrno) %in% c(1:22))
 if(length(w)<22)
 {
-	stop("WARNING: please change chromosome coding to 1-22, please dont use chr1, chr2 etc.")
+	warning("ERROR: please change chromosome coding to 1-22, please dont use chr1, chr2 etc.")
 }
 
 
@@ -103,7 +103,7 @@ for (i in 1:22)
     message("Chr ", i, " proportion in agreement: ", strand.check)	
 	if(strand.check<0.95)
 	{
-		stop("WARNING: please check strand for chromosome ",i," as more than 5% of your SNPs have strand issues")
+		warning("ERROR: please check strand for chromosome ",i," as more than 5% of your SNPs have strand issues")
 	}
 }
 
@@ -138,7 +138,7 @@ for (t in 1:nrow(a1))
 #	perc.miscoding <- nrow(allele.out2)/nrow(bim)
 #	if(perc.miscoding > 0.01)
 #	{
-#		stop("WARNING: more than 1% of miscoding alleles, please change allele coding to A,C,T,G or I,R,D. Please don't use other coding for your INDEL alleles")
+#		warning("WARNING: more than 1% of miscoding alleles, please change allele coding to A,C,T,G or I,R,D. Please don't use other coding for your INDEL alleles")
 #	}
 #}
 
@@ -147,7 +147,7 @@ if(!is.null(allele.out))
 	perc.miscoding <- nrow(allele.out)/nrow(bim)
     if(perc.miscoding > 0.01)
 	{
-		stop("WARNING: more than 1% of miscoding alleles, please change allele coding to A,C,T,G. Please use full allele coding for your INDEL alleles.")
+		warning("ERROR: more than 1% of miscoding alleles, please change allele coding to A,C,T,G. Please use full allele coding for your INDEL alleles.")
 	}
 }
 
@@ -176,7 +176,7 @@ for (t in 1:nrow(a2))
 #	perc.miscoding <- nrow(allele.out2)/nrow(bim)
 #	if(perc.miscoding > 0.01)
 #	{
-#		stop("WARNING: more than 1% of miscoding alleles, please change allele coding to A,C,T,G. Please don't use I,R,D coding for your INDEL alleles.")
+#		warning("WARNING: more than 1% of miscoding alleles, please change allele coding to A,C,T,G. Please don't use I,R,D coding for your INDEL alleles.")
 #	}
 #}
 
@@ -185,14 +185,14 @@ if(!is.null(allele.out))
 	perc.miscoding <- nrow(allele.out)/nrow(bim)
 	if(perc.miscoding > 0.01)
 	{
-		stop("WARNING: more than 1% of miscoding alleles, please change allele coding to A,C,T,G,I,R,D. Please use full allele coding for your INDEL alleles.")
+		warning("ERROR: more than 1% of miscoding alleles, please change allele coding to A,C,T,G,I,R,D. Please use full allele coding for your INDEL alleles.")
 	}
 }
 
 message("Checking for duplicate SNPs")
 if(any(duplicated(bim[,2])))
 {
-	stop("WARNING: duplicate SNPs in bim file")
+	warning("ERROR: duplicate SNPs in bim file")
 }
 
 ###
@@ -202,7 +202,7 @@ if(any(duplicated(bim[,2])))
 # l <- (length(id)-length(unique(id)))/length(id)
 # if(l > 0)
 # {
-# 	stop("WARNING: you have duplicated CHR:POS:{SNP/INDEL} positions. See the wiki for info on how to handle this.")
+# 	warning("WARNING: you have duplicated CHR:POS:{SNP/INDEL} positions. See the wiki for info on how to handle this.")
 # }
 
 #######################################################
@@ -220,7 +220,7 @@ for (i in 1:22)
 	no.SNPs.bychr <- append(no.SNPs.bychr, no.SNPs)
 	if(pos.check<0.50)
 	{
-		stop("WARNING: please change positions for chromosome ",i, " to build 37 as less than 50% of common controlsnps are found")
+		warning("ERROR: please change positions for chromosome ",i, " to build 37 as less than 50% of common controlsnps are found")
 	}
 }
 pdf(snpsbychr_plot, height=6, width=6)
@@ -238,23 +238,23 @@ qual <- as.data.frame(fread(quality_file,header=T))
 
 if(ncol(qual) != 3)
 {
-	stop("WARNING: Expecting 3 columns in the imputation quality file: SNP ID, MAF and quality score.")
+	warning("ERROR: Expecting 3 columns in the imputation quality file: SNP ID, MAF and quality score.")
 }
 
 if(any(qual[,2] < 0) | any(qual[,2] > 1))
 {
-	stop("WARNING: second column of quality scores file should me MAF. Some of the provided values fall outside the range of 0-1")
+	warning("ERROR: second column of quality scores file should me MAF. Some of the provided values fall outside the range of 0-1")
 }
 
 if(any(qual[,3] > 1.1))
 {
-	stop("WARNING: third column of quality scores file should be the info score. Some of the provided values are above 1.")
+	warning("ERROR: third column of quality scores file should be the info score. Some of the provided values are above 1.")
 }
 
 prop <- sum(bim[,2] %in% qual[,1]) / nrow(bim)
 if(prop < 0.95)
 {
-	stop("WARNING: Less then 95% of SNPs in the genetic data have info scores provided.")
+	warning("ERROR: Less then 95% of SNPs in the genetic data have info scores provided.")
 }
 
 message(round(prop*100, 2), "% of the SNPs in the data have matching info scores.")
@@ -269,13 +269,13 @@ qual$V2[index] <- 1 - qual$V2[index]
 prop <- sum(qual[,2] < 0.01) / nrow(qual)
 if(prop > 0.1)
 {
-	stop("WARNING: more than 10% of the retained quality scores have a MAF < 0.01. Please filter on MAF < 0.01")
+	warning("ERROR: more than 10% of the retained quality scores have a MAF < 0.01. Please filter on MAF < 0.01")
 }
 
 prop <- sum(qual[,3] < 0.8) / nrow(qual)
 if(prop > 0.1)
 {
-	stop("WARNING: more than 10% of the retained quality scores have a quality score < 0.4. Please filter the data. The wiki has a guide for doing this.")
+	warning("ERROR: more than 10% of the retained quality scores have a quality score < 0.4. Please filter the data. The wiki has a guide for doing this.")
 }
 
 message("Plotting info scores")
@@ -300,12 +300,12 @@ fam <- read.table(fam_file,header=F,stringsAsFactors=F)
 
 if(any(duplicated(fam[,2])))
 {
-	stop("WARNING: individual identifier is not unique")
+	warning("WARNING: individual identifier is not unique")
 }
 
 if(any(grepl("_",fam[,2])))
 {
-	stop("WARNING: please remove underscores from individual ids")
+	warning("ERROR: please remove underscores from individual ids")
 }
 
 
@@ -319,14 +319,14 @@ load(betas_file)
 
 if(! "norm.beta" %in% ls())
 {
-	stop("WARNING: please save methylation matrix with the object name norm.beta")
+	warning("ERROR: please save methylation matrix with the object name norm.beta")
 }
 message("norm.beta object found")
 #is methylation data a matrix
 
 if(!is.matrix(norm.beta))
 {
-	stop("WARNING: please transform methylation norm.beta to a matrix")
+	warning("ERROR: please transform methylation norm.beta to a matrix")
 }
 #are CpGs in rows?
 d1 <- nrow(norm.beta)
@@ -335,40 +335,40 @@ message("Number of individuals with methylation data: ", nid_meth)
 message("Number of CpGs: ", d1)
 if(d1 < nid_meth)
 {
-	stop("WARNING: please transpose methylation matrix (CpGs in rows; samples in columns)")
+	warning("ERROR: please transpose methylation matrix (CpGs in rows; samples in columns)")
 }
 message("Data is a correctly oriented matrix")
 
 #are individuals unique
 if(any(duplicated(colnames(norm.beta))))
 {
-	stop("WARNING: please remove duplicate samples from methylation data")
+	warning("ERROR: please remove duplicate samples from methylation data")
 }
 message("No duplicate IDs")
 
 #check for NAs in beta matrix
 if(any(is.na(norm.beta)))
 {
-	stop("WARNING: please remove NAs from methylation matrix")
+	warning("ERROR: please remove NAs from methylation matrix")
 }
 message("No NAs in data")
 
 #check for negative values in beta matrix
 if(any(norm.beta < 0))
 {
-	stop("WARNING: please remove negative values from methylation matrix. Are these beta values?")
+	warning("ERROR: please remove negative values from methylation matrix. Are these beta values?")
 }
 
 #check for values above 1 in beta matrix
 if(any(norm.beta > 1)) 
 {
-	stop("WARNING: please remove values > 1 from methylation matrix. Are these beta values?")
+	warning("ERROR: please remove values > 1 from methylation matrix. Are these beta values?")
 }
 message("All values are within 0-1")
 
 if(any(grepl("rs", rownames(norm.beta))))
 {
-	stop("WARNING: there are SNPs in the methylation data. Please remove all rows with rs IDs.")
+	warning("ERROR: there are SNPs in the methylation data. Please remove all rows with rs IDs.")
 }
 
 #extract list of individuals with geno+methylation data
@@ -376,7 +376,7 @@ overlap <- intersect(colnames(norm.beta),fam[,2])
 n.overlap <- length(overlap)
 if(n.overlap < 50)
 {
-	stop("WARNING: fewer than 50 subjects with methylation and genotype data")
+	warning("ERROR: fewer than 50 subjects with methylation and genotype data")
 }
 
 w <- which(fam[,2] %in% overlap)
@@ -397,24 +397,24 @@ if(cellcounts_file != "NULL")
 
 	if(c1!=nid_meth)
 	{
-		stop("WARNING: number of samples in cell counts file is not the same as in beta matrix")   
+		warning("ERROR: number of samples in cell counts file is not the same as in beta matrix")   
 	}
 
 	w <- which(names(cc)[1] %in% c("IID"))
 	if(w!=1)
 	{
-		stop("WARNING: first column from cellcounts file should be the sample identifier with the name IID")
+		warning("ERROR: first column from cellcounts file should be the sample identifier with the name IID")
 	}
 
 	if(c2<3)
 	{
-		stop("WARNING: are there any columns with cell counts missing in the cell counts file?")
+		warning("ERROR: are there any columns with cell counts missing in the cell counts file?")
 	}
 
 	a <- apply(cc,2,function(x) y<-length(which(is.na(x))))
 	if(length(which(a > 0.1*nid_meth)))
 	{
-		stop("WARNING: more than 10% of missingness in one of the cellcounts")
+		warning("ERROR: more than 10% of missingness in one of the cellcounts")
 	}
 	message("Number of cell types: ", c2)
 	message("Cell types:\n", paste(names(cc)[-1], collapse="\n"))
@@ -429,7 +429,7 @@ cov1 <- dim(covar)[1]
 cov2 <- dim(covar)[2]
 # if(cov1!=nid_meth)
 # {
-# 	stop("WARNING: number of samples in covariates file is not the same as in beta matrix")
+# 	warning("WARNING: number of samples in covariates file is not the same as in beta matrix")
 # }
 
 commonids <- Reduce(intersect, list(colnames(norm.beta), covar$IID, fam[,2]))
@@ -437,18 +437,18 @@ message("Number of samples with covariate, methylation and genetic data: ", leng
 
 if(length(commonids) < 50)
 {
-	stop("WARNING: must have at least 50 individuals with covariate, methylation and genetic data.")
+	warning("ERROR: must have at least 50 individuals with covariate, methylation and genetic data.")
 }
 
 w <- which(names(covar)[1] %in% c("IID"))
 if(w!=1)
 {
-	stop("WARNING: first column from cellcounts file should be the sample identifier with the name IID")
+	warning("ERROR: first column from cellcounts file should be the sample identifier with the name IID")
 }
 
 if(cov2<3)
 {
-	stop("WARNING: are there any covariates missing in the covariates file? Sex and Age are required")
+	warning("ERROR: are there any covariates missing in the covariates file? Sex and Age are required")
 }
 
 g1<-grep("_factor",names(covar))
@@ -457,7 +457,7 @@ g<-unique(c(g1,g2))
 
 if(length(g)!=(cov2-1))
 {
-   stop("WARNING: have you specified whether your covariates are factors or numeric in the header of the covariates file?")
+   warning("ERROR: have you specified whether your covariates are factors or numeric in the header of the covariates file?")
 }
 
 
@@ -465,35 +465,35 @@ for (i in 1:length(g1))
 {
 if(length(table(na.omit(covar[,g1[i]])))==(cov1))
 {
-   stop("WARNING: one of your covariates is a factor but has the same number of levels as individuals")
+   warning("ERROR: one of your covariates is a factor but has the same number of levels as individuals")
 }
 }
 
 a <- apply(covar,2,function(x) y<-length(which(is.na(x))))
 if(length(which(a>0.1*nid_meth)))
 {
-	stop("WARNING: more than 10% of missingness in one of the covariates","\n")   
+	warning("ERROR: more than 10% of missingness in one of the covariates","\n")   
 }
 
 if(! "Sex_factor" %in% names(covar))
 {
-	stop("WARNING:  There is no Sex variable in the covariate file. Please provide M/F values, even if they are all the same sex.")
+	warning("ERROR:  There is no Sex variable in the covariate file. Please provide M/F values, even if they are all the same sex.")
 }
 
 if(any(is.na(covar$Sex_factor)))
 {
-	stop("WARNING:  There are some values in the Sex column that are neither M nor F. Please make sure all individuals have data for this column.")
+	warning("ERROR:  There are some values in the Sex column that are neither M nor F. Please make sure all individuals have data for this column.")
 }
 
 index <- covar$Sex_factor %in% c("M", "F")
 if(any(!index))
 {
-	stop("WARNING:  There are some values in the Sex column that are neither M nor F. Please make sure all individuals have data for this column.")
+	warning("ERROR:  There are some values in the Sex column that are neither M nor F. Please make sure all individuals have data for this column.")
 }
 
 if(! "Age_numeric" %in% names(covar))
 {
-	stop("WARNING:  There is no Age variable in the covariate file. Please provide age in years, even if they are all the same age.")
+	warning("ERROR:  There is no Age variable in the covariate file. Please provide age in years, even if they are all the same age.")
 }
 
 pdf(age_distribution_plot, height=6, width=6)
@@ -503,17 +503,17 @@ dev.off()
 
 if(any(is.na(covar$Age_numeric)))
 {
-	stop("WARNING:  Some individuals don't have ages. Please make sure there are no missing values.")
+	warning("ERROR:  Some individuals don't have ages. Please make sure there are no missing values.")
 }
 
 if(any(covar$Age_numeric < 0))
 {
-	stop("WARNING:  Some negative values in the age column.")
+	warning("ERROR:  Some negative values in the age column.")
 }
 
 if(mean(covar$Age_numeric, na.rm=T) > 100)
 {
-	stop("WARNING:  Average age is above 100, please make sure age is provided in years.")
+	warning("ERROR:  Average age is above 100, please make sure age is provided in years.")
 }
 message("Number of individuals with covariate data: ", cov1)
 message("Covariates provided:\n", paste(names(covar)[-1], collapse="\n"))
@@ -533,12 +533,12 @@ if(phenotypes_file != "NULL")
 
 	# if(p1!=nid_meth)
 	# {
-	# 	stop("WARNING: number of samples in phenotype file is not the same as in beta matrix","\n")   
+	# 	warning("WARNING: number of samples in phenotype file is not the same as in beta matrix","\n")   
 	# }
 	
 	if(names(ph)[1] != "IID")
 	{
-		stop("WARNING: first column from phenotype file should be the sample identifier with the name IID")
+		warning("ERROR: first column from phenotype file should be the sample identifier with the name IID")
 	}
 
 	commonids <- Reduce(intersect, list(covar$IID, colnames(norm.beta), ph$IID))
@@ -546,13 +546,13 @@ if(phenotypes_file != "NULL")
 
 	if(p2 < 2)
 	{
-		stop("WARNING: No phenotypes present. Please set the phenotype variable to 'NULL' in the config file")
+		warning("ERROR: No phenotypes present. Please set the phenotype variable to 'NULL' in the config file")
 	}
 
 	nom <- names(ph)[-1][names(ph)[-1] %in% c("BMI", "Height")]
 	if(length(nom) < 1)
 	{
-		stop("WARNING: Neither 'Height' nor 'BMI' variables are present in the phenotype file. Please check that the columns are correctly entered (note capitalisation).")
+		warning("ERROR: Neither 'Height' nor 'BMI' variables are present in the phenotype file. Please check that the columns are correctly entered (note capitalisation).")
 	}
 
 
@@ -560,7 +560,7 @@ if(phenotypes_file != "NULL")
 	if(any(a > 0.1*nid_meth))
 	{
 		nom <- names(ph)[a > 0.1*nid_meth]
-		stop("WARNING: more than 10% of missingness in at least one of the EWAS phenotypes:\n", paste(nom, collapse="\n"))
+		warning("ERROR: more than 10% of missingness in at least one of the EWAS phenotypes:\n", paste(nom, collapse="\n"))
 	}
 
 	if("Height" %in% nom)
@@ -569,7 +569,7 @@ if(phenotypes_file != "NULL")
 		m1 <- mean(ph$Height,na.rm=T)
 		if(m1<1.0|m1>2.5)
 		{
-			stop("WARNING: please convert Height units to metres")
+			warning("ERROR: please convert Height units to metres")
 		}
 	}
 
@@ -579,7 +579,7 @@ if(phenotypes_file != "NULL")
 		m1<-mean(ph$BMI,na.rm=T)
 		if(m1<10|m1>35)
 		{
-			stop("WARNING: please convert BMI units to kg/m2")
+			warning("ERROR: please convert BMI units to kg/m2")
 		}
 	}
 
@@ -599,14 +599,14 @@ load(cnv_file)
 
 if(! "cnv" %in% ls())
 {
-	stop("WARNING: please save cnv matrix with the object name 'cnv'")
+	warning("ERROR: please save cnv matrix with the object name 'cnv'")
 }
 
 #is cnv data a matrix
 
 if(!is.matrix(cnv))
 {
-	stop("WARNING: please transform cnv object to a matrix")
+	warning("ERROR: please transform cnv object to a matrix")
 }
 
 #are CpGs in rows?
@@ -614,7 +614,7 @@ d1 <- dim(cnv)[1]
 d2 <- dim(cnv)[2]
 if(d1 < d2)
 {
-    stop("WARNING: please transpose cnv matrix (cnvs in rows; samples in columns)")
+    warning("ERROR: please transpose cnv matrix (cnvs in rows; samples in columns)")
 }
 
 message("Number of positions with CNV data: ", d1)
@@ -623,13 +623,13 @@ message("Number of individuals in CNV data: ", d2)
 #are individuals unique
 if(any(duplicated(colnames(cnv))))
 {
-	stop("WARNING: please remove duplicate samples from cnv data")
+	warning("ERROR: please remove duplicate samples from cnv data")
 }
 
 #check for NAs in beta matrix
 if(any(is.na(cnv)))
 {
-	stop("WARNING: please remove NAs from cnv matrix","\n")
+	warning("ERROR: please remove NAs from cnv matrix","\n")
 }
 
 commonids <- Reduce(intersect, list(colnames(cnv), covar$IID, colnames(norm.beta)))
@@ -637,12 +637,12 @@ message(length(commonids), " samples in common between CNV, covariate and methyl
 
 if(length(commonids) < 50)
 {
-	stop("WARNING: fewer than 50 subjects with methylation, CNV and covariate data")
+	warning("ERROR: fewer than 50 subjects with methylation, CNV and covariate data")
 }
 
 if(d2 != dim(norm.beta)[2])
 {
-    stop("WARNING: number of subject with CNV data is not the same as number of subjects with methylation data")
+    warning("ERROR: number of subject with CNV data is not the same as number of subjects with methylation data")
 }
 
 # Cohort characteristics
