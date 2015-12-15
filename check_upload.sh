@@ -52,7 +52,7 @@ then
 	
 	echo ""
 
-sftp ${sftp_username}@${sftp_address}:/${sftp_username} <<EOF
+sftp ${sftp_username}@${sftp_address}:/GoDMC/${sftp_username} <<EOF
 dir
 put results/md5sum_$1.txt
 put results/uploads_$1.tgz
