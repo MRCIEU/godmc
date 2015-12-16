@@ -202,8 +202,6 @@ else
 
 fi
 
-	 
-
 # Get frequencies, missingness, hwe, info scores
 ${plink} \
 	--bfile ${bfile} \
