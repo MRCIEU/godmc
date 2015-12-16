@@ -24,7 +24,7 @@ if(any(!index))
 
 
 library(data.table)
-library(matrixStats)
+suppressMessages(library(matrixStats))
 
 args <- (commandArgs(TRUE));
 bim_file <- as.character(args[1]);
@@ -647,8 +647,12 @@ if(d2 != dim(norm.beta)[2])
 
 # Cohort characteristics
 
+# Only count those that will be used in the analysis
+covar <- subset(covar, IID %in% commonids)
+ph <- subset(ph, IID %in% colnames(norm.beta))
+
 cohort_summary <- list()
-cohort_summary$sample_size <- length(ids)
+cohort_summary$sample_size <- length(commonids)
 cohort_summary$n_males <- sum(covar$Sex_factor == "M",na.rm=T)
 cohort_summary$n_females <- sum(covar$Sex_factor == "F",na.rm=T)
 cohort_summary$mean_age <- mean(covar$Age_numeric,na.rm=T)
@@ -666,27 +670,14 @@ cohort_summary$median_BMI <- median(ph$BMI,na.rm=T)
 cohort_summary$sd_BMI <- sd(ph$BMI,na.rm=T)
 cohort_summary$max_BMI <- max(ph$BMI,na.rm=T)
 cohort_summary$min_BMI <- min(ph$BMI,na.rm=T)
-cohort_summary$n_CpGs <- nrow(bim)
+cohort_summary$n_CpGs <- nrow(norm.beta)
+cohort_summary$n_SNP <- nrow(bim)
 cohort_summary$covariates <- names(covar)[-1]
 
 
-niter <- 3
-	outlier_threshold <- 10
-	norm.beta.copy <- norm.beta
-	for(i in 1:niter)
-	{
-		sds <- rowSds(norm.beta.copy, na.rm=T)
-		means <- rowMeans(norm.beta.copy, na.rm=T)
-		norm.beta.copy[norm.beta.copy > means + sds*outlier_threshold | norm.beta.copy < means - sds*outlier_threshold] <- NA
-	}
-	outlier_count <- apply(norm.beta.copy, 1, function(x) sum(is.na(x)))
-
-
-summariseMeth <- function(X, outlier_threshold,niter)
+summariseMeth <- function(X, outlier_threshold, niter)
 {
-	
-
-	message("Removing outliers from methylation matrix")
+	message("Counting outliers in methylation matrix")
 	
     norm.beta.copy <- X
 	for(i in 1:niter)
@@ -695,6 +686,7 @@ summariseMeth <- function(X, outlier_threshold,niter)
 		means <- rowMeans(norm.beta.copy, na.rm=T)
 		norm.beta.copy[norm.beta.copy > means + sds*outlier_threshold | norm.beta.copy < means - sds*outlier_threshold] <- NA
 	}
+	outliers <- apply(norm.beta.copy, 1, function(x) sum(is.na(x)))
 	
 	message("Estimating means")
 	means <- rowMeans(norm.beta.copy, na.rm=T)
@@ -704,9 +696,6 @@ summariseMeth <- function(X, outlier_threshold,niter)
 
 	message("Estimating medians")
 	medians <- rowMedians(norm.beta.copy, na.rm=T)
-
-	message("Counting outliers")
-	outliers <- apply(norm.beta.copy, 1, function(x) sum(is.na(x)))
 
 	dat <- data.frame(cpg=rownames(norm.beta.copy), mean=means, median=medians, sd=sds, outlier=outliers)
 	return(dat)
@@ -718,5 +707,3 @@ meth_summary <- summariseMeth(norm.beta, 10, 3)
 
 save(cohort_summary, file=cohort_descriptives_file)
 save(meth_summary, file=methylation_summary_file)
-
-message("You successfully performed all datachecks!")

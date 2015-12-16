@@ -25,16 +25,6 @@ Rscript resources/datacheck/datacheck.R \
 	${quality_scores_plot} \
 	${methylation_summary}
 
-# Check missingness
-${plink} --bfile ${bfile_raw} --missing gz --out ${section_01_dir}/data
-
-nrow=`zcat ./results/02/data.imiss.gz |awk 'NR>1 && $4==0 {print $0}'  |wc -l`
-if [ ! "${nrow}" != "0" ]
-then
-	echo "Error: Your genotype data contains missing values. Please don't use a genotype probability cut-off."
-    exit 1
-else
-    echo "You successfully converted genotype data to bestguess format without any missing values"
-fi
+echo "You successfully performed all data checks"
 
 
