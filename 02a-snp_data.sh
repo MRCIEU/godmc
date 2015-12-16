@@ -29,18 +29,19 @@ ${plink} \
 	--out ${bfile} \
 	--threads ${nthreads}
 
-#Recode alleles
+# Change SNP ids to chr:position:{SNP/INDEL}
+echo "Updating SNP ID coding"
 cp ${bfile}.bim ${bfile}.bim.original
+awk '{if (($5 == "A" || $5 == "T" || $5 == "C" || $5=="G") &&  ($6 == "A" || $6 == "T" || $6 == "C" || $6=="G")) print $1, "chr"$1":"$4":SNP", $3, $4, $5, $6;else print $1, "chr"$1":"$4":INDEL", $3, $4, $5, $6;}' ${bfile}.bim.original > ${bfile}.bim
+
+#Recode alleles to uniform format eg. I/D for INDELs
+cp ${bfile}.bim ${bfile}.bim.original2
+touch ${SNPfail1}
+touch ${bfile}.duplicates.txt
 
 Rscript resources/genetics/harmonization.R \
 	${bfile}.bim \
-	${SNPfail_allelecoding}
-
-
-# Change SNP ids to chr:position:{SNP/INDEL}
-echo "Updating SNP ID coding"
-cp ${bfile}.bim ${bfile}.bim.original2
-awk '{if (($5 == "A" || $5 == "T" || $5 == "C" || $5=="G") &&  ($6 == "A" || $6 == "T" || $6 == "C" || $6=="G")) print $1, "chr"$1":"$4":SNP", $3, $4, $5, $6;else print $1, "chr"$1":"$4":INDEL", $3, $4, $5, $6;}' ${bfile}.bim.original2 > ${bfile}.bim
+	${SNPfail1}
 
 # Checking for any duplicate SNPs
 cp ${bfile}.bim ${bfile}.bim.original3
@@ -53,9 +54,11 @@ awk '{
 
 grep "duplicate" ${bfile}.bim | awk '{ print $2 }' > ${bfile}.duplicates.txt
 
+cat ${bfile}.duplicates.txt ${SNPfail_allelecoding} |sort -u >${bfile}.failed.SNPs.txt
+
 ${plink} \
 	--bfile ${bfile} \
-	--exclude ${bfile}.duplicates.txt \
+	--exclude ${bfile}.failed.SNPs.txt \
 	--make-bed \
 	--out ${bfile} \
 	--threads ${nthreads}
