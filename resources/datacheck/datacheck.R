@@ -1,5 +1,6 @@
-
 errorlist <- list()
+warninglist <- list()
+
 
 message("Checking R version")
 currentr <- paste0(R.Version()['major'], ".", R.Version()['minor'])
@@ -76,7 +77,9 @@ print(data.frame(chrno))
 
 if(length(w) > 0)
 {
-	message("Warning: There are some chromosomes other than 1-22, they will be removed","\n")
+	msg <- paste0("There are some chromosomes other than 1-22, they will be removed")
+	warninglist <- c(warninglist, msg)
+	message("Warning: ", msg)
 }
 
 w <- which(names(chrno) %in% c(1:22))
@@ -253,7 +256,9 @@ fam <- read.table(fam_file,header=F,stringsAsFactors=F)
 
 if(any(duplicated(fam[,2])))
 {
-	warning("WARNING: individual identifier is not unique")
+	msg <- paste0("Individual identifier is not unique. Please fix this before going on.")
+	errorlist <- c(errorlist, msg)
+	warning("ERROR: ", msg)
 }
 
 if(any(grepl("_",fam[,2])))
@@ -413,10 +418,10 @@ cov2 <- dim(covar)[2]
 # 	warning("WARNING: number of samples in covariates file is not the same as in beta matrix")
 # }
 
-commonids <- Reduce(intersect, list(colnames(norm.beta), covar$IID, fam[,2]))
-message("Number of samples with covariate, methylation and genetic data: ", length(commonids))
+commonids_mgc <- Reduce(intersect, list(colnames(norm.beta), covar$IID, fam[,2]))
+message("Number of samples with covariate, methylation and genetic data: ", length(commonids_mgc))
 
-if(length(commonids) < 50)
+if(length(commonids_mgc) < 50)
 {
 	msg <- paste0("must have at least 50 individuals with covariate, methylation and genetic data.")
 	errorlist <- c(errorlist, msg)
@@ -552,8 +557,17 @@ if(phenotypes_file != "NULL")
 		warning("ERROR: ", msg)
 	}
 
-	commonids <- Reduce(intersect, list(covar$IID, colnames(norm.beta), ph$IID))
-	message(length(commonids), " in common between covariate, methylation and phenotype data")
+	commonids_mpc <- Reduce(intersect, list(covar$IID, colnames(norm.beta), ph$IID))
+	message(length(commonids_mpc), " in common between covariate, methylation and phenotype data")
+
+	if(length(commonids_mpc) < 50)
+	{
+		msg <- paste0("fewer than 50 subjects with methylation, CNV and covariate data")
+		warninglist <- c(warninglist, msg)
+		warning("Warning: ", msg)
+	}
+
+	ph <- subset(ph, IID %in% commonids_mpc)
 
 	if(p2 < 2)
 	{
@@ -575,9 +589,9 @@ if(phenotypes_file != "NULL")
 	if(any(a > 0.1*nid_meth))
 	{
 		nom <- names(ph)[a > 0.1*nid_meth]
-		msg <- paste0("more than 10% of missingness in at least one of the EWAS phenotypes:\n", paste(nom, collapse="\n"))
-		errorlist <- c(errorlist, msg)
-		warning("ERROR: ", msg)
+		msg <- paste0("more than 10% of missingness in the following EWAS phenotypes:\n", paste(nom, collapse="\n"))
+		warninglist <- c(warninglist, msg)
+		warning("Warning: ", msg)
 	}
 
 	if("Height" %in% nom)
@@ -606,7 +620,9 @@ if(phenotypes_file != "NULL")
 
 	write.table(names(ph)[-1], file=ewas_phenotype_list_file, row=F, col=F, qu=F)
 } else {
-	message("WARNING: No phenotypes have been provided.\nWARNING: EWAS will not be performed.")
+	msg <- paste0("No phenotypes have been provided.\nWARNING: EWAS will not be performed.")
+	warninglist <- c(warninglist, msg)
+	message("WARNING: ", msg)
 }
 
 #CNV data check
@@ -663,10 +679,10 @@ if(any(is.na(cnv)))
 	warning("ERROR: ", msg)
 }
 
-commonids <- Reduce(intersect, list(colnames(cnv), covar$IID, colnames(norm.beta)))
-message(length(commonids), " samples in common between CNV, covariate and methylation data")
+commonids_mcc <- Reduce(intersect, list(colnames(cnv), covar$IID, colnames(norm.beta)))
+message(length(commonids_mcc), " samples in common between CNV, covariate and methylation data")
 
-if(length(commonids) < 50)
+if(length(commonids_mcc) < 50)
 {
 	msg <- paste0("fewer than 50 subjects with methylation, CNV and covariate data")
 	errorlist <- c(errorlist, msg)
@@ -683,11 +699,11 @@ if(d2 != dim(norm.beta)[2])
 # Cohort characteristics
 
 # Only count those that will be used in the analysis
-covar <- subset(covar, IID %in% commonids)
-ph <- subset(ph, IID %in% colnames(norm.beta))
+covar <- subset(covar, IID %in% commonids_mgc)
 
 cohort_summary <- list()
-cohort_summary$sample_size <- length(commonids)
+cohort_summary$mqtl_sample_size <- length(commonids_mgc)
+cohort_summary$mcnv_sample_size <- length(commonids_mcc)
 cohort_summary$n_males <- sum(covar$Sex_factor == "M",na.rm=T)
 cohort_summary$n_females <- sum(covar$Sex_factor == "F",na.rm=T)
 cohort_summary$mean_age <- mean(covar$Age_numeric,na.rm=T)
@@ -695,11 +711,13 @@ cohort_summary$median_age <- median(covar$Age_numeric,na.rm=T)
 cohort_summary$sd_age <- sd(covar$Age_numeric,na.rm=T)
 cohort_summary$max_age <- max(covar$Age_numeric,na.rm=T)
 cohort_summary$min_age <- min(covar$Age_numeric,na.rm=T)
+cohort_summary$Height_sample_size <- sum(!is.na(ph$Height))
 cohort_summary$mean_Height <- mean(ph$Height,na.rm=T)
 cohort_summary$median_Height <- median(ph$Height,na.rm=T)
 cohort_summary$sd_Height <- sd(ph$Height,na.rm=T)
 cohort_summary$max_Height <- max(ph$Height,na.rm=T)
 cohort_summary$min_Height <- min(ph$Height,na.rm=T)
+cohort_summary$BMI_sample_size <- sum(!is.na(ph$BMI))
 cohort_summary$mean_BMI <- mean(ph$BMI,na.rm=T)
 cohort_summary$median_BMI <- median(ph$BMI,na.rm=T)
 cohort_summary$sd_BMI <- sd(ph$BMI,na.rm=T)
@@ -743,13 +761,35 @@ meth_summary <- summariseMeth(norm.beta, 10, 3)
 save(cohort_summary, file=cohort_descriptives_file)
 save(meth_summary, file=methylation_summary_file)
 
+message("\n\nCompleted checks\n")
+
+message("Summary of data:")
+for(i in 1:length(cohort_summary))
+{
+	a <- cohort_summary[[i]]
+	if(is.numeric(a)) a <- round(a, 2)
+	message(names(cohort_summary)[i], ": ", paste(a, collapse=", "))
+}
+
+
+if(length(warninglist) > 0)
+{
+	message("\n\nPlease take note of the following warnings, and fix and re-run the data check if you see fit:")
+	null <- sapply(warninglist, function(x)
+	{
+		message("- ", x)
+	})
+	q(status=0)
+}
+
+
 if(length(errorlist) > 0)
 {
-	message("\n\nCompleted checks")
-	message("The following errors were encountered, and must be addressed before continuing:")
+	message("\n\nThe following errors were encountered, and must be addressed before continuing:")
 	null <- sapply(errorlist, function(x)
 	{
 		message("- ", x)
 	})
 	q(status=1)
 }
+message("\n\n")
