@@ -88,31 +88,31 @@ message("Allele harmonization:",length(isBothMissing)," alleles with  NA are goi
 	message("Allele harmonization:",length(which(isRecode_seq2))," alleles with sequence coding are recoded to D/I")
 
 #Some SNPs in phase3 are coded as sequences
-	a1<-bim[,5]
-	a2<-bim[,6]
-	isRecode_seq3<- nchar(a1)>1 & nchar(a2)>1&nchar(a1)==nchar(a2)
-	bim[isRecode_seq3,2]<-gsub("INDEL","SNP",bim[isRecode_seq3,2])
+	#a1<-bim[,5]
+	#a2<-bim[,6]
+	#isRecode_seq3<- nchar(a1)>1 & nchar(a2)>1&nchar(a1)==nchar(a2)
+	#bim[isRecode_seq3,2]<-gsub("INDEL","SNP",bim[isRecode_seq3,2])
     
 
-   testa1<-strsplit(as.character(bim[isRecode_seq3,5]),split="",fixed=T)
-   testa1<-unlist(lapply(testa1,function(x){y<-x[1]}))
-   testa2<-strsplit(as.character(bim[isRecode_seq3,6]),split="",fixed=T)
-   testa2<-unlist(lapply(testa2,function(x){y<-x[1]}))
-   w1<-testa1!=testa2
-   w2<-testa1==testa2
-   bim[which(isRecode_seq3)[w1],5] <-testa1[w1]
-   bim[which(isRecode_seq3)[w1],6] <-testa2[w1]
-   message("Allele harmonization:",length(which(isRecode_seq3)[w1])," SNPs with sequence coding are recoded to biallelic SNPs, for example AAGTTA/TAGTTA is recoded to A/T")
+   #testa1<-strsplit(as.character(bim[isRecode_seq3,5]),split="",fixed=T)
+   #testa1<-unlist(lapply(testa1,function(x){y<-x[1]}))
+   #testa2<-strsplit(as.character(bim[isRecode_seq3,6]),split="",fixed=T)
+   #testa2<-unlist(lapply(testa2,function(x){y<-x[1]}))
+   #w1<-testa1!=testa2
+   #w2<-testa1==testa2
+   #bim[which(isRecode_seq3)[w1],5] <-testa1[w1]
+   #bim[which(isRecode_seq3)[w1],6] <-testa2[w1]
+   #message("Allele harmonization:",length(which(isRecode_seq3)[w1])," SNPs with sequence coding are recoded to biallelic SNPs, for example AAGTTA/TAGTTA is recoded to A/T")
    
-   testa1<-strsplit(as.character(bim[which(isRecode_seq3)[w2],5]),split="",fixed=T)
-   testa1<-unlist(lapply(testa1,function(x){y<-x[length(x)]}))
-   testa2<-strsplit(as.character(bim[which(isRecode_seq3)[w2],6]),split="",fixed=T)
-   testa2<-unlist(lapply(testa2,function(x){y<-x[length(x)]}))
-   w3<-testa1!=testa2
+   #testa1<-strsplit(as.character(bim[which(isRecode_seq3)[w2],5]),split="",fixed=T)
+   #testa1<-unlist(lapply(testa1,function(x){y<-x[length(x)]}))
+   #testa2<-strsplit(as.character(bim[which(isRecode_seq3)[w2],6]),split="",fixed=T)
+   #testa2<-unlist(lapply(testa2,function(x){y<-x[length(x)]}))
+   #w3<-testa1!=testa2
    
-   bim[which(isRecode_seq3)[w2][w3],5] <-testa1[w3]
-   bim[which(isRecode_seq3)[w2][w3],6] <-testa2[w3]
-   message("Allele harmonization:",length(which(isRecode_seq3)[w2][w3])," SNPs with sequence coding are recoded to biallelic SNPs, for example AAATT/AAATA is recoded to T/A")
+   #bim[which(isRecode_seq3)[w2][w3],5] <-testa1[w3]
+   #bim[which(isRecode_seq3)[w2][w3],6] <-testa2[w3]
+   #message("Allele harmonization:",length(which(isRecode_seq3)[w2][w3])," SNPs with sequence coding are recoded to biallelic SNPs, for example AAATT/AAATA is recoded to T/A")
    
 	a1<-bim[,5]
     a2<-bim[,6]
