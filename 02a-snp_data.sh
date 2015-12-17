@@ -202,24 +202,38 @@ else
 
 fi
 
-	 
-
-# Get frequencies
-${plink} --bfile ${bfile} --freq gz --hardy gz --missing gz --out ${section_02_dir}/data
+# Get frequencies, missingness, hwe, info scores
+${plink} \
+	--bfile ${bfile} \
+	--freq gz \
+	--hardy gz \
+	--missing gz \
+	--out ${section_02_dir}/data
 
 gzip -f -c ${quality_scores} > ${section_02_dir}/data.info.gz
 
-nrow=`zcat ./results/02/data.imiss.gz |awk 'NR>1 && $4==0 {print $0}'  |wc -l`
-if [ ! "${nrow}" != "0" ]
+# Check missingness
+missingness=`zcat ${section_02_dir}/data.imiss | awk '{ sum += $6; n++ } END { if (n > 0) print sum / n; }'`
+
+echo "Average missingness: ${missingness}"
+
+if (( $(bc <<< "${missingness} > 0.02") ))
 then
-	echo "Error: Your genotype data contains missing values. Please don't use a genotype probability cut-off."
-    exit 1
-else
-    echo "You successfully converted genotype data to bestguess format without any missing values"
+	echo ""
+	echo ""
+	echo ""
+	echo ""
+	echo "WARNING"
+	echo ""
+	echo ""
+	echo "Your genetic data has missingness of ${missingness}"
+	echo ""
+	echo "This seems high considering that you should have converted to best guess format with a very high hard call threshold"
+	echo ""
+	echo "Please ensure that this has been done"
 fi
 
-
-#Update ids
+# Update ids
 awk '{print $1,$2}' < ${bfile}.fam > ${intersect_ids_plink}
 awk '{print $2}' < ${bfile}.fam > ${intersect_ids}
 
