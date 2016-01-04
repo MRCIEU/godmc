@@ -779,7 +779,6 @@ if(length(warninglist) > 0)
 	{
 		message("- ", x)
 	})
-	q(status=0)
 }
 
 

@@ -39,16 +39,25 @@ section_13_logfile="${section_13_dir}/logs/log.txt"
 
 
 # ID lists
+meth_ids="${home_directory}/processed_data/ids/meth_ids.txt"
 intersect_ids_plink="${home_directory}/processed_data/ids/intersect_ids_plink.txt"
 intersect_ids="${home_directory}/processed_data/ids/intersect_ids.txt"
 
 # Check data
 control_snps="${home_directory}/resources/genetics/snpsforbuildandposcheck.txt"
-snpcheck="${section_01_dir}/no_snps_by_chr.txt"
-snpplot="${section_01_dir}/no_snps_by_chr_plot.pdf"
+snpchrtxt="${section_01_dir}/no_snps_by_chr.txt"
+snpchrplot="${section_01_dir}/no_snps_by_chr.pdf"
 quality_scores_plot="${section_01_dir}/snp_quality.pdf"
-cohort_descriptives="${section_01_dir}/cohort_descriptives.RData"
 ageplot="${section_01_dir}/age_distribution.pdf"
+
+
+# Descriptives
+genetic_descriptives="${home_directory}/processed_data/ids/genetic_descriptives.RData"
+methylation_descriptives="${home_directory}/processed_data/ids/methylation_descriptives.RData"
+cnv_descriptives="${home_directory}/processed_data/ids/cnv_descriptives.RData"
+covariate_descriptives="${home_directory}/processed_data/ids/covariate_descriptives.RData"
+phenotype_descriptives="${home_directory}/processed_data/ids/phenotype_descriptives.RData"
+cohort_descriptives="${section_01_dir}/cohort_descriptives.RData"
 methylation_summary="${section_01_dir}/methylation_summary.RData"
 
 # EWAS phenotypes
