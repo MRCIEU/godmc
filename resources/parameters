@@ -26,6 +26,7 @@ section_04b_logfile="${section_04_dir}/logs_b/log.txt"
 section_04c_logfile="${section_04_dir}/logs_c/log.txt"
 section_04d_logfile="${section_04_dir}/logs_d/log.txt"
 section_04e_logfile="${section_04_dir}/logs_e/log.txt"
+section_04f_logfile="${section_04_dir}/logs_f/log.txt"
 section_05_logfile="${section_05_dir}/logs/log.txt"
 section_06_logfile="${section_06_dir}/logs/log.txt"
 section_07_logfile="${section_07_dir}/logs/log.txt"
@@ -49,7 +50,7 @@ snpchrtxt="${section_01_dir}/no_snps_by_chr.txt"
 snpchrplot="${section_01_dir}/no_snps_by_chr.pdf"
 quality_scores_plot="${section_01_dir}/snp_quality.pdf"
 ageplot="${section_01_dir}/age_distribution.pdf"
-
+positive_control_cpg="cg23037403"
 
 # Descriptives
 genetic_descriptives="${home_directory}/processed_data/ids/genetic_descriptives.RData"
