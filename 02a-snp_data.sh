@@ -63,6 +63,18 @@ ${plink} \
 	--out ${bfile} \
 	--threads ${nthreads}
 
+#Find mismatched SNPs and misaligned SNPs with EasyQC
+Rscript ./resources/genetics/easyQC.R ${bfile}.bim ${bfile}.frq ${easyQC} ${easyQCfile}
+
+#remove mismatched SNPs and flip misaligned SNPs
+
+${plink} \
+	--bfile ${bfile} \
+	--exclude ${easyQC}.mismatch_afcheck.failed.SNPs.txt \
+	--make-bed \
+	--flip ${easyQC}.flipped.SNPs.txt \
+	--out ${bfile} \
+	--threads ${nthreads}
 
 # Make GRMs
 echo "Creating kinship matrix"
@@ -201,6 +213,14 @@ else
 	fi
 
 fi
+
+# Get frequencis for strand check
+${plink} \
+	--bfile ${bfile} \
+    --freq \
+    --out ${bfile}
+
+    
 
 # Get frequencies, missingness, hwe, info scores
 ${plink} \
