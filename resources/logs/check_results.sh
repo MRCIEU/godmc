@@ -59,7 +59,37 @@ check_results_03 () {
 
 check_results_04 () {
 
-	echo "No results expected"
+	if [ -f "${cellcounts_plot}" ]; then
+		echo "Cellcounts plot present"
+	else
+		echo "Cellcounts plot file not present"
+		exit 1
+	if [ -f "${smoking_pred_plot}" ]; then
+		echo "Smoking prediction plot present"
+	else
+		echo "Smoking prediction plot file not present"
+		exit 1
+	if [ -f "${age_pred_plot}" ]; then
+		echo "Age prediction plot present"
+	else
+		echo "Age prediction plot file not present"
+		exit 1
+	if [ -f "${section_04_dir}/positive_control_${positive_control_cpg}.qassoc.gz" ]; then
+		echo "Positive control results present"
+	else
+		echo "Positive control results file not present"
+		exit 1
+	if [ -f "${section_04_dir}/positive_control_${positive_control_cpg}_manhattan.png" ]; then
+		echo "Positive control Manhattan plot present"
+	else
+		echo "Positive control Manhattan plot file not present"
+		exit 1
+	if [ -f "${section_04_dir}/positive_control_${positive_control_cpg}_qqplot.png" ]; then
+		echo "Positive control QQ plot present"
+	else
+		echo "Positive control QQ plot file not present"
+		exit 1
+
 }
 
 check_results_05 () {

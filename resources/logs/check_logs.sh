@@ -170,6 +170,15 @@ check_logs_04 () {
 		exit 1
 	fi
 
+	compare_version "04f"
+	if grep -i -q "success" ${section_04f_logfile}*; then
+		echo "04f-perform_positive_control.sh completed successfully."
+	else
+		echo "Problem: 04f-perform_positive_control.sh did not complete successfully"
+		exit 1
+	fi
+
+
 }
 
 

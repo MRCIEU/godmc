@@ -10,31 +10,51 @@ main <- function()
 
 	beta_file <- arguments[1]
 	phen_file <- arguments[2]
-	out_file <- arguments[3]
-	qqplot_file <- arguments[4]
+	covs_file <- arguments[3]
+	phen_name <- arguments[4]
+	min_age <- as.numeric(arguments[5])
+	max_age <- as.numeric(arguments[6])
+	out_file <- arguments[7]
+	qqplot_file <- arguments[8]
 
 	message("Loading methylation data")
-	load(beta_file)
-	phen <- read.table(phen_file, he=T)
+	phen <- read.table(phen_file, he=T, stringsAsFactors=FALSE)
+	if(! phen_name %in% names(phen))
+	{
+		message(phen_name, " not available. Stopping the analysis.")
+		q()
+	}
+
 	rownames(phen) <- phen$IID
-	phen <- subset(phen, IID %in% colnames(norm.beta), select=-c(IID))
+	covs <- read.table(covs_file, he=T, stringsAsFactors=FALSE)
+	keep_ids <- subset(covs, Age_numeric >= min_age & Age_numeric < max_age)$IID
+	if(nrow(covs) < 10)
+	{
+		message("There are fewer than 10 individuals remaining. Stopping the analysis.")
+		q()
+	}
+
+	load(beta_file)
+	phen <- subset(phen, IID %in% colnames(norm.beta) & IID %in% keep_ids, select=phen_name)
+	if(sum(!is.na(phen[[phen_name]])) < 10)
+	{
+		message("There are fewer than 10 individuals remaining. Stopping the analysis.")
+		q()
+	}
 
 	norm.beta <- norm.beta[, colnames(norm.beta) %in% rownames(phen)]
-	phen <- phen[match(colnames(norm.beta), rownames(phen)), ]
+	phen <- phen[match(colnames(norm.beta), rownames(phen)), , drop=FALSE]
 	stopifnot(all(rownames(phen) == colnames(norm.beta)))
 
 	norm.beta <- t(norm.beta)
 
-	for(i in 1:ncol(phen))
-	{
-		phen_name <- colnames(phen)[i]
-		message("\nPerforming EWAS for ", phen_name)
-		res <- perform_assoc(norm.beta, phen[,i])
-		message("Generating Q-Q plot")
-		qqplot_pval(res$pval, file=paste0(qqplot_file, ".", phen_name, ".png"))
-		message("Saving results")
-		save(res, file=paste0(out_file, ".", phen_name, ".RData"))
-	}
+	message("\nPerforming EWAS for ", phen_name)
+	res <- perform_assoc(norm.beta, phen[[phen_name]])
+	message("Generating Q-Q plot")
+	qqplot_pval(res$pval, file=qqplot_file)
+	message("Saving results")
+	save(res, file=out_file)
+
 }
 
 
