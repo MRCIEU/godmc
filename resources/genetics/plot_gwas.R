@@ -10,7 +10,11 @@ main <- function()
 	chr_column <- as.numeric(arguments[3])
 	pos_column <- as.numeric(arguments[4])
 	header <- as.logical(arguments[5])
-	out <- arguments[6]
+	control_chr <- as.numeric(arguments[6])
+	control_pos <- as.numeric(arguments[7])
+	control_window <- as.numeric(arguments[8])
+	control_threshold <- as.numeric(arguments[9])
+	out <- arguments[10]
 
 	message("Reading in GWAS results")
 	a <- as.data.frame(fread(paste("zcat", in_file), header=header), stringsAsFactors=FALSE)
@@ -33,8 +37,6 @@ main <- function()
 	message("Generating QQ-plot")
 	lambda <- qqplot_pval(a[,pval_column], plot=TRUE, filename=paste0(out, "_qqplot.png"))
 
-	message("lambda value for GWAS: ", lambda$estimate)
-
 	message("Generating Manhattan plot")
 	manhattan_plot(a[,pval_column], a[,chr_column], a[,pos_column], filename=paste0(out, "_manhattan.png"))
 
@@ -42,6 +44,31 @@ main <- function()
 		paste0(out, "_manhattan.png\n"),
 		paste0(out, "_qqplot.png")
 	)
+
+	index <- a[,pos_column] > (control_pos - control_window) & a[,pos_column] < (control_pos + control_window)
+
+	a <- a[index, ]
+	min_pval <- min(a[,pval_column], na.rm=TRUE)
+
+	message("\n\nExpecting a large meQTL near ", control_chr, ":", control_pos)
+	message("Lowest p-value within ", control_window, " base pairs:")
+	message(min_pval)
+	if(min_pval > control_threshold)
+	{
+		message("WARNING!")
+		message("There doesn't appear to be a QTL for this positive control")
+		message("Please upload this section and contact GoDMC analysts before continuing.\n\n")
+	}
+
+	message("\n\nlambda value for GWAS: ", lambda$estimate)
+	if(lambda$estimate > 1.1)
+	{
+		message("WARNING!")
+		message("The median lambda value is higher than expected here")
+		message("This suggests population stratification is affecting the GWAS")
+		message("Please upload this section and contact GoDMC analysts before continuing.\n\n")
+	}
+
 }
 
 manhattan_plot <- function(p, chr, pos, filename=NULL, width=15, height=7, threshold=-log10(0.05/1000000), maxval=20)

@@ -50,7 +50,12 @@ snpchrtxt="${section_01_dir}/no_snps_by_chr.txt"
 snpchrplot="${section_01_dir}/no_snps_by_chr.pdf"
 quality_scores_plot="${section_01_dir}/snp_quality.pdf"
 ageplot="${section_01_dir}/age_distribution.pdf"
-positive_control_cpg="cg23037403"
+positive_control_cpg="cg07959070"
+positive_control_snp_chr="22"
+positive_control_snp_pos="50053871"
+positive_control_snp_window="100000"
+positive_control_threshold="0.001"
+
 
 # Descriptives
 genetic_descriptives="${home_directory}/processed_data/ids/genetic_descriptives.RData"
