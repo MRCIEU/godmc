@@ -30,4 +30,10 @@ if(any(!index))
 	stop("Before continuing, the following packages need to be installed:\n", paste(pkglist[!index], collapse="\n"))
 }
 
-message("All required packages installed\n\n")
+l<-list.files("./resources/genetics",pattern="1kg_phase3_eur_aut_polymorphic.recoded.nodup.frq.gz")
+if(length(l)==0) 
+{
+    stop("Before continuing, you need to download 1kg_phase3_eur_aut_polymorphic.recoded.nodup.frq.gz from the sftp \n")    
+}
+
+message("All required packages are installed and required files are downloaded \n\n")

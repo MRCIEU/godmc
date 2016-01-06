@@ -5,6 +5,12 @@ source config
 exec &> >(tee ${section_01_logfile})
 print_version
 
+
+sftp ${sftp_username}@${sftp_address}:/GoDMC/resources <<EOF
+get 1kg_phase3_eur_aut_polymorphic.recoded.nodup.frq.gz
+EOF
+mv 1kg_phase3_eur_aut_polymorphic.recoded.nodup.frq.gz ./resources/genetics
+
 Rscript resources/datacheck/requirements.R
 
 Rscript resources/datacheck/genetic_data.R \
@@ -55,6 +61,19 @@ Rscript resources/datacheck/collect_descriptives.R \
 	${cnv_descriptives}	\
 	${cohort_descriptives}
 
-echo "You successfully performed all data checks"
+echo "You successfully performed the first data check"
+
+# Check missingness, there should be no missingness (--hard-call-threshold 0.499999 --fill-missing-a2)
+ ${plink} --bfile ${bfile_raw} --missing gz --out ${section_01_dir}/data
+ 
+ nrow=`zcat ./results/02/data.imiss.gz |awk 'NR>1 && $4==0 {print $0}'  |wc -l`
+ if [ ! "${nrow}" != "0" ]
+ then
+    echo "Error: Your genotype data contains missing values. Please don't use a genotype probability cut-off."
+    exit 1
+ else
+    echo "You successfully converted genotype data to bestguess format without any missing values"
+ fi
+    echo "You successfully performed all data checks"
 
 

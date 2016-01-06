@@ -63,7 +63,6 @@ ${plink} \
 	--out ${bfile} \
 	--threads ${nthreads}
 
-
 # Make GRMs
 echo "Creating kinship matrix"
 gunzip -c ${hm3_snps} > temp_hm3snps.txt
@@ -173,6 +172,26 @@ else
 		--make-grm-bin \
 		--out ${grmfile_all} \
 		--thread-num ${nthreads}
+
+#Find mismatched SNPs and misaligned SNPs with EasyQC
+# Get frequencis for strand check
+${plink} \
+	--bfile ${bfile} \
+    --freq \
+    --out ${bfile}
+    
+Rscript ./resources/genetics/easyQC.R ${bfile}.bim ${bfile}.frq ${easyQC} ${easyQCfile} ${easyQCscript}
+
+#remove mismatched SNPs and flip misaligned SNPs
+
+${plink} \
+	--bfile ${bfile} \
+	--exclude ${easyQC}.mismatch_afcheck.failed.SNPs.txt \
+	--make-bed \
+	--flip ${easyQC}.flipped.SNPs.txt \
+	--out ${bfile} \
+	--threads ${nthreads}
+
 #From here on, we have clean data
 	echo "Recalculating PCs with outliers removed"
 

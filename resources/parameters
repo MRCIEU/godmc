@@ -84,6 +84,10 @@ allele_ref_hm3="${home_directory}/processed_data/genetic_data/data_hm3.allele_co
 pcaplot="${section_02_dir}/pcaplot.pdf"
 allele_ref="${section_02_dir}/data.allele_codes.gz"
 SNPfail1="${home_directory}/processed_data/genetic_data/SNPfail1.txt"
+easyQC="${home_directory}/processed_data/genetic_data/data.easyqc"
+easyQCfile="${home_directory}/processed_data/genetic_data/CLEANED.data.easyqc.gz"
+easyQCscript="${home_directory}/resources/genetics/easyQC.ecf"
+
 
 # CNV file
 tabcnv="${home_directory}/processed_data/cnv_data/tabfile/data"
