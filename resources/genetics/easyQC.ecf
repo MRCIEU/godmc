@@ -1,8 +1,6 @@
 library(EasyQC)
-out_file="./processed_data/genetic_data/data.easyqc"
-reffile="./resources/genetics/1kg_phase3_eur_aut_polymorphic.frq"
 
-DEFINE	--pathOut ./results/02
+DEFINE	--pathOut ./processed_data/genetic_data
 		--strMissing .
 		--strSeparator TAB
 		--acolIn CHR;SNP;POS;EFFECT_ALLELE;OTHER_ALLELE;EAF;N;BETA;SE;PVAL;IMPUTATION;STRAND
@@ -15,7 +13,7 @@ DEFINE	--pathOut ./results/02
 
 
 ### Please DEFINE here all input files:
-EASYIN	--fileIn ./results/02/data.easyqc.txt
+EASYIN	--fileIn ./processed_data/genetic_data/data.easyqc.txt
         --blnUseFastRead 0
 
 ## EASYQC Scripting interface:
