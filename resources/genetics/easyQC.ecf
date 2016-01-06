@@ -1,0 +1,81 @@
+library(EasyQC)
+
+DEFINE	--pathOut ./processed_data/genetic_data
+		--strMissing .
+		--strSeparator TAB
+		--acolIn CHR;SNP;POS;EFFECT_ALLELE;OTHER_ALLELE;EAF;N;BETA;SE;PVAL;IMPUTATION;STRAND
+		--acolInClasses character;character;integer;character;character;numeric;integer;numeric;numeric;numeric;numeric;character
+		--acolNewName CHR;SNP;POS;EFFECT_ALLELE;OTHER_ALLELE;EAF;N;BETA;SE;PVAL;IMPUTATION;STRAND
+
+## Please DO NOT CHANGE --acolNewName values because these reflect the column names used throughout the script
+## If the study used different column names, please amend the respective value at --acolIn, the column will then 
+## be automatically renamed to the respective --acolNewName value
+
+
+### Please DEFINE here all input files:
+EASYIN	--fileIn ./processed_data/genetic_data/data.easyqc.txt
+        --blnUseFastRead 0
+
+## EASYQC Scripting interface:
+START EASYQC
+
+####################
+## 6. AF Checks
+
+### TO DO: 	Define the path to the reference file 'allelefreq.1000G_[ANCESTRY]_p1v3.impute_legends.noMono.noDup.noX.v2.gz' at --fileRef:
+### 		Please use the reference file ancestry that matches the ancestry of the study
+
+MERGE 	--colInMarker SNP
+		--fileRef ./resources/genetics/1kg_phase3_eur_aut_polymorphic.recoded.nodup.frq.gz
+			--acolIn cptid;a0;a1;eaf 
+			--acolInClasses character;character;character;numeric
+			--strSeparator TAB
+		--strRefSuffix .ref
+		--colRefMarker cptid
+		--blnWriteNotInRef 1
+		--blnUseFastRead 0
+
+
+## 6. AF Checks
+
+### TO DO: 	Define the path to the reference file 'allelefreq.1000G_[ANCESTRY]_p1v3.impute_legends.noMono.noDup.noX.v2.gz' at --fileRef:
+### 		Please use the reference file ancestry that matches the ancestry of the study
+
+ADJUSTALLELES 	--colInStrand STRAND
+				--colInA1 EFFECT_ALLELE 
+				--colInA2 OTHER_ALLELE 
+				--colInFreq EAF
+				--colInBeta BETA
+				--colRefA1 a0.ref
+				--colRefA2 a1.ref
+				--blnMetalUseStrand 1
+				--blnWriteMismatch 1
+				--blnWriteInvalid 1
+				--blnRemoveMismatch 0
+				--blnRemoveInvalid 0
+				--strTag
+
+## All mismatches will be removed (e.g. A/T in input, A/C in reference)		
+				
+AFCHECK --colInFreq EAF
+		--colRefFreq eaf.ref
+		--numLimOutlier 0.2
+		--blnPlotAll 0
+
+## blnPlotAll 0 causes that only outlying SNPs with |Freq-Freq.ref|>0.2 will be plotted (way less computational time)
+
+####################
+## 7. Rearrange columns and Write CLEANED output
+
+GETCOLS --acolOut SNP;CHR;EFFECT_ALLELE;OTHER_ALLELE
+
+WRITE	--strPrefix CLEANED. 
+		--strMissing . 
+		--strMode gz
+
+
+
+STOP EASYQC
+#################################################################################################################
+#################################################################################################################
+
