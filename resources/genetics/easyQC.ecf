@@ -41,6 +41,7 @@ MERGE 	--colInMarker SNP
 ### TO DO: 	Define the path to the reference file 'allelefreq.1000G_[ANCESTRY]_p1v3.impute_legends.noMono.noDup.noX.v2.gz' at --fileRef:
 ### 		Please use the reference file ancestry that matches the ancestry of the study
 
+
 ADJUSTALLELES 	--colInStrand STRAND
 				--colInA1 EFFECT_ALLELE 
 				--colInA2 OTHER_ALLELE 
@@ -54,6 +55,7 @@ ADJUSTALLELES 	--colInStrand STRAND
 				--blnRemoveMismatch 0
 				--blnRemoveInvalid 0
 				--strTag
+
 
 ## All mismatches will be removed (e.g. A/T in input, A/C in reference)		
 				
