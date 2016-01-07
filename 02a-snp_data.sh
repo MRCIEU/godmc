@@ -181,6 +181,8 @@ ${plink} \
     --out ${bfile}
     
 Rscript ./resources/genetics/easyQC.R ${bfile}.bim ${bfile}.frq ${easyQC} ${easyQCfile} ${easyQCscript}
+mv ./processed_data/genetic_data/easyQC.multi.AFCHECK.png ./results/02
+mv ./processed_data/genetic_data/easyQC.rep ./results/02
 
 #remove mismatched SNPs and flip misaligned SNPs
 
