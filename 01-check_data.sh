@@ -63,17 +63,23 @@ Rscript resources/datacheck/collect_descriptives.R \
 
 echo "You successfully performed the first data check"
 
-# Check missingness, there should be no missingness (--hard-call-threshold 0.499999 --fill-missing-a2)
- ${plink} --bfile ${bfile_raw} --missing gz --out ${section_01_dir}/data
+# Check missingness, there should be a small percentage of missingness (--hard-call-threshold 0.499999)
+${plink} --bfile ${bfile_raw} --missing gz --out ${section_01_dir}/data
  
- nrow=`zcat ./results/02/data.imiss.gz |awk 'NR>1 && $4==0 {print $0}'  |wc -l`
- if [ ! "${nrow}" != "0" ]
- then
-    echo "Error: Your genotype data contains missing values. Please don't use a genotype probability cut-off."
-    exit 1
- else
-    echo "You successfully converted genotype data to bestguess format without any missing values"
- fi
-    echo "You successfully performed all data checks"
+nrow=`zcat ${section_01_dir}/data.imiss.gz | awk 'NR>1 && $6>0.01 {print $0}'  |wc -l`
 
+nrow_all=`zcat ${section_01_dir}/data.imiss.gz | awk 'NR>1 {print $0}' |wc -l`
+
+prop=$( printf '%.2f' $(echo "$nrow / $nrow_all" | bc -l) )
+echo $prop
+
+
+if [ "$prop" \> 0.01 ]
+then
+   echo "Error: $prop percent of genotypes have more than 1% of missing values. Please don't use a genotype probability cut-off."
+   exit 1
+ else
+   echo "You successfully converted genotype data to bestguess format"
+ fi
+   echo "You successfully performed all data checks"
 
