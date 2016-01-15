@@ -103,7 +103,7 @@ for (i in 1:22)
 	no.SNPs.bychr <- append(no.SNPs.bychr, no.SNPs)
 	if(pos.check<0.25)
 	{
-		msg <- paste0("please change positions for chromosome ",i, " to build 37 as less than 50% of common controlsnps are found")
+		msg <- paste0("please change positions for chromosome ",i, " to build 37 as less than 25% of common controlsnps are found")
 		errorlist <- c(errorlist, msg)
 		warning("ERROR: ", msg)
 	}
