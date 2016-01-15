@@ -101,7 +101,7 @@ for (i in 1:22)
 	pos.check <- length(w)/nrow(controlsnps.chr)
 	message("Chr ", i, " proportion in agreement: ", pos.check)
 	no.SNPs.bychr <- append(no.SNPs.bychr, no.SNPs)
-	if(pos.check<0.50)
+	if(pos.check<0.25)
 	{
 		msg <- paste0("please change positions for chromosome ",i, " to build 37 as less than 50% of common controlsnps are found")
 		errorlist <- c(errorlist, msg)
