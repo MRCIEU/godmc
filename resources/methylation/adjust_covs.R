@@ -44,7 +44,7 @@ main <- function()
 
 	for (i in g)
 	{
-		covs[,g]<-as.factor(covs[,g])
+		covs[,i]<-as.factor(covs[,i])
 	}
 
 
