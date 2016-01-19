@@ -1,7 +1,7 @@
 #!/bin/bash
 
 set -e
-source config
+source ./config
 
 checkFirstArg () {
 	local e

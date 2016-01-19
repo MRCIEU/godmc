@@ -1,7 +1,7 @@
 #!/bin/bash
 
 set -e
-source config
+source ./config
 exec &> >(tee ${section_04f_logfile})
 print_version
 

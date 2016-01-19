@@ -1,7 +1,7 @@
 #!/bin/bash
 
 set -e
-source config
+source ./config
 
 batch_number=${1}
 exec &> >(tee ${section_04d_logfile}_${batch_number})

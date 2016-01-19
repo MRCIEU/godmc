@@ -1,7 +1,7 @@
 #!/bin/bash
 
 set -e
-source config
+source ./config
 
 batch_number=${1}
 re='^[0-9]+$'
