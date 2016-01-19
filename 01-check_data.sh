@@ -5,33 +5,76 @@ source ./config
 exec &> >(tee ${section_01_logfile})
 print_version
 
+
+containsElement () {
+	local e
+	for e in "${@:2}"; do [[ "$e" == "$1" ]] && return 0; done
+	echo "There is no method for ${1}."
+	echo "Please run:"
+	echo "./01-check_data [arg]"
+	echo "where arg is an optional argument that can be one of:"
+	printf '%s\n' ${@:2}
+	return 1
+}
+
 arg="all"
+declare -a sections=('all' 'config' 'download' 'requirements' 'genetic' 'methylation' 'covariates' 'phenotypes' 'cnv' 'summary')
 
 if [ -n "${1}" ]; then
 	arg="${1}"
+	containsElement ${1} ${sections[@]}
 fi
+
+
+
+
+
+section_message () {
+
+	echo "-----------------------------------------------"
+	echo ""
+	echo "$1 section"
+	echo ""
+	echo "to run this part on its own type:"
+	echo "$ ./01-check_data.sh $1"
+	echo ""
+	echo "-----------------------------------------------"
+	echo ""
+	echo ""
+
+}
+
+
+if [ "$arg" = "config" ] || [ "$arg" = "all" ]
+then
+
+	section_message "config"
+
+	if ! [[ "$study_name" =~ [^a-zA-Z0-9_\ ] ]] && ! [ "$study_name" = "" ]
+	then
+		echo "The study name '${study_name}' will be used for this analysis. Change this in the config file if necessary."
+		echo ""
+	else
+		echo "The study name '${study_name}' is invalid. Please use only alphanumeric or underscore characters, with no spaces or special characters etc."
+		exit
+	fi
+
+fi
+
 
 if [ "$arg" = "download" ] || [ "$arg" = "all" ]
 then
 
-echo "-----------------------------------------------"
-echo ""
-echo "download section"
-echo ""
-echo "to run this part on its own type:"
-echo "$ ./01-check_data.sh download"
-echo ""
-echo "-----------------------------------------------"
-echo ""
-echo ""
+	section_message "download"
 
 
 
-sftp ${sftp_username}@${sftp_address}:${sftp_path}/resources <<EOF
+	sftp ${sftp_username}@${sftp_address}:${sftp_path}/resources <<EOF
 get 1kg_phase3_eur_aut_polymorphic.recoded.nodup.frq.gz
 get 1kg_phase3_eur_aut_polymorphic.recoded.nodup.frq.gz.md5sum
 EOF
-mv 1kg_phase3_eur_aut_polymorphic.recoded.nodup.frq.gz* ${home_directory}/resources/genetics
+
+	mv 1kg_phase3_eur_aut_polymorphic.recoded.nodup.frq.gz* ${home_directory}/resources/genetics
 
 fi
 
@@ -39,16 +82,7 @@ fi
 if [ "$arg" = "requirements" ] || [ "$arg" = "all" ]
 then
 
-echo "-----------------------------------------------"
-echo ""
-echo "requirements section"
-echo ""
-echo "to run this part on its own type:"
-echo "$ ./01-check_data.sh requirements"
-echo ""
-echo "-----------------------------------------------"
-echo ""
-echo ""
+	section_message "requirements"
 
 
 	Rscript resources/datacheck/requirements.R
@@ -57,16 +91,7 @@ fi
 if [ "$arg" = "genetic" ] || [ "$arg" = "all" ]
 then
 
-echo "-----------------------------------------------"
-echo ""
-echo "genetic section"
-echo ""
-echo "to run this part on its own type:"
-echo "$ ./01-check_data.sh genetic"
-echo ""
-echo "-----------------------------------------------"
-echo ""
-echo ""
+	section_message "genetic"
 
 
 	Rscript resources/datacheck/genetic_data.R \
@@ -103,16 +128,7 @@ fi
 if [ "$arg" = "methylation" ] || [ "$arg" = "all" ]
 then
 
-echo "-----------------------------------------------"
-echo ""
-echo "methylation section"
-echo ""
-echo "to run this part on its own type:"
-echo "$ ./01-check_data.sh methylation"
-echo ""
-echo "-----------------------------------------------"
-echo ""
-echo ""
+	section_message "methylation"
 
 
 	Rscript resources/datacheck/methylation_data.R \
@@ -129,16 +145,7 @@ fi
 if [ "$arg" = "covariates" ] || [ "$arg" = "all" ]
 then
 
-echo "-----------------------------------------------"
-echo ""
-echo "covariates section"
-echo ""
-echo "to run this part on its own type:"
-echo "$ ./01-check_data.sh covariates"
-echo ""
-echo "-----------------------------------------------"
-echo ""
-echo ""
+	section_message "covariates"
 
 
 	Rscript resources/datacheck/covariates.R \
@@ -152,16 +159,7 @@ fi
 if [ "$arg" = "phenotypes" ] || [ "$arg" = "all" ]
 then
 
-echo "-----------------------------------------------"
-echo ""
-echo "phenotypes section"
-echo ""
-echo "to run this part on its own type:"
-echo "$ ./01-check_data.sh phenotypes"
-echo ""
-echo "-----------------------------------------------"
-echo ""
-echo ""
+	section_message "phenotypes"
 
 
 	Rscript resources/datacheck/phenotypes.R \
@@ -175,16 +173,7 @@ fi
 if [ "$arg" = "cnv" ] || [ "$arg" = "all" ]
 then
 
-echo "-----------------------------------------------"
-echo ""
-echo "cnv section"
-echo ""
-echo "to run this part on its own type:"
-echo "$ ./01-check_data.sh cnv"
-echo ""
-echo "-----------------------------------------------"
-echo ""
-echo ""
+	section_message "cnv"
 
 
 	Rscript resources/datacheck/cnv_data.R \
@@ -197,16 +186,7 @@ fi
 if [ "$arg" = "summary" ] || [ "$arg" = "all" ]
 then
 
-echo "-----------------------------------------------"
-echo ""
-echo "summary section"
-echo ""
-echo "to run this part on its own type:"
-echo "$ ./01-check_data.sh summary"
-echo ""
-echo "-----------------------------------------------"
-echo ""
-echo ""
+	section_message "summary"
 
 
 	Rscript resources/datacheck/collect_descriptives.R \

@@ -45,17 +45,17 @@ if [ "$2" = "upload" ]
 then
 	echo ""
 	echo "Tarring results and log files"
-	tar czf results/uploads_$1.tgz config resources/parameters results/$1
+	tar czf results/${study_name}_${1}.tgz config resources/parameters results/${1}
 	echo "Successfully created results archives"
 	echo "Generating md5 checksum"
-	md5sum results/uploads_$1.tgz > results/md5sum_$1.txt
+	md5sum results/${study_name}_${1}.tgz > results/${study_name}_${1}.md5sum
 	
 	echo ""
 
 sftp ${sftp_username}@${sftp_address}:${sftp_path}/${sftp_username} <<EOF
 dir
-put results/md5sum_$1.txt
-put results/uploads_$1.tgz
+put results/${study_name}_${1}.md5sum
+put results/${study_name}_$1.tgz
 EOF
 
 fi

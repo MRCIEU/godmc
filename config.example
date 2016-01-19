@@ -2,8 +2,14 @@
 
 
 # General details
+
+# Please make sure this is alphanumeric (underscores allowed)
 study_name=""
+
+# Analyst's name
 analyst_name=""
+
+# Analyst's email address
 analyst_email=""
 
 # This should be provided to you from the GoDMC developers (along with a password)
