@@ -17,4 +17,19 @@ ${gcta} \
 echo "Compressing results"
 gzip -f ${section_10_dir}/smoking.loco.mlma
 
+
+echo "Making plots"
+Rscript resources/genetics/plot_gwas.R \
+	${section_10_dir}/smoking.loco.mlma.gz \
+	9 \
+	1 \
+	3 \
+	TRUE \
+	0 \
+	0 \
+	0 \
+	0 \
+	${section_10_dir}/smoking.loco.mlma
+
+
 echo "Successfully performed GWAS"

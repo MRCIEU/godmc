@@ -17,4 +17,18 @@ ${gcta} \
 echo "Compressing results"
 gzip -f ${section_11_dir}/cellcount_entropy.loco.mlma
 
+echo "Making plots"
+Rscript resources/genetics/plot_gwas.R \
+	${section_11_dir}/cellcount_entropy.loco.mlma.gz \
+	9 \
+	1 \
+	3 \
+	TRUE \
+	0 \
+	0 \
+	0 \
+	0 \
+	${section_11_dir}/cellcount_entropy.loco.mlma
+
+
 echo "Successfully performed GWAS"

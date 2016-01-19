@@ -1,5 +1,5 @@
-library(ggplot2)
-library(data.table)
+suppressPackageStartupMessages(library(ggplot2))
+suppressPackageStartupMessages(library(data.table))
 
 main <- function()
 {
@@ -45,19 +45,23 @@ main <- function()
 		paste0(out, "_qqplot.png")
 	)
 
-	index <- a[,pos_column] > (control_pos - control_window) & a[,pos_column] < (control_pos + control_window)
 
-	a <- a[index, ]
-	min_pval <- min(a[,pval_column], na.rm=TRUE)
-
-	message("\n\nExpecting a large meQTL near ", control_chr, ":", control_pos)
-	message("Lowest p-value within ", control_window, " base pairs:")
-	message(min_pval)
-	if(min_pval > control_threshold)
+	if(control_chr != 0)
 	{
-		message("WARNING!")
-		message("There doesn't appear to be a QTL for this positive control")
-		message("Please upload this section and contact GoDMC analysts before continuing.\n\n")
+		index <- a[,pos_column] > (control_pos - control_window) & a[,pos_column] < (control_pos + control_window)
+
+		a <- a[index, ]
+		min_pval <- min(a[,pval_column], na.rm=TRUE)
+
+		message("\n\nExpecting a large meQTL near ", control_chr, ":", control_pos)
+		message("Lowest p-value within ", control_window, " base pairs:")
+		message(min_pval)
+		if(min_pval > control_threshold)
+		{
+			message("WARNING!")
+			message("There doesn't appear to be a QTL for this positive control")
+			message("Please upload this section and contact GoDMC analysts before continuing.\n\n")
+		}
 	}
 
 	message("\n\nlambda value for GWAS: ", lambda$estimate)
@@ -96,9 +100,11 @@ manhattan_plot <- function(p, chr, pos, filename=NULL, width=15, height=7, thres
 	}
 }
 
-qqplot_pval <- function (data, plot = FALSE, filename=NULL, proportion = 1, method = "regression", filter = TRUE, df = 1, ...)
+qqplot_pval <- function (data, plot = FALSE, filename=NULL, proportion = 1, plot_prop = 1, method = "regression", filter = TRUE, df = 1, ...)
 {
 	data <- data[which(!is.na(data))]
+	if (plot_prop > 1 || plot_prop <= 0) 
+		stop("plot_prop argument should be greater then zero and less than or equal to one")
 	if (proportion > 1 || proportion <= 0) 
 		stop("proportion argument should be greater then zero and less than or equal to one")
 	ntp <- round(proportion * length(data))
@@ -143,6 +149,9 @@ qqplot_pval <- function (data, plot = FALSE, filename=NULL, proportion = 1, meth
 		{
 			png(filename)
 		}
+		npoint <- round(length(data) * plot_prop)
+		data <- data[(length(data) - npoint):length(data)]
+		ppoi <- ppoi[(length(ppoi) - npoint):length(ppoi)]
 		lim <- c(0, max(data, ppoi, na.rm = TRUE))
 		oldmargins <- par()$mar
 		par(mar = oldmargins + 0.2)
