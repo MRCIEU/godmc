@@ -86,7 +86,7 @@ main <- function()
 	}
 
 	norm.beta <- out$x
-	classes <- out$cl
+	classes <- data.frame(cpg=rownames(norm.beta), cl=out$cl)
 	norm.beta[norm.beta.copy] <- NA
 
 	index <- which(is.na(norm.beta), arr.ind = TRUE) 
@@ -94,7 +94,7 @@ main <- function()
     norm.beta[index] <- rowMeans(norm.beta, na.rm = TRUE)[index[, "row"]] 
 
 	save(norm.beta, file=out_file)
-	save(classes, file=paste0(out_file, "_failures"))
+	save(classes, file=paste0(out_file, "_classes"))
 	message("Successfully completed adjustments")
 }
 
