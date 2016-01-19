@@ -25,7 +25,8 @@ ${gcta} \
 	--bfile ${bfile} \
 	--mlma-loco \
 	--pheno ${pheno_file}.plink \
-	--qcovar ${gwas_covariates}.smoking \
+	--qcovar ${gwas_covariates}.smoking.numeric \
+	--covar ${gwas_covariates}.smoking.factor \
 	--out ${section_10_dir}/${pheno} \
 	--thread-num ${nthreads}
 

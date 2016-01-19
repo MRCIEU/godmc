@@ -10,7 +10,8 @@ ${gcta} \
 	--bfile ${bfile} \
 	--mlma-loco \
 	--pheno ${age_pred}.aar.plink \
-	--qcovar ${gwas_covariates}.aar \
+	--qcovar ${gwas_covariates}.aar.numeric \
+	--covar ${gwas_covariates}.aar.factor \
 	--out ${section_09_dir}/aar \
 	--thread-num ${nthreads}
 

@@ -34,7 +34,8 @@ ${gcta} \
 	--bfile ${bfile} \
 	--mlma-loco \
 	--pheno ${cellcounts_plink} \
-	--qcovar ${gwas_covariates}.cellcounts \
+	--qcovar ${gwas_covariates}.cellcounts.numeric \
+	--covar ${gwas_covariates}.cellcounts.factor \
 	--out ${section_12_dir}/cellcount_${batch} \
 	--thread-num ${nthreads} \
 	--mpheno ${batch}

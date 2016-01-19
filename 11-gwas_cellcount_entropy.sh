@@ -10,12 +10,14 @@ ${gcta} \
 	--bfile ${bfile} \
 	--mlma-loco \
 	--pheno ${cellcounts_tf}.entropy.plink \
-	--qcovar ${gwas_covariates}.cellcounts \
+	--qcovar ${gwas_covariates}.cellcounts.numeric \
+	--covar ${gwas_covariates}.cellcounts.factor \
 	--out ${section_11_dir}/cellcount_entropy \
 	--thread-num ${nthreads}
 
 echo "Compressing results"
 gzip -f ${section_11_dir}/cellcount_entropy.loco.mlma
+
 
 echo "Making plots"
 Rscript resources/genetics/plot_gwas.R \

@@ -1,3 +1,15 @@
+write_covs <- function(dat, filename)
+{
+	fcols <- grep("_factor", names(dat))
+	ncols <- grep("_numeric", names(dat))
+	fdat <- data.frame(dat[,1:2], dat[,fcols])
+	ndat <- data.frame(dat[,1:2], dat[,ncols])
+	write.table(fdat, file=paste0(filename, ".factor"), row=F, col=F, qu=F)
+	write.table(ndat, file=paste0(filename, ".numeric"), row=F, col=F, qu=F)
+	write.table(dat, file=filename, row=F, col=F, qu=F)
+}
+
+
 arguments <- commandArgs(T)
 
 covs_file <- arguments[1]
@@ -27,7 +39,8 @@ if("Sex_factor" %in% names(allcovs))
 	dat <- merge(fam, subset(allcovs, select=c("IID", "Sex_factor")), by.x="V2", by.y="IID")
 	dat <- merge(dat, smok, by.x="V2", by.y="IID")
 	dat <- subset(dat, select=c("V1", "V2", "Sex_factor", "Smoking"))
-	write.table(dat, paste0(out_file, ".aar"), row=F, col=F, qu=F)
+	names(dat)[names(dat) == "Smoking"] <- "Smoking_numeric"
+	write_covs(dat, paste0(out_file, ".aar"))
 }
 
 # Create covariates for Smoking GWAS
@@ -39,8 +52,10 @@ if(length(covnames) > 0)
 {
 	dat <- merge(fam, subset(allcovs, select=c("IID", covnames)), by.x="V2", by.y="IID")
 	dat <- subset(dat, select=c("V1", "V2", covnames))
-	write.table(dat, paste0(out_file, ".smoking"), row=F, col=F, qu=F)
+} else {
+	dat <- fam[,1:2]
 }
+write_covs(dat, paste0(out_file, ".smoking"))
 
 
 # Create covariates for cellcounts GWAS
@@ -55,5 +70,5 @@ if(length(covnames) > 0)
 	dat <- merge(dat, subset(allcovs, select=c("IID", covnames)), by.x="V2", by.y="IID")
 	dat <- subset(dat, select=c("V1", "V2", "Smoking", covnames))
 }
-write.table(dat, paste0(out_file, ".cellcounts"), row=F, col=F, qu=F)
-
+names(dat)[names(dat) == "Smoking"] <- "Smoking_numeric"
+write_covs(dat, paste0(out_file, ".cellcounts"))
