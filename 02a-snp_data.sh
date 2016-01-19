@@ -54,7 +54,16 @@ awk '{
 
 grep "duplicate" ${bfile}.bim | awk '{ print $2 }' > ${bfile}.duplicates.txt
 
-cat ${bfile}.duplicates.txt ${SNPfail_allelecoding} |sort -u >${bfile}.failed.SNPs.txt
+#Remove SNPs with low info scores
+awk '$3 < 0.80 {print $1}' <${quality_scores} > ${bfile}.lowinfoSNPs.txt
+
+cat ${bfile}.duplicates.txt ${SNPfail_allelecoding} ${bfile}.lowinfoSNPs.txt |sort -u >${bfile}.failed.SNPs.txt
+
+n_failedSNPs=`wc -l ${bfile}.failed.SNPs.txt | awk '{ print $1 }'`
+
+	# Remove SNPs from data
+	echo "Removing ${n_failedSNPs} SNPs from data"
+
 
 ${plink} \
 	--bfile ${bfile} \

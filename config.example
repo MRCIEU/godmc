@@ -67,7 +67,7 @@ grm_maf_cutoff=0.01
 
 # PCA paramaters
 n_pcs=20
-pca_sd=5
+pca_sd=7
 
 # Methylation PCs
 n_meth_pcs=50
