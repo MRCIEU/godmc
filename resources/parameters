@@ -166,7 +166,17 @@ height_snps="${home_directory}/processed_data/genetic_data/height"
 height_plot="${section_03_dir}/heightcor_plot.pdf"
 
 
+# SFTP details
+# This is the location your results will be uploaded
+# Note: No individual data will be uploaded to this location during the course of the pipeline
+sftp_address="sscmv-filetran.epi.bris.ac.uk"
 
+if [ "$sftp_username" = "gh13047" ] || [ "$sftp_username" = "epzjlm" ] || [ "$sftp_username" = "godmc" ]
+then
+	sftp_path="/srv/sftponly/GoDMC"
+else
+	sftp_path="/GoDMC"
+fi
 
 # scripts and binaries
 plink="${home_directory}/resources/bin/plink1.90"

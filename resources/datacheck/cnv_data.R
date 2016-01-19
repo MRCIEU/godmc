@@ -74,11 +74,14 @@ if(length(commonids_mcc) < 50)
 	warning("ERROR: ", msg)
 }
 
-if(d2 != length(meth_ids))
+overlap <- sum(colnames(cnv) %in% meth_ids)
+perc_overlap <- overlap / ncol(cnv) * 100
+message(round(perc_overlap, 2), "% overlap of IDs between CNV and methylation data")
+if(perc_overlap < 50)
 {
-	msg <- paste0("number of subject with CNV data is not the same as number of subjects with methylation data")
-	errorlist <- c(errorlist, msg)
-	warning("ERROR: ", msg)
+	msg <- paste0("overlap of CNV and methylation data is below 50%.")
+	warninglist <- c(errorlist, msg)
+	warning("WARNING: ", msg)
 }
 
 
@@ -102,7 +105,7 @@ for(i in 1:length(cohort_summary))
 
 if(length(warninglist) > 0)
 {
-	message("\n\nPlease take note of the following warnings, and fix and re-run the data check if you see fit:")
+	message("\n\nPlease take note of the following warnings\nSome of these could be quite serious\nFix and re-run the data check if you see fit:")
 	null <- sapply(warninglist, function(x)
 	{
 		message("- ", x)
