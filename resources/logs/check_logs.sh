@@ -261,13 +261,15 @@ check_logs_09 () {
 check_logs_10 () {
 
 	compare_version "10"
-	if grep -i -q "success" ${section_10_logfile}; then
-		echo "10-gwas_smoking.sh completed successfully."
+
+	nbatch=`wc -l ${section_10_dir}/gwas_list.txt | awk '{ print $1 }'`
+	nsuccess=`tail ${section_10_logfile}* | grep -i "success" | wc -l`
+	if [ "${nbatch}" = "${nsuccess}" ]; then
+		echo "10-gwas_smoking.sh completed successfully for all GWASs"
 	else
-		echo "Problem: 10-gwas_smoking.sh did not complete successfully"
+		echo "problem: 10-gwas_smoking.sh only complete for ${nsuccess} of ${nbatch} GWASs"
 		exit 1
 	fi
-
 }
 
 check_logs_11 () {

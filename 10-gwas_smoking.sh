@@ -20,7 +20,7 @@ batch=$(( ${1} - 1 ))
 pheno_file="${methylation_processed_dir}/${pheno[${batch}]}.plink"
 pheno=${pheno[${batch}]}
 
-exec &> >(tee ${section_10_logfile}${batch})
+exec &> >(tee ${section_10_logfile}${1})
 print_version
 
 

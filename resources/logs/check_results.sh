@@ -180,12 +180,24 @@ check_results_09 () {
 
 check_results_10 () {
 
-	if grep -l -q "loco" ${section_10_dir}/*; then
-		echo "Smoking GWAS results present"
+	if [ -f "${section_10_dir}/gwas_list.txt" ]; then
+		echo "GWAS list annotation present"
 	else
-		echo "Problem: Smoking GWAS results absent"
+		echo "Problem: GWAS list is absent"
 		exit 1
 	fi
+
+	IFS=$'\r\n' GLOBIGNORE='*' command eval  'pheno=($(cat ${section_10_dir}/gwas_list.txt))'
+
+	for phen in ${pheno[@]}
+	do
+		if [ -f "${section_10_dir}/${phen}.loco.mlma.gz" ]; then
+			echo "GWAS for ${phen} complete"
+		else
+			echo "problem: GWAS did not complete for ${phen}."
+			exit 1
+		fi
+	done
 
 }
 
