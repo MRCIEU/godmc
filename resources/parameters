@@ -137,7 +137,8 @@ methylation_adjusted_pcs="${home_directory}/processed_data/methylation_data/meth
 methylation_adjusted_pcs_sq="${home_directory}/processed_data/methylation_data/methylation_adjusted_pcs_sq"
 
 # Smoking prediction
-smoking_pred="${home_directory}/processed_data/methylation_data/smoking_prediction"
+methylation_processed_dir="${home_directory}/processed_data/methylation_data"
+smoking_pred="${methylation_processed_dir}/smoking_prediction"
 smoking_pred_plot="${section_04_dir}/smoking_prediction.pdf"
 smoking_pred_SD="5"
 

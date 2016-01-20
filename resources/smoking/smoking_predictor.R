@@ -11,6 +11,7 @@ main <- function()
 	smoking.prediction.plot <- arguments[4]
 	SD <- as.numeric(arguments[5])
 	cov_file <- arguments[6]
+	gwas_list_file <- arguments[7]
 	
 	
 	# Dataframe of Illig data (supplementary table 2) http://www.ncbi.nlm.nih.gov/pubmed/23691101
@@ -56,18 +57,36 @@ main <- function()
 
 	# Get individuals with age >= 25
 
+	gwas_list <- basename(out_file)
+
 	i <- subset(covs, Age_numeric >= 25)$IID
 	smoki <- subset(smok, IID %in% i)
 
-	message(nrow(smoki), " individuals over age 25 with predicted smoking data")
+	if(nrow(smoki) > 50)
+	{
+		gwas_list <- c(gwas_list, paste0(basename(out_file), "_ge25"))
+		m <- "GWAS will be performed"
+	} else {
+		m <- "GWAS won't be performed"
+	}
+
+	message(nrow(smoki), " individuals over age 25 with predicted smoking data, ", m)
 	write.table(smoki, file=paste0(out_file, "_ge25.plink"), row=F, col=F, qu=F)
 
-	i <- subset(covs, Age_numeric < 25)$IID
-	smoki <- subset(smok, IID %in% i)
+	j <- subset(covs, Age_numeric < 25)$IID
+	smokj <- subset(smok, IID %in% j)
 
-	message(nrow(smoki), " individuals under age 25 with predicted smoking data")
-	write.table(smoki, file=paste0(out_file, "_lt25.plink"), row=F, col=F, qu=F)
+	if(nrow(smokj) > 50)
+	{
+		gwas_list <- c(gwas_list, paste0(basename(out_file), "_lt25"))
+		m <- "GWAS will be performed"
+	} else {
+		m <- "GWAS won't be performed"
+	}
+	message(nrow(smokj), " individuals under age 25 with predicted smoking data, ", m)
+	write.table(smokj, file=paste0(out_file, "_lt25.plink"), row=F, col=F, qu=F)
 
+	write.table(gwas_list, file=gwas_list_file, row=F, col=F, qu=F)
 }
 
 

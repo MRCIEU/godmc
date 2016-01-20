@@ -13,7 +13,8 @@ Rscript resources/smoking/smoking_predictor.R \
 	${smoking_pred} \
 	${smoking_pred_plot} \
 	${smoking_pred_SD} \
-	${covariates}
+	${covariates} \
+	${section_10_dir}/gwas_list.txt
 	
 # Estimate cell counts
 if [ "${cellcounts_required}" = "yes" ]
