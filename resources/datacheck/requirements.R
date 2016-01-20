@@ -22,7 +22,8 @@ pkglist <- c(
 	"SNPRelate",
 	"GENESIS",
 	"meffil",
-	"EasyQC"
+	"EasyQC",
+	"impute"
 )
 
 index <- pkglist %in% rownames(installed.packages())

@@ -11,7 +11,7 @@
 # library(sqldf) 
 ## http://cran.r-project.org/src/contrib/Archive/sqldf/sqldf_0.4-6.4.tar.gz
 ## http://cran.r-project.org/src/contrib/Archive/RSQLite.extfuns/RSQLite.extfuns_0.0.1.tar.gz
-# library(impute) ## from bioconductor
+library(impute) ## from bioconductor
 # library(WGCNA)
 
 
@@ -44,7 +44,7 @@ main <- function()
 	fam_file <- arguments[3]
 	out_file <- arguments[4]
     age.acceleration.plot<-arguments[5]
-    SD<-as.numeric(arguments[6])
+    SD <- as.numeric(arguments[6])
 
 	message("Getting probe parameters")
 	dnamage.probeAnnotation21kdatMethUsed=read.csv("resources/dnamage/probeAnnotation21kdatMethUsed.csv.gz")
