@@ -34,16 +34,18 @@ quality_scores="${home_directory}/input_data/data.info"
 quality_type="impute2"
 
 # Cellcounts
-# Three options: 
-# If you have purified cell types (e.g. LCLs) then set this to no. 
-# Otherwise if you have mixtures of cell types (e.g. whole blood) then set this to yes.
+# Please specify whether or not cell counts are needed in the model (yes if you have e.g. blood, no if you have e.g. LCLs)
 cellcounts_required="yes"
 
-# If cellcounts_required="yes" and you have pre-measured cell counts already 
-# then set this variable to be the text filename that contains that data
-# If you want the pipeline to estimate the cell counts for you using whole blood reference data then leave this as "NULL". 
-provided_cellcounts="NULL"
+# Set this to the file name if you have predicted cell counts already
+# Otherwise leave it as NULL. The predicted_cellcounts_type can be set to houseman or something else.
+predicted_cellcounts="${home_directory}/input_data/cellcounts.txt"
+predicted_cellcounts_type="houseman"
 
+#Set this to the file name if you have directly measured cellcounts. These will be used as covariates only.
+measured_cellcounts="NULL"
+
+# Relatedness
 # Are the samples related? e.g. Complex family data, twin data etc. If so set this to "yes"
 # If these samples are expected to be unrelated set this to "no" (even if there may be cryptic relatedness)
 related="yes"

@@ -112,6 +112,8 @@ cellcounts_plink_raw="${home_directory}/processed_data/cellcounts/cellcounts.raw
 cellcounts_plink_smokadj="${home_directory}/processed_data/cellcounts/cellcounts.transformed.smokadj.plink"
 cellcounts_SD="5"
 cellcounts_plot="${section_04_dir}/cellcounts_plot.pdf"
+cellcounts_gwa="${home_directory}/processed_data/cellcounts/cellcounts.houseman.txt"
+cellcounts_cov="${home_directory}/processed_data/cellcounts/cellcounts.covariates.txt"
 
 # Covariates
 covariates_combined="${home_directory}/processed_data/methylation_data/all_covariates"

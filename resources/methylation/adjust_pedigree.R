@@ -37,12 +37,12 @@ main <- function()
 	norm.beta <- norm.beta[, colnames(norm.beta) %in% rownames(covs)]
 
 	g <- grep("_factor",names(covs))
-
-	for (i in g)
+    if (length(g)>0){
+	for (i in 1:length(g))
 	{
-		covs[,g]<-as.factor(covs[,g])
+	covs[,g[i]]<-as.factor(covs[,g[i]])
     }
-
+    }
 	grm <- readGRM(grmfile)
 	kin <- makeGRMmatrix(grm)
 	kin <- kin[rownames(kin) %in% colnames(norm.beta), colnames(kin) %in% colnames(norm.beta)]

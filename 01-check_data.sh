@@ -134,7 +134,9 @@ then
 	Rscript resources/datacheck/methylation_data.R \
 		${betas} \
 		${bfile_raw}.fam \
-		${provided_cellcounts} \
+		${predicted_cellcounts} \
+		${predicted_cellcounts_type} \
+		${measured_cellcounts} \
 		${meth_ids} \
 		${methylation_descriptives} \
 		${methylation_summary} \

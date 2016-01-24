@@ -9,11 +9,13 @@ args <- (commandArgs(TRUE));
 betas_file <- as.character(args[1]);
 fam_file <- as.character(args[2]);
 cellcounts_file <- as.character(args[3]);
-meth_ids_file <- as.character(args[4]);
-cohort_descriptives_file <- as.character(args[5])
-methylation_summary_file <- as.character(args[6])
-ids <- as.character(args[7]);
-ids_plink <- as.character(args[8]);
+predicted_cellcounts_type <- as.character(args[4]);
+cellcounts_file_measured <- as.character(args[5]);
+meth_ids_file <- as.character(args[6]);
+cohort_descriptives_file <- as.character(args[7])
+methylation_summary_file <- as.character(args[8])
+ids <- as.character(args[9]);
+ids_plink <- as.character(args[10]);
 
 
 message("Checking methylation data: ", betas_file)
@@ -111,16 +113,30 @@ write.table(fam2[,1:2],ids_plink,sep="\t",quote=F,row.names=F,col.names=F)
 
 # CELLCOUNTS
 
-message("Checking cell counts data: ", cellcounts_file)
+message("Checking predicted cell counts data: ", cellcounts_file)
+
+if(cellcounts_file != "NULL" & predicted_cellcounts_type == "houseman" )
+{
+cc <- read.table(cellcounts_file,header=T)
+w <- which(names(cc)[-1] %in% c("Bcell","CD4T","CD8T","Eos","Mono","Neu","NK"))
+if(w!=7)
+{
+msg <- paste0("Please check header predicted cellcounts file; it should have Bcell,CD4T,CD8T,Eos,Mono,Neu,NK")
+errorlist <- c(errorlist, msg)
+warning("ERROR: ", msg)
+}
+
+cc.name<-"NULL"
 if(cellcounts_file != "NULL")
 {
 	cc <- read.table(cellcounts_file,header=T)
+	cc.name<-names(cc)[-1]
 	c1 <- dim(cc)[1]
 	c2 <- dim(cc)[2]
 
 	if(c1!=nid_meth)
 	{
-		msg <- paste0("number of samples in cell counts file is not the same as in beta matrix")
+		msg <- paste0("number of samples in predicted cell counts file is not the same as in beta matrix")
 		errorlist <- c(errorlist, msg)
 		warning("ERROR: ", msg)   
 	}
@@ -128,14 +144,14 @@ if(cellcounts_file != "NULL")
 	w <- which(names(cc)[1] %in% c("IID"))
 	if(w!=1)
 	{
-		msg <- paste0("first column from cellcounts file should be the sample identifier with the name IID")
+		msg <- paste0("first column from predicted cellcounts file should be the sample identifier with the name IID")
 		errorlist <- c(errorlist, msg)
 		warning("ERROR: ", msg)
 	}
 
 	if(c2<3)
 	{
-		msg <- paste0("are there any columns with cell counts missing in the cell counts file?")
+		msg <- paste0("are there any columns with predicted cell counts missing in the predicted cell counts file?")
 		errorlist <- c(errorlist, msg)
 		warning("ERROR: ", msg)
 	}
@@ -143,21 +159,79 @@ if(cellcounts_file != "NULL")
 	a <- apply(cc,2,function(x) y<-length(which(is.na(x))))
 	if(length(which(a > 0.1*nid_meth)))
 	{
-		msg <- paste0("more than 10% of missingness in one of the cellcounts")
+		msg <- paste0("more than 10% of missingness in one of the predicted cellcounts")
 		errorlist <- c(errorlist, msg)
 		warning("ERROR: ", msg)
 	}
-	message("Number of cell types: ", c2)
+	message("Number of predicted cell types: ", c2)
 	message("Cell types:\n", paste(names(cc)[-1], collapse="\n"))
-} else {
+} 
+
+
+message("Checking measured cell counts data: ", cellcounts_file_measured)
+
+ccm.name<-"NULL"
+if(cellcounts_file_measured != "NULL")
+{
+	ccm <- read.table(cellcounts_file_measured,header=T)
+	ccm.name<-names(ccm)[-1]
+	c1 <- dim(ccm)[1]
+	c2 <- dim(ccm)[2]
+
+	if(c1!=nid_meth)
+	{
+		msg <- paste0("number of samples in measured cell counts file is not the same as in beta matrix")
+		errorlist <- c(errorlist, msg)
+		warning("ERROR: ", msg)   
+	}
+
+	w <- which(names(ccm)[1] %in% c("IID"))
+	if(w!=1)
+	{
+		msg <- paste0("first column from measured cellcounts file should be the sample identifier with the name IID")
+		errorlist <- c(errorlist, msg)
+		warning("ERROR: ", msg)
+	}
+
+	if(c2<3)
+	{
+		msg <- paste0("are there any columns with cell counts missing in the measured cell counts file?")
+		errorlist <- c(errorlist, msg)
+		warning("ERROR: ", msg)
+	}
+
+	a <- apply(ccm,2,function(x) y<-length(which(is.na(x))))
+	if(length(which(a > 0.1*nid_meth)))
+	{
+		msg <- paste0("more than 10% of missingness in one of the measured cellcounts")
+		errorlist <- c(errorlist, msg)
+		warning("ERROR: ", msg)
+	}
+	message("Number of measured cell types: ", c2)
+	message("Cell types:\n", paste(names(ccm)[-1], collapse="\n"))
+}
+
+if(cellcounts_file == "NULL" & cellcounts_file_measured == "NULL")
+{	
 	message("No cell counts are provided, these will be estimated by the pipeline.")
 }
+
 
 
 cohort_summary <- list()
 cohort_summary$n_CpGs <- nrow(norm.beta)
 cohort_summary$methylation_sample_size <- ncol(norm.beta)
 cohort_summary$geno_meth_common_ids <- length(overlap)
+
+if(length(cc.name)>0){cohort_summary$predicted_cellcounts <- as.character(cc.name)}
+if(length(cc.name)==0){cohort_summary$measured_cellcounts <- "not_provided"}
+cohort_summary$predicted_cellcounts_type <- predicted_cellcounts_type
+if(length(ccm.name)>0){cohort_summary$measured_cellcounts <- as.character(ccm.name)}
+if(length(ccm.name)==0){cohort_summary$measured_cellcounts <- "not_provided"}
+
+save(cohort_summary, file=cohort_descriptives_file)
+
+
 
 summariseMeth <- function(X, outlier_threshold, niter)
 {

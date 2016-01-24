@@ -160,17 +160,17 @@ index <- qual$V2 > 0.5
 qual$V2[index] <- 1 - qual$V2[index]
 
 prop <- sum(qual[,2] < 0.01) / nrow(qual)
-if(prop > 0.1)
+if(prop > 0.01)
 {
-	msg <- paste0("more than 10% of the retained quality scores have a MAF < 0.01. Please filter on MAF < 0.01")
+	msg <- paste0("more than 1% of the retained quality scores have a MAF < 0.01. Please filter on MAF < 0.01")
 	errorlist <- c(errorlist, msg)
 	warning("ERROR: ", msg)
 }
 
 prop <- sum(qual[,3] < 0.8) / nrow(qual)
-if(prop > 0.1)
+if(prop > 0.01)
 {
-	msg <- paste0("more than 10% of the retained quality scores have a quality score < 0.8. Please filter the data. The wiki has a guide for doing this.")
+	msg <- paste0("more than 1% of the retained quality scores have a quality score < 0.8. Please filter the data. The wiki has a guide for doing this.")
 	errorlist <- c(errorlist, msg)
 	warning("ERROR: ", msg)
 }
