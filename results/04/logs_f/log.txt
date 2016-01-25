@@ -1,0 +1,38 @@
+
+
+GoDMC version 0.1.1
+Commit: 6a20f524905e4a611f438771ef09fd54ad1a1fc5
+Commit date: 2016-01-24 16:53:30 +0000
+Current time: Mon Jan 25 22:55:02 GMT 2016
+
+Please ensure your scripts are up to date.
+If in doubt, run 'git pull'
+
+
+Read 1774 items
+Read 1775 items
+PLINK v1.90b3w 64-bit (3 Sep 2015)         https://www.cog-genomics.org/plink2
+(C) 2005-2015 Shaun Purcell, Christopher Chang   GNU General Public License v3
+Logging to /panfs/panasas01/sscm/epzjlm/repo/godmc/results/04/positive_control_cg07959070.log.
+Options in effect:
+  --assoc
+  --bfile /panfs/panasas01/sscm/epzjlm/repo/godmc/processed_data/genetic_data/data
+  --out /panfs/panasas01/sscm/epzjlm/repo/godmc/results/04/positive_control_cg07959070
+  --pheno /panfs/panasas01/sscm/epzjlm/repo/godmc/processed_data/methylation_data/methylation_adjusted_pcs.positive_control.plink
+
+129153 MB RAM detected; reserving 64576 MB for main workspace.
+7976637 variants loaded from .bim file.
+1774 people (439 males, 1335 females) loaded from .fam.
+1774 phenotype values present after --pheno.
+Using 1 thread (no multithreaded calculations invoked.
+Before main variant filters, 1774 founders and 0 nonfounders present.
+Calculating allele frequencies... 0%1%2%3%4%5%6%7%8%9%10%11%12%13%14%15%16%17%18%19%20%21%22%23%24%25%26%27%28%29%30%31%32%33%34%35%36%37%38%39%40%41%42%43%44%45%46%47%48%49%50%51%52%53%54%55%56%57%58%59%60%61%62%63%64%65%66%67%68%69%70%71%72%73%74%75%76%77%78%79%80%81%82%83%84%85%86%87%88%89%90%91%92%93%94%95%96%97%98%99% done.
+Total genotyping rate is 0.999719.
+7976637 variants and 1774 people pass filters and QC.
+Phenotype data is quantitative.
+Writing QT --assoc report to
+/panfs/panasas01/sscm/epzjlm/repo/godmc/results/04/positive_control_cg07959070.qassoc
+... 0%1%2%3%4%5%6%7%8%9%10%11%12%13%14%15%16%17%18%19%20%21%22%23%24%25%26%27%28%29%30%31%32%33%34%35%36%37%38%39%40%41%42%43%44%45%46%47%48%49%50%51%52%53%54%55%56%57%58%59%60%61%62%63%64%65%66%67%68%69%70%71%72%73%74%75%76%77%78%79%80%81%82%83%84%85%86%87%88%89%90%91%92%93%94%95%96%97%98%99%done.
+Reading in GWAS results
+Read 5.0% of 7976637 rowsRead 9.5% of 7976637 rowsRead 13.9% of 7976637 rowsRead 18.1% of 7976637 rowsRead 22.1% of 7976637 rowsRead 28.0% of 7976637 rowsRead 35.1% of 7976637 rowsRead 43.6% of 7976637 rowsRead 49.9% of 7976637 rowsRead 53.9% of 7976637 rowsRead 63.7% of 7976637 rowsRead 66.2% of 7976637 rowsRead 75.3% of 7976637 rowsRead 81.0% of 7976637 rowsRead 90.1% of 7976637 rowsRead 98.7% of 7976637 rowsRead 7976637 rows and 9 (of 9) columns from 0.576 GB file in 00:00:27
+Generating QQ-plot
