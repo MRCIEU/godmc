@@ -52,10 +52,15 @@ if(length(covnames) > 0)
 {
 	dat <- merge(fam, subset(allcovs, select=c("IID", covnames)), by.x="V2", by.y="IID")
 	dat <- subset(dat, select=c("V1", "V2", covnames))
+    dat_lt25 <- dat[which(dat$Age_numeric<25),]
+    dat_ge25 <- dat[which(dat$Age_numeric>25),]
+
 } else {
 	dat <- fam[,1:2]
 }
 write_covs(dat, paste0(out_file, ".smoking"))
+write_covs(dat_lt25, paste0(out_file, "_lt25.smoking"))
+write_covs(dat_ge25, paste0(out_file, "_ge25.smoking"))
 
 
 # Create covariates for cellcounts GWAS

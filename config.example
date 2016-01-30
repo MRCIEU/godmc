@@ -63,22 +63,23 @@ meth_chunks="100"
 genetic_chunks="500"
 
 # SNP filtering
-# HWE threshold, minor allele frequency, SNP missingness, individual missingness
+# HWE threshold, minor allele frequency, SNP missingness, individual missingness.
+# See 02a
 snp_hwe="1e-6"
 snp_maf="0.01"
 snp_miss="0.05"
 snp_imiss="0.05"
 
-# GRM parameters
-rel_cutoff=0.125
-grm_maf_cutoff=0.01
+# GRM parameters (see 02a).
+rel_cutoff="0.125"
+grm_maf_cutoff="0.01"
 
-# PCA paramaters
-n_pcs=20
-pca_sd=7
+# PCA paramaters (see 02a).
+n_pcs="20"
+pca_sd="7"
 
-# Methylation PCs
-n_meth_pcs=50
+# Methylation PCs (see 04c).
+n_meth_pcs="20"
 meth_pc_cutoff="0.8"
 meth_pc_threshold="1e-6"
 
