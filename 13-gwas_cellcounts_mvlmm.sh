@@ -24,7 +24,7 @@ echo "Running chunk ${batch}"
 awk '{ print $1 }' ${tabfile}.tab.${batch} | sed 1d > ${bfile}.snplist.${batch}
 
 echo "Formatting data for batch ${batch}"
-plink1.90 \
+${plink} \
 	--bfile ${bfile} \
 	--extract ${bfile}.snplist.${batch} \
 	--make-bed \
