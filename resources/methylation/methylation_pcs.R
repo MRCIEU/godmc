@@ -11,11 +11,18 @@ message("Loading methylation data")
 load(beta_file)
 
 
-message("Extracting most variable probes")
-norm.beta <- norm.beta[meffil.most.variable.cpgs(norm.beta, n=20000), ]
+message("Extracting most variable probes and calculate PCs")
+featureset <- meffil:::guess.featureset(rownames(norm.beta))
+autosomal.sites <- meffil.get.autosomal.sites(featureset)
+autosomal.sites <- intersect(autosomal.sites, rownames(norm.beta))
+norm.beta.aut <- norm.beta[autosomal.sites, ]
 
-message("Calculating PCs")
-pc <- prcomp(t(norm.beta))
+message("Calculating variances")
+var.sites <- meffil.most.variable.cpgs(norm.beta.aut, n = 20000)
+var.idx <- match(var.sites, rownames(norm.beta.aut))
+
+message("Calculating beta PCs")
+pc <- prcomp(t(meffil:::impute.matrix(norm.beta.aut[var.idx, ], margin = 1)))
 
 message("Identifying PCs that cumulatively explain ", prop_var, " of variance")
 cumvar <- cumsum(pc$sdev^2) / sum(pc$sdev^2)
