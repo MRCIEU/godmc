@@ -29,7 +29,14 @@ fi
 exec &> >(tee ${section_12_logfile}${batch})
 print_version
 
+age=`awk '{print $4}' <${gwas_covariates}.cellcounts.numeric |sort -u |wc -l`
+echo "Age variable has $age levels"
 
+sex=`awk '{print $3}' <${gwas_covariates}.cellcounts.factor |sort -u |wc -l`
+echo "Sex variable has $sex levels"
+
+if [ "$sex" -gt "1" ] && [ "$age" -gt "1" ]
+then
 ${gcta} \
 	--bfile ${bfile} \
 	--mlma-loco \
@@ -39,6 +46,33 @@ ${gcta} \
 	--out ${section_12_dir}/cellcount_${batch} \
 	--thread-num ${nthreads} \
 	--mpheno ${batch}
+fi
+
+if [ "$sex" -eq "1" ] && [ "$age" -gt "1" ]
+then
+${gcta} \
+	--bfile ${bfile} \
+	--mlma-loco \
+	--pheno ${cellcounts_plink} \
+	--qcovar ${gwas_covariates}.cellcounts.numeric \
+	--out ${section_12_dir}/cellcount_${batch} \
+	--thread-num ${nthreads} \
+	--mpheno ${batch}
+fi
+
+if [ "$sex" -gt "1" ] && [ "$age" -eq "1" ]
+then
+${gcta} \
+	--bfile ${bfile} \
+	--mlma-loco \
+	--pheno ${cellcounts_plink} \
+	--covar ${gwas_covariates}.cellcounts.factor \
+	--out ${section_12_dir}/cellcount_${batch} \
+	--thread-num ${nthreads} \
+	--mpheno ${batch}
+fi
+
+
 
 echo "Compressing results"
 gzip -f ${section_12_dir}/cellcount_${batch}.loco.mlma
