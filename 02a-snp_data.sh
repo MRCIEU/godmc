@@ -17,6 +17,9 @@ echo "Copying genetic data to processing folder"
 # cp ${bfile_raw}.fam ${bfile}.fam
 
 
+
+
+
 ${plink} \
 	--bfile ${bfile_raw} \
 	--keep ${intersect_ids_plink} \
@@ -25,9 +28,64 @@ ${plink} \
 	--geno ${snp_miss} \
 	--mind ${snp_imiss} \
 	--make-bed \
-	--autosome \
 	--out ${bfile} \
 	--threads ${nthreads}
+
+# Find SNPs with chr not 1-23
+
+awk '{ if ($1 < 1 || $1 > 23) { print $2 }}' > ${bfile}.wrongchr
+nwrongchr=`cat ${bfile}.wrongchr | wc -l`
+
+if [ "$nwrongchr" -gt "0" ]
+then
+	${plink} \
+		--bfile ${bfile} \
+		--exclude ${bfile}.wrongchr \
+		--make-bed \
+		--out ${bfile}
+fi
+
+# Sex check
+
+n23=`grep ^23 ${bfile}.bim | wc -l`
+
+if [ "$n23" -gt "0" ]
+then
+	
+	${plink} \
+		--bfile ${bfile} \
+		--split-x b37 no-fail \
+		--make-bed \
+		--out ${bfile}
+
+	${plink} \
+		--bfile ${bfile} \
+		--check-sex \
+		--out ${section_01_dir}/data
+	
+	nprob=`grep "PROBLEM" ${section_01_dir}/data.sexcheck`
+	if [ "$nprob" -gt "0" ]
+	then
+		echo "There are ${nprob} individuals that failed the sex check."
+		echo "They will be removed."
+		echo "The summary is located here:"
+		echo "${section_01_dir}/data.sexcheck"
+
+		grep "PROBLEM" ${section_01_dir}/data.sexcheck | awk '{print $1, $2}' > ${bfile}.failed_sexcheck
+
+		${plink} \
+			--bfile ${bfile} \
+			--remove ${bfile}.failed_sexcheck \
+			--make-bed \
+			--out ${bfile}
+	fi
+fi
+
+
+
+
+
+
 
 # Change SNP ids to chr:position:{SNP/INDEL}
 echo "Updating SNP ID coding"

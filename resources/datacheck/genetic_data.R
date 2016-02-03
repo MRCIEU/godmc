@@ -29,15 +29,15 @@ print(data.frame(chrno))
 
 if(length(w) > 0)
 {
-	msg <- paste0("There are some chromosomes other than 1-22, they will be removed")
+	msg <- paste0("There are some chromosomes other than 1-23, they will be removed")
 	warninglist <- c(warninglist, msg)
 	message("Warning: ", msg)
 }
 
-w <- which(names(chrno) %in% c(1:22))
+w <- which(names(chrno) %in% c(1:23))
 if(length(w)<22)
 {
-	msg <- "Please change chromosome coding to 1-22, please dont use chr1, chr2 etc."
+	msg <- "Please change chromosome coding to 1-23, please dont use chr1, chr2, X etc."
 	errorlist <- c(errorlist, msg)
 	warning("ERROR: ", msg)
 }
