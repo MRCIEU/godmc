@@ -18,6 +18,7 @@ echo "Calculating methylation PCs"
 Rscript resources/methylation/methylation_pcs.R \
 	${methylation_adjusted}.RData \
 	${meth_pc_cutoff} \
+	${n_meth_pcs} \
 	${phenfile} \
 	${meth_pcs}
 
