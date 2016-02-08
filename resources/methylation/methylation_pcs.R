@@ -40,7 +40,7 @@ if(phen_file != "NULL")
 	rownames(phen) <- phen$IID
 	phen <- subset(phen, IID %in% rownames(pc), select=-c(IID))
 	pc1 <- pc[rownames(pc) %in% rownames(phen), ]
-	phen <- phen[match(rownames(pc1), rownames(phen)), ]
+	phen <- phen[match(rownames(pc1), rownames(phen)), , drop=FALSE]
 	stopifnot(all(rownames(phen) == rownames(pc1)))
 
 
@@ -55,7 +55,7 @@ if(phen_file != "NULL")
 
 	if(length(l) > 0)
 	{
-		pc <- pc[,! 1:ncol(pc) %in% l]
+		pc <- pc[,! 1:ncol(pc) %in% l, drop=FALSE]
 	}
 }
 
