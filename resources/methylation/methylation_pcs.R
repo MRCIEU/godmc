@@ -3,8 +3,9 @@ suppressMessages(library(meffil))
 arguments <- commandArgs(T)
 beta_file <- arguments[1]
 prop_var <- as.numeric(arguments[2])
-phen_file <- arguments[3]
-pc_out <- arguments[4]
+max_pcs <- as.numeric(arguments[3])
+phen_file <- arguments[4]
+pc_out <- arguments[5]
 
 
 message("Loading methylation data")
@@ -27,6 +28,9 @@ pc <- prcomp(t(meffil:::impute.matrix(norm.beta.aut[var.idx, ], margin = 1)))
 message("Identifying PCs that cumulatively explain ", prop_var, " of variance")
 cumvar <- cumsum(pc$sdev^2) / sum(pc$sdev^2)
 n_pcs <- which(cumvar > prop_var)[1]
+message(n_pcs, " PCs required to explain ", prop_var, " of methylation variance")
+n_pcs <- min(n_pcs, max_pcs)
+message(n_pcs, " will be used.")
 pc <- pc$x[,1:n_pcs]
 
 if(phen_file != "NULL")
@@ -36,7 +40,7 @@ if(phen_file != "NULL")
 	rownames(phen) <- phen$IID
 	phen <- subset(phen, IID %in% rownames(pc), select=-c(IID))
 	pc1 <- pc[rownames(pc) %in% rownames(phen), ]
-	phen <- phen[match(rownames(pc1), rownames(phen)), ]
+	phen <- phen[match(rownames(pc1), rownames(phen)), , drop=FALSE]
 	stopifnot(all(rownames(phen) == rownames(pc1)))
 
 
@@ -51,7 +55,7 @@ if(phen_file != "NULL")
 
 	if(length(l) > 0)
 	{
-		pc <- pc[,! 1:ncol(pc) %in% l]
+		pc <- pc[,! 1:ncol(pc) %in% l, drop=FALSE]
 	}
 }
 

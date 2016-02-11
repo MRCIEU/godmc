@@ -26,6 +26,7 @@ ${plink} \
 	--bfile ${bfile} \
 	--pheno ${methylation_adjusted_pcs}.positive_control.plink \
 	--assoc \
+	--allow-no-sex \
 	--out ${section_04_dir}/positive_control_${positive_control_cpg}
 
 tr -s " " < ${section_04_dir}/positive_control_${positive_control_cpg}.qassoc | gzip -c > ${section_04_dir}/positive_control_${positive_control_cpg}.qassoc.gz
