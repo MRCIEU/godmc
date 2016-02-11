@@ -56,6 +56,7 @@ main <- function()
 		stopifnot(all(snps$columnNames==gene$columnNames))
 	}
 
+	message("Performing matrixeqtl analysis on ", length(snps$columnNames), " samples")
 
 	me <- Matrix_eQTL_engine(
 		snps = snps,

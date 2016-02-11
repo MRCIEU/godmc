@@ -36,6 +36,7 @@ section_10_logfile="${section_10_dir}/logs/log.txt"
 section_11_logfile="${section_11_dir}/logs/log.txt"
 section_12_logfile="${section_12_dir}/logs/log.txt"
 section_13_logfile="${section_13_dir}/logs/log.txt"
+section_14_logfile="${section_14_dir}/logs/log.txt"
 
 
 
