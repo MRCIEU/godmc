@@ -44,7 +44,8 @@ function make_tab_format {
 
 
 
-#Generate plink.raw / plink.frq #freq files are required to determine effect allele
+# Generate plink.raw / plink.frq #freq files are required to determine effect allele
+# Chromosome X is coded as 0/2 for males
 echo "Converting plink files to transposed raw format"
 ${plink} --bfile ${bfile} --recode A-transpose --out ${bfile} --freq
 
