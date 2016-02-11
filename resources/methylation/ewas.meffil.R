@@ -31,6 +31,7 @@ main <- function()
     rownames(phen) <- phen$IID
 
     phen<-phen[,which(names(phen)%in%c("IID",phen_name))]
+
 	covs <- read.table(covs_file, he=T, stringsAsFactors=FALSE)
     
     g<-grep("factor",names(covs))
@@ -71,6 +72,8 @@ main <- function()
 		message("There are fewer than 10 individuals remaining. Stopping the analysis.")
 		q()
 	}
+    
+    phen<-na.omit(phen)
 
 	norm.beta <- norm.beta[, colnames(norm.beta) %in% rownames(phen)]
 	phen <- phen[match(colnames(norm.beta), rownames(phen)), , drop=FALSE]
