@@ -70,11 +70,11 @@ then
 
 
 	sftp ${sftp_username}@${sftp_address}:${sftp_path}/resources <<EOF
-get 1kg_phase3_eur_aut_polymorphic.recoded.nodup.frq.gz
+get 1kg_phase3_eur_allchrs_polymorphic.recoded.nodup.frq
 get 1kg_phase3_eur_aut_polymorphic.recoded.nodup.frq.gz.md5sum
 EOF
 
-	mv 1kg_phase3_eur_aut_polymorphic.recoded.nodup.frq.gz* ${home_directory}/resources/genetics
+	mv 1kg_phase3_eur_allchrs_polymorphic.recoded.nodup.frq.gz* ${home_directory}/resources/genetics
 
 fi
 

@@ -23,7 +23,7 @@ message("Number of SNPs: ", nrow(bim))
 
 # test chr coding
 chrno <- table(bim[,1])
-w <- which(! names(chrno) %in% as.character(c(1:22)))
+w <- which(! names(chrno) %in% as.character(c(1:23)))
 
 print(data.frame(chrno))
 
@@ -42,6 +42,13 @@ if(length(w)<22)
 	warning("ERROR: ", msg)
 }
 
+w <- which(names(chrno) %in% c("X","chrX"))
+if(length(w)>0)
+{
+	msg <- "Please change chromosome coding to 23, please dont use chrX or X etc."
+	errorlist <- c(errorlist, msg)
+	warning("ERROR: ", msg)
+}
 
 message("Checking strand")
 
@@ -108,8 +115,13 @@ for (i in 1:22)
 		warning("ERROR: ", msg)
 	}
 }
+
+chr <- bim[which(bim[,1] %in% c("23")),]
+no.SNPs <- nrow(chr)
+no.SNPs.bychr <- append(no.SNPs.bychr, no.SNPs)
+
 pdf(snpsbychr_plot, height=6, width=6)
-barplot(no.SNPs.bychr, main="no of SNVs by chromosome",xlab="chromosome",names=c(1:22),cex.names=0.6,cex.axis=0.6)
+barplot(no.SNPs.bychr, main="no of SNVs by chromosome",xlab="chromosome",names=c(1:23),cex.names=0.6,cex.axis=0.6)
 null <- dev.off()
 
 write.table(no.SNPs.bychr,snpsbychr_file,sep="\t",quote=F,row.names=F,col.names=F)

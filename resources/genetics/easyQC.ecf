@@ -26,7 +26,7 @@ START EASYQC
 ### 		Please use the reference file ancestry that matches the ancestry of the study
 
 MERGE 	--colInMarker SNP
-		--fileRef ./resources/genetics/1kg_phase3_eur_aut_polymorphic.recoded.nodup.frq.gz
+		--fileRef ./resources/genetics/1kg_phase3_eur_allchrs_polymorphic.recoded.nodup.frq.gz
 			--acolIn cptid;a0;a1;eaf 
 			--acolInClasses character;character;character;numeric
 			--strSeparator TAB
