@@ -15,10 +15,9 @@ main <- function()
 	phen_name <- arguments[4]
 	min_age <- as.numeric(arguments[5])
 	max_age <- as.numeric(arguments[6])
-	n_pcs <- as.numeric(arguments[7])
-	pc_file <-arguments[8]
-	out_file <- arguments[9]
-	qqplot_file <- arguments[10]
+	pc_file <-arguments[7]
+	out_file <- arguments[8]
+	qqplot_file <- arguments[9]
     
 
 	message("Loading methylation data")
@@ -33,11 +32,12 @@ main <- function()
     phen<-phen[,which(names(phen)%in%c("IID",phen_name))]
 
 	covs <- read.table(covs_file, he=T, stringsAsFactors=FALSE)
-    
     g<-grep("factor",names(covs))
     if(length(g)>1){ 
     for (i in 1:length(g)){
     covs[,g[i]]<-as.factor(covs[,g[i]])
+    if(length(levels(covs[,g[i]]))==1)
+    covs<-covs[,-g[i]]
     }
     }
 
@@ -53,8 +53,7 @@ main <- function()
     pcs<-read.table(paste(pc_file,".txt",sep=""),sep=" ",header=T)
     rownames(pcs) <- pcs$IID
     m<-match(covs$IID,pcs$IID)
-    pcs<-pcs[m,-1]
-    covs<-data.frame(covs,pcs[,1:n_pcs])
+    covs<-data.frame(covs,pcs[m,-1])
   
 	if(nrow(covs) < 10)
 	{

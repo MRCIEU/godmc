@@ -2,7 +2,7 @@
 
 set -e
 source ./config
-exec &> >(tee ${section_08_logfile})
+exec &> >(tee ${section_08a_logfile})
 print_version
 
 
@@ -20,7 +20,6 @@ else
 		Height \
 		0 \
 		150 \
-		20 \
 		${nongenetic_meth_pcs} \
 		${section_08_dir}/results_Height_allindiv.RData \
 		${section_08_dir}/qqplot_Height_allindiv
@@ -35,7 +34,6 @@ else
 		Height \
 		0 \
 		18 \
-		20 \
 		${nongenetic_meth_pcs} \
 		${section_08_dir}/results_Height_children.RData \
 		${section_08_dir}/qqplot_Height_children
@@ -50,7 +48,6 @@ else
 		Height \
 		18 \
 		150 \
-		20 \
 		${nongenetic_meth_pcs} \
 		${section_08_dir}/results_Height_adults.RData \
 		${section_08_dir}/qqplot_Height_adults
