@@ -29,21 +29,9 @@ ${plink} \
 	--mind ${snp_imiss} \
 	--make-bed \
 	--out ${bfile} \
+	--chr 1-23 \
 	--threads ${nthreads}
 
-# Find SNPs with chr not 1-23
-
-awk '{ if ($1 < 1 || $1 > 23) { print $2 }}' > ${bfile}.wrongchr
-nwrongchr=`cat ${bfile}.wrongchr | wc -l`
-
-if [ "$nwrongchr" -gt "0" ]
-then
-	${plink} \
-		--bfile ${bfile} \
-		--exclude ${bfile}.wrongchr \
-		--make-bed \
-		--out ${bfile}
-fi
 
 # Sex check
 
@@ -119,8 +107,8 @@ cat ${bfile}.duplicates.txt ${SNPfail_allelecoding} ${bfile}.lowinfoSNPs.txt |so
 
 n_failedSNPs=`wc -l ${bfile}.failed.SNPs.txt | awk '{ print $1 }'`
 
-	# Remove SNPs from data
-	echo "Removing ${n_failedSNPs} SNPs from data"
+# Remove SNPs from data
+echo "Removing ${n_failedSNPs} SNPs from data"
 
 
 ${plink} \
@@ -139,7 +127,8 @@ ${plink} \
 	--maf ${grm_maf_cutoff} \
 	--make-grm-bin \
 	--out ${grmfile_all} \
-	--threads ${nthreads}
+	--threads ${nthreads} \
+	--autosome
 rm temp_hm3snps.txt
 
 # Create pedigree matrix if family data, otherwise remove related individuals from existing kinship and data file
@@ -177,6 +166,7 @@ ${plink} \
 	--indep-pairwise 10000 5 0.1 \
 	--maf 0.2 \
 	--out ${pca} \
+	--autosome \
 	--threads ${nthreads}
 
 if [ "${related}" = "no" ]
@@ -223,7 +213,7 @@ n_outliers=`wc -l ${genetic_outlier_ids} | awk '{ print $1 }'`
 if [ "${n_outliers}" = "0" ]
 then
 	echo "No genetic outliers detected"
-else 
+else
 	# Remove genetic outliers from data
 	echo "Removing ${n_outliers} genetic outliers from data"
 	${plink} \
@@ -240,18 +230,21 @@ else
 		--out ${grmfile_all} \
 		--thread-num ${nthreads}
 
-#Find mismatched SNPs and misaligned SNPs with EasyQC
+fi
+
+
+# Find mismatched SNPs and misaligned SNPs with EasyQC
 # Get frequencis for strand check
 ${plink} \
 	--bfile ${bfile} \
-    --freq \
-    --out ${bfile}
+	--freq \
+	--out ${bfile}
     
 Rscript ./resources/genetics/easyQC.R ${bfile}.bim ${bfile}.frq ${easyQC} ${easyQCfile} ${easyQCscript}
 mv ./processed_data/genetic_data/easyQC.multi.AFCHECK.png ./results/02
 mv ./processed_data/genetic_data/easyQC.rep ./results/02
 
-#remove mismatched SNPs and flip misaligned SNPs
+# Remove mismatched SNPs and flip misaligned SNPs
 
 ${plink} \
 	--bfile ${bfile} \
@@ -261,7 +254,11 @@ ${plink} \
 	--out ${bfile} \
 	--threads ${nthreads}
 
-#From here on, we have clean data
+# From here on, we have clean data
+
+if [ ! "${n_outliers}" = "0" ]
+then
+
 	echo "Recalculating PCs with outliers removed"
 
 	if [ "${related}" = "no" ]
@@ -271,6 +268,7 @@ ${plink} \
 			--extract ${pca}.prune.in \
 			--pca 20 \
 			--out ${pca} \
+			--autosome \
 			--threads ${nthreads}
 	else
 
@@ -279,6 +277,7 @@ ${plink} \
 			--extract ${pca}.prune.in \
 			--make-bed \
 			--out ${bfile}_ldpruned \
+			--autosome \
 			--threads ${nthreads}
 
 		Rscript resources/genetics/pcs_relateds.R \
