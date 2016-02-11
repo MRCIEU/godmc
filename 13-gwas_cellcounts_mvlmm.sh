@@ -17,9 +17,19 @@ exec &> >(tee ${section_13_logfile}${batch})
 print_version
 
 
+
 # Get SNP list
-echo "Data is split into ${genetic_chunks} chunks"
+n_genetic_batch=`ls -l ${tabfile}.tab.* | wc -l`
+echo "Genetic data is split into ${n_genetic_batch} chunks"
 echo "Running chunk ${batch}"
+
+if [ ! "${n_genetic_batch}" = "${genetic_chunks}" ]
+then
+	echo "Problem: Genetic data has been split into ${n_genetic_batch}, but the number of batches specified in the config file is ${genetic_chunks}"
+	echo "Please either change the 'genetic_chunks' variable in the config file to ${n_genetic_batch} or re-run script 02b"
+	exit
+fi
+
 
 awk '{ print $1 }' ${tabfile}.tab.${batch} | sed 1d > ${bfile}.snplist.${batch}
 

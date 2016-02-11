@@ -18,6 +18,16 @@ fi
 exec &> >(tee ${section_06_logfile}${batch_number})
 print_version
 
+n_genetic_batch=`ls -l ${tabfile}.tab.* | wc -l`
+echo "Genetic data is split into ${n_genetic_batch} chunks"
+
+if [ ! "${n_genetic_batch}" = "${genetic_chunks}" ]
+then
+	echo "Problem: Genetic data has been split into ${n_genetic_batch}, but the number of batches specified in the config file is ${genetic_chunks}"
+	echo "Please either change the 'genetic_chunks' variable in the config file to ${n_genetic_batch} or re-run script 02b"
+	exit
+fi
+
 
 geno="${tabfile}.tab.${batch_number}"
 phen="${methylation_adjusted_pcs_sq}.txt"
