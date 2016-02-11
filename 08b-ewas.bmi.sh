@@ -2,7 +2,7 @@
 
 set -e
 source ./config
-exec &> >(tee ${section_08_logfile})
+exec &> >(tee ${section_08b_logfile})
 print_version
 
 
@@ -20,7 +20,6 @@ else
 		BMI \
 		0 \
 		150 \
-		20 \
 		${nongenetic_meth_pcs} \
 		${section_08_dir}/results_BMI_allindiv.RData \
 		${section_08_dir}/qqplot_BMI_allindiv
@@ -35,7 +34,6 @@ else
 		BMI \
 		0 \
 		18 \
-		20 \
 		${nongenetic_meth_pcs} \
         ${section_08_dir}/results_BMI_children.RData \
 		${section_08_dir}/qqplot_BMI_children
@@ -50,7 +48,6 @@ else
 		BMI \
 		18 \
 		150 \
-		20 \
 		${nongenetic_meth_pcs} \
 		${section_08_dir}/results_BMI_adults.RData \
 		${section_08_dir}/qqplot_BMI_adults
