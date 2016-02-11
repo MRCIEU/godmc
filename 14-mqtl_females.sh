@@ -22,7 +22,7 @@ fi
 geno="${tabfile}.tab.${batch_number}"
 phen="${methylation_adjusted_pcs}_females.txt"
 cov="NULL"
-threshold="${soft_threshold}"
+threshold="0.01"
 out="${section_14_dir}/${resname}.${batch_number}.RData"
 
 

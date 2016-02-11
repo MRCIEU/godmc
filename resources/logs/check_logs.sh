@@ -310,3 +310,17 @@ check_logs_13 () {
 	fi
 
 }
+
+check_logs_14 () {
+
+	compare_version "14"
+	nbatch=`ls -l ${tabfile}.tab.* | wc -l`
+	nsuccess=`tail ${section_14_logfile}* | grep -i "success" | wc -l`
+	if [ "${nbatch}" = "${nsuccess}" ]; then
+		echo "14-mqtl_females.sh completed successfully for all batches"
+	else
+		echo "Problem: 14-mqtl_females.sh only ${nsuccess} of ${nbatch} mQTL batches completed"
+		exit 1
+	fi
+
+}

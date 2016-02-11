@@ -1,3 +1,5 @@
+suppressPackageStartupMessages(library(meffil))
+
 arguments <- commandArgs(T)
 
 methylationfile <- arguments[1]
@@ -19,12 +21,15 @@ write.table(norm.beta, file=paste0(sqfile, ".txt"), row=T, col=T, qu=F, sep="\t"
 
 covdat <- read.table(cov_file, header=TRUE, stringsAsFactors=FALSE)
 
+
+
 male_ids <- subset(covdat, Sex_factor == "M")$IID
+xsites <- meffil.get.x.sites()
 
 if(sum(colnames(norm.beta) %in% male_ids > 0))
 {
-	message("Writing methylation data for males")
-	write.table(norm.beta[, colnames(norm.beta) %in% male_ids], file=paste0(methylationfile, "_males.txt"), row=T, col=T, qu=F, sep="\t")
+	message("Writing X chromosome methylation data for males")
+	write.table(norm.beta[rownames(norm.beta) %in% xsites, colnames(norm.beta) %in% male_ids], file=paste0(methylationfile, "_males.txt"), row=T, col=T, qu=F, sep="\t")
 }
 
 
@@ -32,6 +37,6 @@ female_ids <- subset(covdat, Sex_factor == "F")$IID
 
 if(sum(colnames(norm.beta) %in% female_ids > 0))
 {
-	message("Writing methylation data for females")
-	write.table(norm.beta[, colnames(norm.beta) %in% female_ids], file=paste0(methylationfile, "_females.txt"), row=T, col=T, qu=F, sep="\t")
+	message("Writing X chromosome methylation data for females")
+	write.table(norm.beta[rownames(norm.beta) %in% xsites, colnames(norm.beta) %in% female_ids], file=paste0(methylationfile, "_females.txt"), row=T, col=T, qu=F, sep="\t")
 }
