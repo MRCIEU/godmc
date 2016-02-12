@@ -119,11 +119,12 @@ if(cellcounts_file != "NULL" & predicted_cellcounts_type == "houseman" )
 {
 cc <- read.table(cellcounts_file,header=T)
 w <- which(names(cc)[-1] %in% c("Bcell","CD4T","CD8T","Eos","Mono","Neu","NK"))
-if(w!=7)
+if(length(w)!=7)
 {
 msg <- paste0("Please check header predicted cellcounts file; it should have Bcell,CD4T,CD8T,Eos,Mono,Neu,NK")
 errorlist <- c(errorlist, msg)
 warning("ERROR: ", msg)
+}
 }
 
 cc.name<-"NULL"
