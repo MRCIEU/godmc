@@ -49,17 +49,24 @@ then
 	${plink} \
 		--bfile ${bfile} \
 		--check-sex \
-		--out ${section_01_dir}/data
+		--out ${section_02_dir}/data
 	
-	nprob=`grep "PROBLEM" ${section_01_dir}/data.sexcheck`
+	nprob=`grep "PROBLEM" ${section_02_dir}/data.sexcheck |wc -l`
+
+    if [ "$nprob" -eq "0" ]
+	then
+		echo "There are ${nprob} individuals that failed the sex check."
+	fi
+
+
 	if [ "$nprob" -gt "0" ]
 	then
 		echo "There are ${nprob} individuals that failed the sex check."
 		echo "They will be removed."
 		echo "The summary is located here:"
-		echo "${section_01_dir}/data.sexcheck"
+		echo "${section_02_dir}/data.sexcheck"
 
-		grep "PROBLEM" ${section_01_dir}/data.sexcheck | awk '{print $1, $2}' > ${bfile}.failed_sexcheck
+		grep "PROBLEM" ${section_02_dir}/data.sexcheck | awk '{print $1, $2}' > ${bfile}.failed_sexcheck
 
 		${plink} \
 			--bfile ${bfile} \
@@ -67,13 +74,8 @@ then
 			--make-bed \
 			--out ${bfile}
 	fi
+
 fi
-
-
-
-
-
-
 
 # Change SNP ids to chr:position:{SNP/INDEL}
 echo "Updating SNP ID coding"
