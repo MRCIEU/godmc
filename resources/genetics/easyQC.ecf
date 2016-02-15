@@ -4,7 +4,7 @@ DEFINE	--pathOut ./processed_data/genetic_data
 		--strMissing .
 		--strSeparator TAB
 		--acolIn CHR;SNP;POS;EFFECT_ALLELE;OTHER_ALLELE;EAF;N;BETA;SE;PVAL;IMPUTATION;STRAND
-		--acolInClasses character;character;integer;character;character;numeric;integer;numeric;numeric;numeric;numeric;character
+		--acolInClasses character;character;integer;character;character;numeric;numeric;numeric;numeric;numeric;numeric;character
 		--acolNewName CHR;SNP;POS;EFFECT_ALLELE;OTHER_ALLELE;EAF;N;BETA;SE;PVAL;IMPUTATION;STRAND
 
 ## Please DO NOT CHANGE --acolNewName values because these reflect the column names used throughout the script
@@ -26,7 +26,7 @@ START EASYQC
 ### 		Please use the reference file ancestry that matches the ancestry of the study
 
 MERGE 	--colInMarker SNP
-		--fileRef ./resources/genetics/1kg_phase3_eur_aut_polymorphic.recoded.nodup.frq.gz
+		--fileRef ./resources/genetics/1kg_phase3_eur_allchrs_polymorphic.recoded.nodup.frq.gz
 			--acolIn cptid;a0;a1;eaf 
 			--acolInClasses character;character;character;numeric
 			--strSeparator TAB
