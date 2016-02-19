@@ -38,8 +38,10 @@ quality_type="impute2"
 cellcounts_required="yes"
 
 # Set this to the file name if you have predicted cell counts already
-# Otherwise leave it as NULL. The predicted_cellcounts_type can be set to houseman or something else.
+# Otherwise leave it as NULL. The predicted_cellcounts_type can be set to houseman or something else. 
 predicted_cellcounts="${home_directory}/input_data/cellcounts.txt"
+
+#If you don't have predicted_cellcounts eg. predicted_cellcounts="NULL", you need to set predicted_cellcounts_type to "NULL"
 predicted_cellcounts_type="houseman"
 
 #Set this to the file name if you have directly measured cellcounts. These will be used as covariates only.
@@ -60,7 +62,7 @@ meth_chunks="100"
 
 # Number of chunks to split genetic data during mQTL and cellcount GWAS
 # See 06a, 06b and 07e
-genetic_chunks="500"
+genetic_chunks="100"
 
 # SNP filtering
 # HWE threshold, minor allele frequency, SNP missingness, individual missingness.
@@ -84,8 +86,8 @@ meth_pc_cutoff="0.8"
 meth_pc_threshold="1e-6"
 
 # Matrixeqtl parameters
-soft_threshold="1e-5"
-soft_threshold_cnv="1e-5"
+soft_threshold="1e-4"
+soft_threshold_cnv="1e-4"
 
 # DO NOT MODIFY
 source ${home_directory}/resources/parameters
