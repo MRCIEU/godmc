@@ -241,6 +241,16 @@ ${plink} \
 	--bfile ${bfile} \
 	--freq \
 	--out ${bfile}
+
+if [ -f "processed_data/genetic_data/easyQC.ecf.out" ]
+then
+	echo "easyqc files present from previous run which will be removed"
+	rm processed_data/genetic_data/easy*
+	rm processed_data/genetic_data/*easy*
+else
+	echo "passed file check"
+fi
+
     
 Rscript ./resources/genetics/easyQC.R ${bfile}.bim ${bfile}.frq ${easyQC} ${easyQCfile} ${easyQCscript}
 mv ./processed_data/genetic_data/easyQC.multi.AFCHECK.png ./results/02
