@@ -14,7 +14,7 @@ else
 	echo "Performing Height EWAS on all"
 	echo ""
 	Rscript resources/methylation/ewas.meffil.R \
-		${betas} \
+		${methylation_adjusted} \
 		${ewastransformed} \
 		${covariates_combined}.txt \
 		Height \
@@ -22,13 +22,14 @@ else
 		150 \
 		${nongenetic_meth_pcs} \
 		${section_08_dir}/results_Height_allindiv.RData \
-		${section_08_dir}/qqplot_Height_allindiv
+		${section_08_dir}/qqplot_Height_allindiv \
+		${section_08_dir}/Height_allindiv
 
 	echo ""
 	echo "Performing Height EWAS on children"
 	echo ""
 	Rscript resources/methylation/ewas.meffil.R \
-		${betas} \
+		${methylation_adjusted} \
 		${ewastransformed} \
 		${covariates_combined}.txt \
 		Height \
@@ -37,12 +38,13 @@ else
 		${nongenetic_meth_pcs} \
 		${section_08_dir}/results_Height_children.RData \
 		${section_08_dir}/qqplot_Height_children
+		${section_08_dir}/Height_children
 
 	echo ""
 	echo "Performing Height EWAS on adults"
 	echo ""
 	Rscript resources/methylation/ewas.meffil.R \
-		${betas} \
+		${methylation_adjusted} \
 		${ewastransformed} \
 		${covariates_combined}.txt \
 		Height \
@@ -51,7 +53,7 @@ else
 		${nongenetic_meth_pcs} \
 		${section_08_dir}/results_Height_adults.RData \
 		${section_08_dir}/qqplot_Height_adults
-
+        ${section_08_dir}/Height_adults
 fi
 
 echo "Successfully performed height EWAS"
