@@ -14,7 +14,7 @@ else
 	echo "Performing BMI EWAS on all"
 	echo ""
 	Rscript resources/methylation/ewas.meffil.R \
-		${methylation_adjusted} \
+		${methylation_adjusted}.RData \
 		${ewastransformed} \
 		${covariates_combined}.txt \
 		BMI \
@@ -29,7 +29,7 @@ else
 	echo "Performing BMI EWAS on children"
 	echo ""
 	Rscript resources/methylation/ewas.meffil.R \
-		${methylation_adjusted} \
+		${methylation_adjusted}.RData \
 		${ewastransformed} \
 		${covariates_combined}.txt \
 		BMI \
@@ -44,7 +44,7 @@ else
 	echo "Performing BMI EWAS on adults"
 	echo ""
 	Rscript resources/methylation/ewas.meffil.R \
-		${methylation_adjusted} \
+		${methylation_adjusted}.RData \
 		${ewastransformed} \
 		${covariates_combined}.txt \
 		BMI \
