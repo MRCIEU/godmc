@@ -18,7 +18,7 @@ main <- function()
 	pc_file <-arguments[7]
 	out_file <- arguments[8]
 	qqplot_file <- arguments[9]
-    
+    report_file <- arguments[10]
 
 	message("Loading methylation data")
 	phen <- read.table(phen_file, he=T, stringsAsFactors=FALSE)
@@ -83,7 +83,13 @@ main <- function()
     
     message("\nPerforming EWAS for ", phen_name)
     ewas.ret <- meffil.ewas(norm.beta, variable=phen[,1], covariates=covs,winsorize.pct = NA,most.variable = min(nrow(norm.beta), 20000))
+    ewas.parameters <- meffil.ewas.parameters(sig.threshold=1e-7, max.plots=100,qq.inflation.method="regression",model="isva1")
 
+    ewas.summary<-meffil.ewas.summary(ewas.ret,norm.beta,parameters=ewas.parameters)                              
+
+    meffil.ewas.report(ewas.summary, output.file=paste(report_file,".ewas.report.html",sep=""))
+
+    
     res<-as.data.frame(ewas.ret$p.value)
   
 	message("Generating Q-Q plot")
