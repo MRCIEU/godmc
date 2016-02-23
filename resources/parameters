@@ -15,6 +15,8 @@ section_10_dir="${home_directory}/results/10"
 section_11_dir="${home_directory}/results/11"
 section_12_dir="${home_directory}/results/12"
 section_13_dir="${home_directory}/results/13"
+section_14_dir="${home_directory}/results/14"
+section_15_dir="${home_directory}/results/15"
 
 section_01_logfile="${section_01_dir}/logs/log.txt"
 section_02a_logfile="${section_02_dir}/logs_a/log.txt"
@@ -38,8 +40,7 @@ section_11_logfile="${section_11_dir}/logs/log.txt"
 section_12_logfile="${section_12_dir}/logs/log.txt"
 section_13_logfile="${section_13_dir}/logs/log.txt"
 section_14_logfile="${section_14_dir}/logs/log.txt"
-
-
+section_15_logfile="${section_15_dir}/logs/log.txt"
 
 # ID lists
 meth_ids="${home_directory}/processed_data/ids/meth_ids.txt"
