@@ -35,6 +35,8 @@ echo "Age variable has $age levels"
 sex=`awk '{print $3}' <${gwas_covariates}.cellcounts.factor |sort -u |wc -l`
 echo "Sex variable has $sex levels"
 
+n23=`grep ^23 ${bfile}.bim | wc -l`
+
 if [ "$sex" -gt "1" ] && [ "$age" -gt "1" ]
 then
 ${gcta} \
@@ -43,10 +45,27 @@ ${gcta} \
 	--pheno ${cellcounts_plink} \
 	--qcovar ${gwas_covariates}.cellcounts.numeric \
 	--covar ${gwas_covariates}.cellcounts.factor \
+	--autosome \
 	--out ${section_12_dir}/cellcount_${batch} \
 	--thread-num ${nthreads} \
 	--mpheno ${batch}
 fi
+
+if [ "$n23" -gt "0" ] && [ "$sex" -gt "1" ] && [ "$age" -gt "1" ]
+then
+${gcta} \
+	--bfile ${bfile} \
+	--chr 23 \
+	--mlma \
+	--pheno ${pheno_file} \
+	--qcovar ${gwas_covariates}.cellcounts.numeric \
+	--covar ${gwas_covariates}.cellcounts.factor \
+	--grm ${grmfile_all} \
+	--out ${section_12_dir}/cellcount_${batch}_chr23 \
+	--thread-num ${nthreads}
+
+fi
+
 
 if [ "$sex" -eq "1" ] && [ "$age" -gt "1" ]
 then
@@ -55,9 +74,24 @@ ${gcta} \
 	--mlma-loco \
 	--pheno ${cellcounts_plink} \
 	--qcovar ${gwas_covariates}.cellcounts.numeric \
+	--autosome \
 	--out ${section_12_dir}/cellcount_${batch} \
 	--thread-num ${nthreads} \
 	--mpheno ${batch}
+fi
+
+if [ "$n23" -gt "0" ] && [ "$sex" -eq "1" ] && [ "$age" -gt "1" ]
+then
+${gcta} \
+	--bfile ${bfile} \
+	--chr 23 \
+	--mlma \
+	--pheno ${pheno_file} \
+	--qcovar ${gwas_covariates}.cellcounts.numeric \
+	--grm ${grmfile_all} \
+	--out ${section_12_dir}/cellcount_${batch}_chr23 \
+	--thread-num ${nthreads}
+
 fi
 
 if [ "$sex" -gt "1" ] && [ "$age" -eq "1" ]
@@ -67,12 +101,30 @@ ${gcta} \
 	--mlma-loco \
 	--pheno ${cellcounts_plink} \
 	--covar ${gwas_covariates}.cellcounts.factor \
+	--autosome \
 	--out ${section_12_dir}/cellcount_${batch} \
 	--thread-num ${nthreads} \
 	--mpheno ${batch}
 fi
 
+if [ "$n23" -gt "0" ] && [ "$sex" -gt "1" ] && [ "$age" -eq "1" ]
+then
+${gcta} \
+	--bfile ${bfile} \
+	--chr 23 \
+	--mlma \
+	--pheno ${pheno_file} \
+	--covar ${gwas_covariates}.cellcounts.factor \
+	--grm ${grmfile_all} \
+	--out ${section_12_dir}/cellcount_${batch}_chr23 \
+	--thread-num ${nthreads}
 
+fi
+
+
+head -n1 ${section_12_dir}/cellcount_${batch}.loco.mlma >${section_12_dir}/cellcount_${batch}.loco
+tail -q -n +2 ${section_12_dir}/$cellcount_${batch}.loco.mlma ${section_12_dir}/cellcount_${batch}_chr23.mlma >>${section_12_dir}/cellcount_${batch}.loco
+mv ${section_12_dir}/cellcount_${batch}.loco ${section_12_dir}/cellcount_${batch}.loco.mlma
 
 echo "Compressing results"
 gzip -f ${section_12_dir}/cellcount_${batch}.loco.mlma

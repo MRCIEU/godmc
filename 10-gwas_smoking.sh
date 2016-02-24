@@ -28,6 +28,8 @@ echo "Age variable has $age levels"
 sex=`awk '{print $3}' <processed_data/genetic_data/gwas_covariates${cov}.smoking.factor |sort -u |wc -l`
 echo "Sex variable has $sex levels"
 
+n23=`grep ^23 ${bfile}.bim | wc -l`
+
 if [ "$sex" -gt "1" ] && [ "$age" -gt "1" ]
 then
 
@@ -37,8 +39,24 @@ ${gcta} \
 	--pheno ${pheno_file} \
 	--qcovar processed_data/genetic_data/gwas_covariates${cov}.smoking.numeric \
 	--covar processed_data/genetic_data/gwas_covariates${cov}.smoking.factor \
+	--autosome \
 	--out ${section_10_dir}/${pheno} \
 	--thread-num ${nthreads}
+fi
+
+if [ "$n23" -gt "0" ] && [ "$sex" -gt "1" ] && [ "$age" -gt "1" ]
+then
+${gcta} \
+	--bfile ${bfile} \
+	--chr 23 \
+	--mlma \
+	--pheno ${pheno_file} \
+	--qcovar processed_data/genetic_data/gwas_covariates${cov}.smoking.numeric \
+	--covar processed_data/genetic_data/gwas_covariates${cov}.smoking.factor \
+	--grm ${grmfile_all} \
+	--out ${section_10_dir}/${pheno}_chr23 \
+	--thread-num ${nthreads}
+
 fi
 
 if [ "$sex" -eq "1" ] && [ "$age" -gt "1" ]
@@ -49,8 +67,23 @@ ${gcta} \
 	--mlma-loco \
 	--pheno ${pheno_file} \
 	--qcovar processed_data/genetic_data/gwas_covariates${cov}.smoking.numeric \
+	--autosome \
 	--out ${section_10_dir}/${pheno} \
 	--thread-num ${nthreads}
+fi
+
+if [ "$n23" -gt "0" ] && [ "$sex" -eq "1" ] && [ "$age" -gt "1" ]
+then
+${gcta} \
+	--bfile ${bfile} \
+	--chr 23 \
+	--mlma \
+	--pheno ${pheno_file} \
+	--qcovar processed_data/genetic_data/gwas_covariates${cov}.smoking.numeric \
+	--grm ${grmfile_all} \
+	--out ${section_10_dir}/${pheno}_chr23 \
+	--thread-num ${nthreads}
+
 fi
 
 if [ "$sex" -gt "1" ] && [ "$age" -eq "1" ]
@@ -61,10 +94,28 @@ ${gcta} \
 	--mlma-loco \
 	--pheno ${pheno_file} \
 	--covar processed_data/genetic_data/gwas_covariates${cov}.smoking.factor \
+	--autosome \
 	--out ${section_10_dir}/${pheno} \
 	--thread-num ${nthreads}
 fi
 
+if [ "$n23" -gt "0" ] && [ "$sex" -gt "1" ] && [ "$age" -eq "1" ]
+then
+${gcta} \
+	--bfile ${bfile} \
+	--chr 23 \
+	--mlma \
+	--pheno ${pheno_file} \
+	--covar processed_data/genetic_data/gwas_covariates${cov}.smoking.factor \
+	--grm ${grmfile_all} \
+	--out ${section_10_dir}/${pheno}_chr23 \
+	--thread-num ${nthreads}
+
+fi
+
+head -n1 ${section_10_dir}/${pheno}.loco.mlma >${section_10_dir}/${pheno}.loco
+tail -q -n +2 ${section_10_dir}/${pheno}.loco.mlma ${section_10_dir}/${pheno}_chr23.mlma >>${section_10_dir}/${pheno}.loco
+mv ${section_10_dir}/${pheno}.loco ${section_10_dir}/${pheno}.loco.mlma
 
 echo "Compressing results"
 gzip -f ${section_10_dir}/${pheno}.loco.mlma
