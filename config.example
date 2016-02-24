@@ -86,8 +86,8 @@ meth_pc_cutoff="0.8"
 meth_pc_threshold="1e-6"
 
 # Matrixeqtl parameters
-soft_threshold="1e-4"
-soft_threshold_cnv="1e-4"
+soft_threshold="1e-5"
+soft_threshold_cnv="1e-5"
 
 # DO NOT MODIFY
 source ${home_directory}/resources/parameters
