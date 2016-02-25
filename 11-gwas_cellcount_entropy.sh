@@ -32,7 +32,7 @@ ${gcta} \
 	--bfile ${bfile} \
 	--chr 23 \
 	--mlma \
-	--pheno ${pheno_file} \
+	--pheno ${cellcounts_tf}.entropy.plink \
 	--qcovar ${gwas_covariates}.cellcounts.numeric \
 	--covar ${gwas_covariates}.cellcounts.factor \
 	--grm ${grmfile_all} \
@@ -60,7 +60,7 @@ ${gcta} \
 	--bfile ${bfile} \
 	--chr 23 \
 	--mlma \
-	--pheno ${pheno_file} \
+	--pheno ${cellcounts_tf}.entropy.plink \
 	--qcovar ${gwas_covariates}.cellcounts.numeric \
 	--grm ${grmfile_all} \
 	--out ${section_11_dir}/cellcount_entropy_chr23 \
@@ -86,7 +86,7 @@ ${gcta} \
 	--bfile ${bfile} \
 	--chr 23 \
 	--mlma \
-	--pheno ${pheno_file} \
+	--pheno ${cellcounts_tf}.entropy.plink \
 	--covar ${gwas_covariates}.cellcounts.factor \
 	--grm ${grmfile_all} \
 	--out ${section_11_dir}/cellcount_entropy_chr23 \
@@ -97,6 +97,7 @@ fi
 head -n1 ${section_11_dir}/cellcount_entropy.loco.mlma >${section_11_dir}/cellcount_entropy.loco
 tail -q -n +2 ${section_11_dir}/cellcount_entropy.loco.mlma ${section_11_dir}/cellcount_entropy_chr23.mlma >>${section_11_dir}/cellcount_entropy.loco
 mv ${section_11_dir}/cellcount_entropy.loco ${section_11_dir}/cellcount_entropy.loco.mlma
+rm ${section_11_dir}/cellcount_entropy_chr23.mlma
 
 echo "Compressing results"
 gzip -f ${section_11_dir}/cellcount_entropy.loco.mlma

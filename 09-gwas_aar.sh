@@ -98,6 +98,7 @@ fi
 head -n1 ${section_09_dir}/aar.loco.mlma >${section_09_dir}/aar.loco
 tail -q -n +2 ${section_09_dir}/aar.loco.mlma ${section_09_dir}/aar_chr23.mlma >>${section_09_dir}/aar.loco
 mv ${section_09_dir}/aar.loco ${section_09_dir}/aar.loco.mlma
+rm ${section_09_dir}/aar_chr23.mlma
 
 echo "Compressing results"
 gzip -f ${section_09_dir}/aar.loco.mlma

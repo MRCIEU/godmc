@@ -57,12 +57,13 @@ ${gcta} \
 	--bfile ${bfile} \
 	--chr 23 \
 	--mlma \
-	--pheno ${pheno_file} \
+	--pheno ${cellcounts_plink} \
 	--qcovar ${gwas_covariates}.cellcounts.numeric \
 	--covar ${gwas_covariates}.cellcounts.factor \
 	--grm ${grmfile_all} \
 	--out ${section_12_dir}/cellcount_${batch}_chr23 \
 	--thread-num ${nthreads}
+	--mpheno ${batch}
 
 fi
 
@@ -86,11 +87,12 @@ ${gcta} \
 	--bfile ${bfile} \
 	--chr 23 \
 	--mlma \
-	--pheno ${pheno_file} \
+	--pheno ${cellcounts_plink} \
 	--qcovar ${gwas_covariates}.cellcounts.numeric \
 	--grm ${grmfile_all} \
 	--out ${section_12_dir}/cellcount_${batch}_chr23 \
 	--thread-num ${nthreads}
+	--mpheno ${batch}
 
 fi
 
@@ -113,18 +115,20 @@ ${gcta} \
 	--bfile ${bfile} \
 	--chr 23 \
 	--mlma \
-	--pheno ${pheno_file} \
+	--pheno ${cellcounts_plink} \
 	--covar ${gwas_covariates}.cellcounts.factor \
 	--grm ${grmfile_all} \
 	--out ${section_12_dir}/cellcount_${batch}_chr23 \
 	--thread-num ${nthreads}
+	--mpheno ${batch}
 
 fi
 
 
 head -n1 ${section_12_dir}/cellcount_${batch}.loco.mlma >${section_12_dir}/cellcount_${batch}.loco
-tail -q -n +2 ${section_12_dir}/$cellcount_${batch}.loco.mlma ${section_12_dir}/cellcount_${batch}_chr23.mlma >>${section_12_dir}/cellcount_${batch}.loco
+tail -q -n +2 ${section_12_dir}/cellcount_${batch}.loco.mlma ${section_12_dir}/cellcount_${batch}_chr23.mlma >>${section_12_dir}/cellcount_${batch}.loco
 mv ${section_12_dir}/cellcount_${batch}.loco ${section_12_dir}/cellcount_${batch}.loco.mlma
+rm ${section_12_dir}/cellcount_${batch}_chr23.mlma
 
 echo "Compressing results"
 gzip -f ${section_12_dir}/cellcount_${batch}.loco.mlma
