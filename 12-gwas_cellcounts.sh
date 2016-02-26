@@ -62,7 +62,7 @@ ${gcta} \
 	--covar ${gwas_covariates}.cellcounts.factor \
 	--grm ${grmfile_all} \
 	--out ${section_12_dir}/cellcount_${batch}_chr23 \
-	--thread-num ${nthreads}
+	--thread-num ${nthreads} \
 	--mpheno ${batch}
 
 fi
@@ -91,7 +91,7 @@ ${gcta} \
 	--qcovar ${gwas_covariates}.cellcounts.numeric \
 	--grm ${grmfile_all} \
 	--out ${section_12_dir}/cellcount_${batch}_chr23 \
-	--thread-num ${nthreads}
+	--thread-num ${nthreads} \
 	--mpheno ${batch}
 
 fi
@@ -119,7 +119,7 @@ ${gcta} \
 	--covar ${gwas_covariates}.cellcounts.factor \
 	--grm ${grmfile_all} \
 	--out ${section_12_dir}/cellcount_${batch}_chr23 \
-	--thread-num ${nthreads}
+	--thread-num ${nthreads} \
 	--mpheno ${batch}
 
 fi
