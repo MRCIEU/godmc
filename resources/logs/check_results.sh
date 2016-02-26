@@ -77,22 +77,42 @@ check_results_04 () {
 		echo "Age prediction plot file not present"
 		exit 1
 	fi
-	if [ -f "${section_04_dir}/positive_control_${positive_control_cpg}.qassoc.gz" ]; then
-		echo "Positive control results present"
+	
+	if [ -f "${section_04_dir}/positive_control_pcadjusted_${positive_control_cpg}.qassoc.gz" ]; then
+		echo "PC adjusted positive control results present"
 	else
-		echo "Positive control results file not present"
+		echo "PC adjusted positive control results file not present"
 		exit 1
 	fi
-	if [ -f "${section_04_dir}/positive_control_${positive_control_cpg}_manhattan.png" ]; then
-		echo "Positive control Manhattan plot present"
+	if [ -f "${section_04_dir}/positive_control_pcadjusted_${positive_control_cpg}_manhattan.png" ]; then
+		echo "PC adjusted positive control Manhattan plot present"
 	else
-		echo "Positive control Manhattan plot file not present"
+		echo "PC adjusted positive control Manhattan plot file not present"
 		exit 1
 	fi
-	if [ -f "${section_04_dir}/positive_control_${positive_control_cpg}_qqplot.png" ]; then
-		echo "Positive control QQ plot present"
+	
+	if [ -f "${section_04_dir}/positive_control_pcadjusted_${positive_control_cpg}_qqplot.png" ]; then
+		echo "PC adjusted positive control QQ plot present"
 	else
-		echo "Positive control QQ plot file not present"
+		echo "PC adjusted positive control QQ plot file not present"
+		exit 1
+	fi
+	if [ -f "${section_04_dir}/positive_control_pcunadjusted_${positive_control_cpg}.qassoc.gz" ]; then
+		echo "PC unadjusted positive control results present"
+	else
+		echo "PC unadjusted positive control results file not present"
+		exit 1
+	fi
+	if [ -f "${section_04_dir}/positive_control_pcunadjusted_${positive_control_cpg}_manhattan.png" ]; then
+		echo "PC unadjusted positive control Manhattan plot present"
+	else
+		echo "PC unadjusted positive control Manhattan plot file not present"
+		exit 1
+	fi
+	if [ -f "${section_04_dir}/positive_control_pcunadjusted_${positive_control_cpg}_qqplot.png" ]; then
+		echo "PC unadjusted positive control QQ plot present"
+	else
+		echo "PC unadjusted positive control QQ plot file not present"
 		exit 1
 	fi
 
