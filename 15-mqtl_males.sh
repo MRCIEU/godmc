@@ -10,12 +10,12 @@ if ! [[ $batch_number =~ $re ]] ; then
 	echo "Usage: ${0} [batch number]"
 	exit 1
 fi
-exec &> >(tee ${section_14_logfile}${batch_number})
+exec &> >(tee ${section_15_logfile}${batch_number})
 print_version
 
 if [ ! -f "${methylation_adjusted_pcs}_males.txt" ]
 then
-	echo "No female-only data. Exiting Successfully"
+	echo "No male-only data. Exiting Successfully"
 	exit
 fi
 
@@ -23,7 +23,7 @@ geno="${tabfile}.tab.${batch_number}"
 phen="${methylation_adjusted_pcs}_males.txt"
 cov="NULL"
 threshold="0.01"
-out="${section_14_dir}/${resname}.${batch_number}.RData"
+out="${section_15_dir}/${resname}.${batch_number}.RData"
 
 
 nbatch=(${tabfile}.tab.*)
