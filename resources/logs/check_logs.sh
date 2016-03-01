@@ -327,7 +327,7 @@ check_logs_14 () {
 
 check_logs_15 () {
 
-	compare_version "14"
+	compare_version "15"
 	nbatch=`ls -l ${tabfile}.tab.* | wc -l`
 	nsuccess=`tail ${section_15_logfile}* | grep -i "success" | wc -l`
 	if [ "${nbatch}" = "${nsuccess}" ]; then

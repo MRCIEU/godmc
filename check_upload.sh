@@ -24,7 +24,7 @@ checkSecondArg () {
 source resources/logs/check_logs.sh
 source resources/logs/check_results.sh
 
-for i in {1..13}; do sections[$(($i-1))]=`printf "%02d" ${i}`; done
+for i in {1..15}; do sections[$(($i-1))]=`printf "%02d" ${i}`; done
 checkFirstArg "$1" "${sections[@]}"
 
 actions=("check" "upload")
