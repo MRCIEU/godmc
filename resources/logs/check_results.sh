@@ -281,3 +281,19 @@ check_results_14 () {
 	fi
 
 }
+
+check_results_15 () {
+
+	nbatch=`ls -l ${tabfile}.tab.* | wc -l`
+	nsuccess=`ls -l ${section_15_dir}/res* | wc -l`
+	if [ "${nsuccess}" = "${nbatch}" ]; then
+		echo "All mQTL results present for X analysis on males"
+	else
+		echo "Problem: Only ${nsuccess} of ${nbatch} mQTL result files are present"
+		exit 1
+	fi
+
+}
+
+
+
