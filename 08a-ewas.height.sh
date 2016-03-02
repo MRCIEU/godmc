@@ -37,7 +37,7 @@ else
 		18 \
 		${nongenetic_meth_pcs} \
 		${section_08_dir}/results_Height_children.RData \
-		${section_08_dir}/qqplot_Height_children
+		${section_08_dir}/qqplot_Height_children \
 		${section_08_dir}/Height_children
 
 	echo ""
@@ -52,7 +52,7 @@ else
 		150 \
 		${nongenetic_meth_pcs} \
 		${section_08_dir}/results_Height_adults.RData \
-		${section_08_dir}/qqplot_Height_adults
+		${section_08_dir}/qqplot_Height_adults \
         ${section_08_dir}/Height_adults
 fi
 
