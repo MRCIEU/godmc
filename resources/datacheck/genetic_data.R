@@ -79,9 +79,9 @@ for (i in 1:22)
 	controlsnps.chr<-controlsnps.chr[m,]
     strand.check<-sum(controlsnps.chr$V6==chr$alleles,na.rm=T)/nrow(controlsnps.chr)
     message("Chr ", i, " proportion in agreement: ", strand.check)	
-	if(strand.check<0.95)
+	if(strand.check<0.75)
 	{
-		msg <- paste0("please check strand for chromosome ",i," as more than 5% of your SNPs have strand issues")
+		msg <- paste0("please check strand for chromosome ",i," as more than 25% of your SNPs have strand issues")
 		errorlist <- c(errorlist, msg)
 		warning("ERROR: ", msg)
 	}
