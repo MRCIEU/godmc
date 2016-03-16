@@ -107,6 +107,15 @@ if(n.overlap < 50)
 w <- which(fam[,2] %in% overlap)
 fam2 <- fam[w,1:2]
 message(nrow(fam2), " individuals present in both genetic and methylation datasets")
+message("Writing ID lists to ", ids, " and ", ids_plink)
+if(file.exists(ids)) {
+	message("Deleting old files")
+	unlink(ids)
+}
+if(file.exists(ids_plink)) {
+	message("Deleting old files")
+	unlink(ids)
+}
 write.table(fam2[,2],ids,sep="\t",quote=F,row.names=F,col.names=F)
 write.table(fam2[,1:2],ids_plink,sep="\t",quote=F,row.names=F,col.names=F)
 
