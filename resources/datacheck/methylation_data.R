@@ -12,8 +12,8 @@ cellcounts_file <- as.character(args[3]);
 predicted_cellcounts_type <- as.character(args[4]);
 cellcounts_file_measured <- as.character(args[5]);
 meth_ids_file <- as.character(args[6]);
-cohort_descriptives_file <- as.character(args[7])
-methylation_summary_file <- as.character(args[8])
+cohort_descriptives_file <- as.character(args[7]);
+methylation_summary_file <- as.character(args[8]);
 ids <- as.character(args[9]);
 ids_plink <- as.character(args[10]);
 
@@ -114,7 +114,7 @@ if(file.exists(ids)) {
 }
 if(file.exists(ids_plink)) {
 	message("Deleting old files")
-	unlink(ids)
+	unlink(ids_plink)
 }
 write.table(fam2[,2],ids,sep="\t",quote=F,row.names=F,col.names=F)
 write.table(fam2[,1:2],ids_plink,sep="\t",quote=F,row.names=F,col.names=F)
