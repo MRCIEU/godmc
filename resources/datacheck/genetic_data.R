@@ -96,14 +96,6 @@ if(any(duplicated(bim[,2])))
 	warning("ERROR: ", msg)
 }
 
-message("Checking for duplicate ids")
-if(any(duplicated(fam[,2])))
-{
-	msg <- "duplicate individual identifiers in fam file"
-	errorlist <- c(errorlist, msg)
-	warning("ERROR: ", msg)
-}
-
 message("Checking build against control SNPs by checking positions of common controlSNPs")
 no.SNPs.bychr <- NULL
 for (i in 1:22)
@@ -227,7 +219,6 @@ if(any(grepl("_",fam[,2])))
 	errorlist <- c(errorlist, msg)
 	warning("ERROR: ", msg)
 }
-
 
 ## Summary
 
