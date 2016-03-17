@@ -64,6 +64,7 @@ main <- function()
 
 	i <- subset(covs, Age_numeric >= 25)$IID
 	smoki <- subset(smok, IID %in% i)
+	smoki$Smoking <- rntransform(smoki$Smoking)
 
 	if(nrow(smoki) > 50)
 	{
@@ -78,6 +79,7 @@ main <- function()
 
 	j <- subset(covs, Age_numeric < 25)$IID
 	smokj <- subset(smok, IID %in% j)
+	smokj$Smoking <- rntransform(smokj$Smoking)
 
 	if(nrow(smokj) > 50)
 	{
