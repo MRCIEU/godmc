@@ -18,6 +18,12 @@ Rscript resources/smoking/smoking_predictor.R \
 	
 # Estimate cell counts
 echo "Processing cell counts for GWA"
+if [ "${predicted_cellcounts}" == "NULL" ] && [ "${predicted_cellcounts_type}" != "NULL" ]
+	then
+		echo "Please change ${predicted_cellcounts_type} to NULL."
+		
+	fi
+
 if [ "${cellcounts_required}" = "yes" ]
 then
 	if [ "${predicted_cellcounts}" == "NULL" ] && [ "${predicted_cellcounts_type}" == "NULL" ]
@@ -40,7 +46,7 @@ cp ${predicted_cellcounts} ${cellcounts_gwa}
     then
         echo "Your study will not be used for the cellcounts GWA meta-analysis -only Houseman predicted cellcounts are used"
     else
-        echo "Warning: The predicted cellcounts file ${predicted_cellcounts} or measured cellcounts file ${measured_cellcounts} doesn't exist. You have specified that cell counts are required. Please set 'provided_cellcounts' to NULL if you want them to be estimated now, or specify a path to a file with the pre-specified cell counts."		
+        echo "Warning: The predicted cellcounts file ${predicted_cellcounts} or measured cellcounts file ${measured_cellcounts} doesn't exist. You have specified that cell counts are required. Please set 'predicted_cellcounts' to NULL if you want them to be estimated now, or specify a path to a file with the pre-specified cell counts."		
 fi
 	
 if [ -f "${cellcounts_gwa}" ]
