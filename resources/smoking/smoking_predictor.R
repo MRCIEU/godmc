@@ -51,7 +51,10 @@ main <- function()
 	plot(covs$Age_numeric,smok$Smoking, xlab="Age", ylab="predicted smoking",main="Age vs Smoking prediction",cex.main=0.7)
 	
 	quiet <- dev.off()
-	
+
+	# Rank transform
+	smok$Smoking <- rntransform(smok$Smoking)
+
 	write.table(subset(smok, select=-c(V1)), file=paste0(out_file, ".txt"), row=F, col=T, qu=F)
 	write.table(smok, file=paste0(out_file, ".plink"), row=F, col=F, qu=F)
 
@@ -61,6 +64,7 @@ main <- function()
 
 	i <- subset(covs, Age_numeric >= 25)$IID
 	smoki <- subset(smok, IID %in% i)
+	smoki$Smoking <- rntransform(smoki$Smoking)
 
 	if(nrow(smoki) > 50)
 	{
@@ -75,6 +79,7 @@ main <- function()
 
 	j <- subset(covs, Age_numeric < 25)$IID
 	smokj <- subset(smok, IID %in% j)
+	smokj$Smoking <- rntransform(smokj$Smoking)
 
 	if(nrow(smokj) > 50)
 	{
@@ -126,6 +131,16 @@ predict.smoking <- function(Illig_data, mbeta)
 
 	dat <- data.frame(IID = colnames(mbeta), Smoking = scores_combined)
 	return(dat)
+}
+
+rntransform <- function(x)
+{
+	out <- rank(x) - 0.5
+	out[is.na(x)] <- NA
+	mP <- 0.5/max(out, na.rm = T)
+	out <- out/(max(out, na.rm = T) + 0.5)
+	out <- scale(qnorm(out))
+	out
 }
 
 

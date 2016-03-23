@@ -41,8 +41,8 @@ cellcounts_required="yes"
 # Otherwise leave it as NULL. The predicted_cellcounts_type can be set to houseman or something else. 
 predicted_cellcounts="${home_directory}/input_data/cellcounts.txt"
 
-#If you don't have predicted_cellcounts eg. predicted_cellcounts="NULL", you need to set predicted_cellcounts_type to "NULL"
-predicted_cellcounts_type="houseman"
+# This is a description of the type of cellcount prediction used if you are providing your own predicted cellcounts (e.g. houseman)
+# If you don't have predicted_cellcounts eg. predicted_cellcounts="NULL", you need to set predicted_cellcounts_type to "NULL"predicted_cellcounts_type="houseman"
 
 #Set this to the file name if you have directly measured cellcounts. These will be used as covariates only.
 measured_cellcounts="NULL"
