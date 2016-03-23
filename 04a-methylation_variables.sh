@@ -19,10 +19,10 @@ Rscript resources/smoking/smoking_predictor.R \
 # Estimate cell counts
 echo "Processing cell counts for GWA"
 if [ "${predicted_cellcounts}" == "NULL" ] && [ "${predicted_cellcounts_type}" != "NULL" ]
-	then
-		echo "Please change ${predicted_cellcounts_type} to NULL."
+then
+echo "Please change 'predicted_cellcounts_type' to NULL in the config file."
 		
-	fi
+fi
 
 if [ "${cellcounts_required}" = "yes" ]
 then
