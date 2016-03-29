@@ -52,10 +52,11 @@ main <- function()
 	
 	quiet <- dev.off()
 
+    write.table(subset(smok, select=-c(V1)), file=paste0(out_file, ".txt"), row=F, col=T, qu=F)
+	
 	# Rank transform
 	smok$Smoking <- rntransform(smok$Smoking)
 
-	write.table(subset(smok, select=-c(V1)), file=paste0(out_file, ".txt"), row=F, col=T, qu=F)
 	write.table(smok, file=paste0(out_file, ".plink"), row=F, col=F, qu=F)
 
 	# Get individuals with age >= 25
