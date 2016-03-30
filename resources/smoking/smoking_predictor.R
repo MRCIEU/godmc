@@ -50,13 +50,22 @@ main <- function()
 	par(mfrow=c(2,2))
 	plot(covs$Age_numeric,smok$Smoking, xlab="Age", ylab="predicted smoking",main="Age vs Smoking prediction",cex.main=0.7)
 	
-	quiet <- dev.off()
-
     write.table(subset(smok, select=-c(V1)), file=paste0(out_file, ".txt"), row=F, col=T, qu=F)
 	
 	# Rank transform
 	smok$Smoking <- rntransform(smok$Smoking)
-
+    
+    par(mfrow=c(2,2))
+	plot(smok$Smoking, xlab="", main=paste("Smoking prediction transformed (N=", length(which(!is.na(smok$Smoking))),")",sep=""),cex.main=0.7)
+	hist(smok$Smoking, xlab="", main=paste("Smoking prediction transformed (N=", length(which(!is.na(smok$Smoking))),")",sep=""),cex.main=0.7)
+	abline(v=mean(smok$Smoking,na.rm=T)-SD*sd(smok$Smoking,na.rm=T),lty=2)
+	abline(v=mean(smok$Smoking,na.rm=T)+SD*sd(smok$Smoking,na.rm=T),lty=2)
+	qqnorm(smok$Smoking, main=paste("Smoking prediction transformed (N=", length(which(!is.na(smok$Smoking))),"; shapiroP=",signif(as.numeric(shapiro.test(smok$Smoking)[2]),2),")",sep=""),cex.main=0.7)
+	qqline(smok$Smoking)
+	par(mfrow=c(2,2))
+	plot(covs$Age_numeric,smok$Smoking, xlab="Age", ylab="transformed predicted smoking",main="Age vs Smoking prediction",cex.main=0.7)
+	
+	quiet <- dev.off()
 	write.table(smok, file=paste0(out_file, ".plink"), row=F, col=F, qu=F)
 
 	# Get individuals with age >= 25
