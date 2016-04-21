@@ -84,8 +84,7 @@ then
 
 	section_message "requirements"
 
-
-	Rscript resources/datacheck/requirements.R
+    Rscript resources/datacheck/requirements.R $related
 fi
 
 if [ "$arg" = "genetic" ] || [ "$arg" = "all" ]

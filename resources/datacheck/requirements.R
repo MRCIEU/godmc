@@ -1,3 +1,7 @@
+arguments <- commandArgs(T)
+related <- as.character(arguments[1])
+
+
 message("Checking R version")
 currentr <- paste0(R.Version()['major'], ".", R.Version()['minor'])
 ch <- compareVersion(currentr, "3.1")
@@ -16,11 +20,8 @@ pkglist <- c(
 	"data.table",
 	"MatrixEQTL",
 	"parallel",
-	"GenABEL",
 	"matrixStats",
 	"plyr",
-	"SNPRelate",
-	"GENESIS",
 	"meffil",
 	"EasyQC",
 	"impute"
@@ -30,6 +31,19 @@ index <- pkglist %in% rownames(installed.packages())
 if(any(!index))
 {
 	stop("Before continuing, the following packages need to be installed:\n", paste(pkglist[!index], collapse="\n"))
+}
+
+pkglist_related<-c("GenABEL","SNPRelate","GENESIS")
+
+if (related=="yes")
+{
+message("Checking that all required packages are present for related samples")
+index <- pkglist_related %in% rownames(installed.packages())
+
+if(any(!index))
+{
+	stop("Before continuing, the following packages need to be installed:\n", paste(pkglist[!index], collapse="\n"))
+}
 }
 
 l<-list.files("./resources/genetics",pattern="1kg_phase3_eur_aut_polymorphic.recoded.nodup.frq.gz")
