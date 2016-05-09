@@ -144,6 +144,7 @@ Rscript resources/genetics/create_covariates_files.R \
 
 if [ -f "${cellcounts_gwa}" ]
 then
+echo "Preparing inputfiles for GEMMA"
 Rscript resources/genetics/gemma_files.R \
 	${grmfile_all} \
 	${cellcounts_tf} \
