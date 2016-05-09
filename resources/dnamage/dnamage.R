@@ -63,7 +63,16 @@ main <- function()
 		stop("There should be only one column in the covariate file called 'Age_numeric', regardless of case.")
 	}
 	names(covs)[index] <- "Age_numeric"
-	if("FID" %in% names(covs)) covs <- subset(covs, select=-c(FID))
+	
+    if("FID" %in% names(covs)) covs <- subset(covs, select=-c(FID))
+	
+    if(var(covs$Age_numeric, na.rm=T) == 0){
+    message("Age is not variable; no prediction will be calculated","\n") 
+    }
+
+    if(var(covs$Age_numeric, na.rm=T) > 0){
+    message("Age is variable; Age prediction will be calculated","\n")   
+
 	load(beta_file)
     m<-match(fam[,2],colnames(norm.beta))
     norm.beta<-norm.beta[,m]
@@ -98,7 +107,7 @@ main <- function()
 	qqline(phen$AAR)
 	quiet <- dev.off()
 }
-
+}
 
 
 dnamage <- function(x,normalizeData=TRUE, dnamage.probeAnnotation27k, dnamage.probeAnnotation21kdatMethUsed, dnamage.datClock) {
