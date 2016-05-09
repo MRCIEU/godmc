@@ -46,6 +46,7 @@ fi
 if [ -f "${predicted_cellcounts}" ] && [ "${predicted_cellcounts_type}" == "houseman" ]
 then
 echo "Using the cellcounts provided in ${predicted_cellcounts} for GWA."
+
 cp ${predicted_cellcounts} ${cellcounts_gwa}
 	
     elif [ -f "${predicted_cellcounts}" ] && [ "${predicted_cellcounts_type}" != "houseman" ] && [ "${predicted_cellcounts_type}" != "NULL" ]
@@ -140,9 +141,12 @@ Rscript resources/genetics/create_covariates_files.R \
 	${gwas_covariates}
 
 # GEMMA files
+
+if [ -f "${cellcounts_gwa}" ]
+then
 Rscript resources/genetics/gemma_files.R \
 	${grmfile_all} \
 	${cellcounts_tf} \
 	${section_12_dir}/cellcounts_columns.txt
+fi
 
-echo "Successfully created methylation-related variables"
