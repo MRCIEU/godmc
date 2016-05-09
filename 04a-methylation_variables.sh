@@ -18,10 +18,16 @@ Rscript resources/smoking/smoking_predictor.R \
 	
 # Estimate cell counts
 echo "Processing cell counts for GWA"
+if [ "${cellcounts_required}" == "NULL" ]
+then
+echo "Warning: Please change 'cellcounts_required' to yes or no in the config file."
+exit 1
+fi
+
 if [ "${predicted_cellcounts}" == "NULL" ] && [ "${predicted_cellcounts_type}" != "NULL" ]
 then
-echo "Please change 'predicted_cellcounts_type' to NULL in the config file."
-		
+echo "Warning: Please change 'predicted_cellcounts_type' to NULL in the config file."
+exit 1
 fi
 
 if [ "${cellcounts_required}" = "yes" ]
@@ -71,8 +77,8 @@ elif [ "${cellcounts_required}" == "no" ]
 then
 	cellcounts_gwa="NULL"
 else
-	echo "'cellcounts_required' should be set to yes or no"
-	exit 1
+	cellcounts_gwa="NULL"
+	echo "'cellcounts_required' are set to yes but are not estimated with Houseman"
 fi
 
 # Estimate cell counts for use as covariates
