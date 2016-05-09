@@ -80,8 +80,8 @@ if(any(a > 0.1*length(meth_ids)))
 if("Height" %in% nom)
 {
 	message("Checking Height")
-	#m1 <- mean(ph$Height,na.rm=T)
-	#age.mean<-mean(covar$Age,na.rm=T)
+	m1 <- mean(ph$Height,na.rm=T)
+	age.mean<-mean(covar$Age,na.rm=T)
 	if((m1<1.0|m1>2.5)&age.mean>10)
 	{
 		msg <- paste0("please convert Height units to metres")
@@ -94,7 +94,7 @@ if("BMI" %in% nom)
 {
 	message("Checking BMI")
 	m1<-mean(ph$BMI,na.rm=T)
-	age.mean<-mean(covar$Age)
+	age.mean<-mean(covar$Age,na.rm=T)
 	if((m1<10|m1>35)&age.mean>10)
 	{
 		msg <- paste0("please convert BMI units to kg/m2")
