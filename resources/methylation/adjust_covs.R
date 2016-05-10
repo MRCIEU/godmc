@@ -72,9 +72,10 @@ main <- function()
 	
 	norm.beta[norm.beta.copy] <- NA
 	
-	index <- which(is.na(norm.beta), arr.ind = TRUE) 
+	index <- which(is.na(norm.beta), arr.ind = TRUE)
+	if (length(index)>0){
     message("Replace ",length(index)," missing values with rowmeans")
-    norm.beta[index] <- rowMeans(norm.beta, na.rm = TRUE)[index[, "row"]] 
+    norm.beta[index] <- rowMeans(norm.beta, na.rm = TRUE)[index[, "row"]] }
 
 	save(norm.beta, file=out_file)
 	message("Successfully completed adjustments")
