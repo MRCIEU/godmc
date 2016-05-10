@@ -74,6 +74,13 @@ main <- function()
     message("Age is variable; Age prediction will be calculated","\n")   
 
 	load(beta_file)
+    
+    # to remove
+    #w<-which(row.names(norm.beta)%in%c("cg00075967","cg00374717"))
+    #norm.beta<-norm.beta[-w,]
+    #fam <- fam[fam[,2] %in% colnames(norm.beta), ]
+
+
     m<-match(fam[,2],colnames(norm.beta))
     norm.beta<-norm.beta[,m]
 	message("Predicting age")
@@ -143,6 +150,25 @@ dnamage <- function(x,normalizeData=TRUE, dnamage.probeAnnotation27k, dnamage.pr
 
 
 
+	w<-which(as.character(dnamage.datClock$CpGmarker[-1])%in%dat0[,1]==F)
+
+	w <- ! as.character(dnamage.datClock$CpGmarker[-1]) %in% dat0[,1]
+
+	if(sum(w) > 0)
+	{
+		message(sum(w), " probes missing for prediction. Setting these to 0.")
+	    df <- matrix(nrow=sum(w), ncol=ncol(dat0))
+	    df[1:sum(w), ] <- 0
+	    df[,1] <- as.character(dnamage.datClock$CpGmarker[-1][w])
+	    df <- as.data.frame(df)
+	    names(df) <- names(dat0)
+	    dat0<-rbind(dat0,df)
+	    w<-which(as.character(dnamage.datClock$CpGmarker[-1])%in%dat0[,1]==F)
+	    message("Necessary probe IDs now present")
+	}
+	    
+
+
 	XchromosomalCpGs=as.character(dnamage.probeAnnotation27k$Name[dnamage.probeAnnotation27k$Chr=="X"])
 	selectXchromosome=is.element(dat0[,1], XchromosomalCpGs )
 	selectXchromosome[is.na(selectXchromosome)]=FALSE
@@ -173,6 +199,7 @@ dnamage <- function(x,normalizeData=TRUE, dnamage.probeAnnotation27k, dnamage.pr
 	##MATT##normalizeData=TRUE
 
 	##MATT added this so that all age CpGs are at least included (check for all CpGs above is a warning now)
+	
 	selectCpGsClock=is.element(dat0[,1], as.character(dnamage.datClock$CpGmarker[-1]))
 	if ( sum( selectCpGsClock) < dim(dnamage.datClock)[[1]]-1 ) {stop("The CpGs listed in column 1 of the input data did not contain the CpGs needed for calculating DNAm age. Make sure to input cg numbers such as cg00075967.")}
 	if ( sum( selectCpGsClock) > dim(dnamage.datClock)[[1]]-1 ) {stop("ERROR: The CpGs listed in column 1 of the input data contain duplicate CpGs. Each row should report only one unique CpG marker (cg number).")}
