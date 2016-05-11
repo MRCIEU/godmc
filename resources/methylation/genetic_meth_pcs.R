@@ -28,9 +28,19 @@ main <- function()
 
 	l <- run_all_chunks(dn, geno_file, gene, threshold, slicesize, mc.cores)
 
-	message("\n\nIdentified ", length(l), " PCs with significant genetic component")
 	load(paste0(phen_file, ".RData"))
-	pc <- pc[,!colnames(pc) %in% l]
+	message("\n\nIdentified ", length(l), " out of ", ncol(pc), " PCs with significant genetic component")
+
+	if(length(l) == ncol(pc))
+	{
+		stop("It appears that all the PCs have a genetic component\n",
+			"This is a little worrying because it suggests family effects or stratification\n",
+			"Please check that 04b is adjusting for these factors\n",
+			"You could also try increasing the 'meth_pc_cutoff' value in the config file.\n"
+		)
+	}
+
+	pc <- pc[,!colnames(pc) %in% l, drop=FALSE]
 	message("Keeping ", ncol(pc), " non-genetic PCs.")
 	pc <- data.frame(IID=rownames(pc), pc)
 	write.table(pc, file=paste0(out_file, ".txt"), row=F, col=T, qu=F)
