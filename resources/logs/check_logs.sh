@@ -29,10 +29,13 @@ vercomp () {
 		fi
 		if ((10#${ver1[i]} < 10#${ver2[i]}))
 		then
-			echo "Problem: This analysis was performed on an outdated script."
+			echo ""
+			echo "PROBLEM"
+			echo "This analysis was performed on an outdated script."
 			echo "Expecting at least version $2"
 			echo "But the logs show that this was run on version $1"
 			echo "Please run 'git pull' and then re-run the analysis."
+			echo ""
 			return 1
 		fi
 	done
@@ -47,10 +50,13 @@ compare_version () {
 	version_used=`grep "GoDMC version" ${!logfile}* | head -n 1 | cut -d " " -f 3`
 	if [ "${version_used}" = "" ]
 	then
+		echo ""
+		echo "WARNING"
 		echo "No version number found. You are probably running an old version of git."
 		echo "The scripts you used could be out of date."
 		echo "Please run 'git pull' and check that no updates were made to the ${1} script you are checking."
 		echo "If updates were made then please re-run this ${1} script."
+		echo ""
 		return 0
 	fi 
 	version_required=`grep "section_${1}" resources/logs/versions.txt | cut -d " " -f 2`
