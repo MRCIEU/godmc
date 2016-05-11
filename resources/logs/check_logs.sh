@@ -47,11 +47,12 @@ compare_version () {
 	version_used=`grep "GoDMC version" ${!logfile}* | head -n 1 | cut -d " " -f 3`
 	if [ "${version_used}" = "" ]
 	then
-		echo "No version number found."
-		echo "Scripts used were likely out of date."
-		echo "Please run 'git pull' and re-run"
-		return 1
-	fi
+		echo "No version number found. You are probably running an old version of git."
+		echo "The scripts you used could be out of date."
+		echo "Please run 'git pull' and check that no updates were made to the ${1} script you are checking."
+		echo "If updates were made then please re-run this ${1} script."
+		return 0
+	fi 
 	version_required=`grep "section_${1}" resources/logs/versions.txt | cut -d " " -f 2`
 	echo "Version required: ${version_required}"
 	echo "Version used: ${version_used}"
