@@ -151,3 +151,4 @@ Rscript resources/genetics/gemma_files.R \
 	${section_12_dir}/cellcounts_columns.txt
 fi
 
+echo "Successfully created methylation-related variables"
