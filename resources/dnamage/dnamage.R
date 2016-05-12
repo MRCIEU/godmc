@@ -157,13 +157,12 @@ dnamage <- function(x,normalizeData=TRUE, dnamage.probeAnnotation27k, dnamage.pr
 	if(sum(w) > 0)
 	{
 		message(sum(w), " probes missing for prediction. Setting these to 0.")
-	    df <- matrix(nrow=sum(w), ncol=ncol(dat0))
-	    df[1:sum(w), ] <- NA
-	    df[,1] <- as.character(dnamage.datClock$CpGmarker[-1][w])
-	    df <- as.data.frame(df)
-	    names(df) <- names(dat0)
-	    dat0<-rbind(dat0,df)
+	    df <- matrix(NA, nrow=sum(w), ncol=ncol(x))
+	    rownames(df) <- as.character(dnamage.datClock$CpGmarker[-1][w])
+	    x <- rbind(x, df)
+	    dat0 <- data.frame(id=rownames(x), x)
 	    w<-which(as.character(dnamage.datClock$CpGmarker[-1])%in%dat0[,1]==F)
+	    print(w)
 	    message("Necessary probe IDs now present")
 	}
 	    
