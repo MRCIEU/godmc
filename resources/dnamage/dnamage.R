@@ -234,7 +234,7 @@ dnamage.stepwise <- function(dat1, meanXchromosome,
 	## and whose first column reports the CpG identifier
 	## and whose remaining columns corresponds to samples (e.g. Illumina arrays).
 	
-	fastImputation=TRUE
+	fastImputation=FALSE
 	
 	##STEP 1: DEFINE QUALITY METRICS
 	
