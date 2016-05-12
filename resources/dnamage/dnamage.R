@@ -158,7 +158,7 @@ dnamage <- function(x,normalizeData=TRUE, dnamage.probeAnnotation27k, dnamage.pr
 	{
 		message(sum(w), " probes missing for prediction. Setting these to 0.")
 	    df <- matrix(nrow=sum(w), ncol=ncol(dat0))
-	    df[1:sum(w), ] <- 0
+	    df[1:sum(w), ] <- NA
 	    df[,1] <- as.character(dnamage.datClock$CpGmarker[-1][w])
 	    df <- as.data.frame(df)
 	    names(df) <- names(dat0)
@@ -235,7 +235,7 @@ dnamage.stepwise <- function(dat1, meanXchromosome,
 	## and whose first column reports the CpG identifier
 	## and whose remaining columns corresponds to samples (e.g. Illumina arrays).
 	
-	fastImputation=FALSE
+	fastImputation=TRUE
 	
 	##STEP 1: DEFINE QUALITY METRICS
 	
