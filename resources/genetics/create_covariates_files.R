@@ -19,12 +19,15 @@ fam_file <- arguments[4]
 out_file <- arguments[5]
 
 allcovs <- read.table(covs_file, he=T, stringsAsFactors=FALSE)
-aar <- read.table(aar_file, he=T, stringsAsFactors=FALSE)
 smok <- read.table(smok_file, he=T, stringsAsFactors=FALSE)
 fam <- read.table(fam_file, stringsAsFactors=FALSE)[,1:2]
 
 # Create covariates for AAR GWAS
 # FID IID Sex_factor Smoking
+
+if (file.exists(aar_file)) {
+aar <- read.table(aar_file, he=T, stringsAsFactors=FALSE)
+
 
 if("Sex_factor" %in% names(allcovs))
 {
@@ -33,8 +36,15 @@ if("Sex_factor" %in% names(allcovs))
 	allcovs$Sex_factor <- as.numeric(allcovs$Sex_factor)
 }
 
+if(!"Sex_factor" %in% names(allcovs) & "Age_numeric" %in% names(allcovs))
+{
+	dat <- merge(fam, smok, by.x="V2", by.y="IID")
+	dat <- subset(dat, select=c("V1", "V2", "Smoking"))
+	names(dat)[names(dat) == "Smoking"] <- "Smoking_numeric"
+	write_covs(dat, paste0(out_file, ".aar"))
+}
 
-if("Sex_factor" %in% names(allcovs))
+if("Sex_factor" %in% names(allcovs) & "Age_numeric" %in% names(allcovs))
 {
 	dat <- merge(fam, subset(allcovs, select=c("IID", "Sex_factor")), by.x="V2", by.y="IID")
 	dat <- merge(dat, smok, by.x="V2", by.y="IID")
@@ -42,7 +52,7 @@ if("Sex_factor" %in% names(allcovs))
 	names(dat)[names(dat) == "Smoking"] <- "Smoking_numeric"
 	write_covs(dat, paste0(out_file, ".aar"))
 }
-
+}
 # Create covariates for Smoking GWAS
 # FID IID Age_numeric Sex
 
@@ -68,6 +78,7 @@ write_covs(dat_ge25, paste0(out_file, "_ge25.smoking"))
 
 covnames <- c("Age_numeric", "Sex_factor")
 covnames <- covnames[covnames %in% names(allcovs)]
+
 dat <- merge(fam, smok, by.x="V2", by.y="IID")
 dat <- subset(dat, select=c("V1", "V2", "Smoking"))
 if(length(covnames) > 0)

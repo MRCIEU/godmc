@@ -122,8 +122,6 @@ Rscript resources/dnamage/dnamage.R \
 
 # Organise covariates
 echo "Organising covariates"
-
-
 Rscript resources/genetics/covariates.R \
 	${covariates} \
 	${pcs_all} \
@@ -133,6 +131,7 @@ Rscript resources/genetics/covariates.R \
 	${covariates_combined}
 
 # GWAS Covariates
+echo "Generating GWA covariates"
 Rscript resources/genetics/create_covariates_files.R \
 	${covariates_combined}.txt \
 	${age_pred}.txt \
