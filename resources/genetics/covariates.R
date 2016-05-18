@@ -16,6 +16,7 @@ out_file <- arguments[6]
 
 pca <- read.table(pca_file)[,-1]
 names(pca) <- c("IID", paste("genetic_pc", 1:(ncol(pca)-1), sep=""))
+
 if(cov_file=="NULL")
 {
 	covs <- data.frame(IID=pca$IID)
@@ -34,7 +35,7 @@ covs <- covs[,!index]
 smok <- read.table(smoking_file, he=T)
 
 cellcount <- read.table(cellcount_file, header=TRUE)
-cellcount <- cellcount[,-ncol(cellcount)]
+#cellcount <- cellcount[,-ncol(cellcount)]
 
 allcovs <- merge(cellcount, pca, by="IID", all=TRUE)
 allcovs <- merge(allcovs, covs, by="IID", all=TRUE)
