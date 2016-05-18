@@ -145,13 +145,15 @@ if(cellcounts_file != "NULL")
 	c1 <- dim(cc)[1]
 	c2 <- dim(cc)[2]
 
-	if(c1!=nid_meth)
-	{
-		msg <- paste0("number of samples in predicted cell counts file is not the same as in beta matrix")
-		errorlist <- c(errorlist, msg)
-		warning("ERROR: ", msg)   
-	}
+	#if(c1!=nid_meth)
+	#{
+	#	msg <- paste0("number of samples in predicted cell counts file is not the same as in beta matrix")
+    # 	errorlist <- c(errorlist, msg)
+	#	warning("ERROR: ", msg)   
+	#}
 
+    
+    
 	w <- which(names(cc)[1] %in% c("IID"))
 	if(w!=1)
 	{
@@ -159,6 +161,15 @@ if(cellcounts_file != "NULL")
 		errorlist <- c(errorlist, msg)
 		warning("ERROR: ", msg)
 	}
+
+    overlap <- intersect(colnames(norm.beta),cc$IID)
+    n.overlap <- length(overlap)
+    if(n.overlap < 50)
+    {
+	    msg <- paste0("fewer than 50 subjects with methylation and cellcounts data")
+	    errorlist <- c(errorlist, msg)
+	    warning("ERROR: ", msg)
+    }
 
 	if(c2<3)
 	{
