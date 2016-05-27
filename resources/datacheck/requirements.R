@@ -46,10 +46,21 @@ if(any(!index))
 }
 }
 
+
+
 l<-list.files("./resources/genetics",pattern="1kg_phase3_eur_allchrs_polymorphic.recoded.nodup.frq.gz")
 if(length(l)==0) 
 {
     stop("Before continuing, you need to download 1kg_phase3_eur_allchrs_polymorphic.recoded.nodup.frq.gz from the sftp \n")    
+}
+
+
+library(meffil)
+
+y<-packageVersion("meffil")
+if(y<"1.0.0")
+{
+stop ("Meffil warning: Before continuing, you need to contact ieu-godmc@bristol.ac.uk")
 }
 
 message("All required packages are installed and required files are downloaded \n\n")
