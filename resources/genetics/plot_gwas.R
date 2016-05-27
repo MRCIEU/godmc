@@ -94,7 +94,7 @@ manhattan_plot <- function(p, chr, pos, filename=NULL, width=15, height=7, thres
 
 	if(!is.null(filename))
 	{
-		ggsave(filename, pl, width=width, height=height)
+		ggsave(filename, pl, width=width, height=height, type="cairo-png")
 	} else {
 		print(pl)
 	}
@@ -147,7 +147,7 @@ qqplot_pval <- function (data, plot = FALSE, filename=NULL, proportion = 1, plot
 	{
 		if(!is.null(filename))
 		{
-			png(filename)
+			png(filename,type="cairo")
 		}
 		npoint <- round(length(data) * plot_prop)
 		data <- data[(length(data) - npoint):length(data)]
