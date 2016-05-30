@@ -61,9 +61,11 @@ check_results_04 () {
 
 	if [ -f "${cellcounts_plot}" ]; then
 		echo "Cellcounts plot present"
-	else
-		echo "Cellcounts plot file not present"
+	elif [ -f "${cellcounts_gwa}" ]; then
+		echo "Cellcounts plot file not present. Please check 04a."
 		exit 1
+	else
+		echo "Cellcounts GWAS not being performed. GWAS on cell counts will not be performed."
 	fi
 	if [ -f "${smoking_pred_plot}" ]; then
 		echo "Smoking prediction plot present"
