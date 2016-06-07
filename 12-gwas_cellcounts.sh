@@ -94,6 +94,11 @@ ${gcta} \
 	--thread-num ${nthreads} \
 	--mpheno ${batch}
 
+	head -n1 ${section_12_dir}/cellcount_${batch}.loco.mlma >${section_12_dir}/cellcount_${batch}.loco
+	tail -q -n +2 ${section_12_dir}/cellcount_${batch}.loco.mlma ${section_12_dir}/cellcount_${batch}_chr23.mlma >>${section_12_dir}/cellcount_${batch}.loco
+	mv ${section_12_dir}/cellcount_${batch}.loco ${section_12_dir}/cellcount_${batch}.loco.mlma
+	rm ${section_12_dir}/cellcount_${batch}_chr23.mlma
+
 fi
 
 if [ "$sex" -gt "1" ] && [ "$age" -eq "1" ]
@@ -122,13 +127,14 @@ ${gcta} \
 	--thread-num ${nthreads} \
 	--mpheno ${batch}
 
+	head -n1 ${section_12_dir}/cellcount_${batch}.loco.mlma >${section_12_dir}/cellcount_${batch}.loco
+	tail -q -n +2 ${section_12_dir}/cellcount_${batch}.loco.mlma ${section_12_dir}/cellcount_${batch}_chr23.mlma >>${section_12_dir}/cellcount_${batch}.loco
+	mv ${section_12_dir}/cellcount_${batch}.loco ${section_12_dir}/cellcount_${batch}.loco.mlma
+	rm ${section_12_dir}/cellcount_${batch}_chr23.mlma
+
 fi
 
 
-head -n1 ${section_12_dir}/cellcount_${batch}.loco.mlma >${section_12_dir}/cellcount_${batch}.loco
-tail -q -n +2 ${section_12_dir}/cellcount_${batch}.loco.mlma ${section_12_dir}/cellcount_${batch}_chr23.mlma >>${section_12_dir}/cellcount_${batch}.loco
-mv ${section_12_dir}/cellcount_${batch}.loco ${section_12_dir}/cellcount_${batch}.loco.mlma
-rm ${section_12_dir}/cellcount_${batch}_chr23.mlma
 
 echo "Compressing results"
 gzip -f ${section_12_dir}/cellcount_${batch}.loco.mlma

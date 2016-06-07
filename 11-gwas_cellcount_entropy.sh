@@ -66,6 +66,11 @@ ${gcta} \
 	--out ${section_11_dir}/cellcount_entropy_chr23 \
 	--thread-num ${nthreads}
 
+	head -n1 ${section_11_dir}/cellcount_entropy.loco.mlma >${section_11_dir}/cellcount_entropy.loco
+	tail -q -n +2 ${section_11_dir}/cellcount_entropy.loco.mlma ${section_11_dir}/cellcount_entropy_chr23.mlma >>${section_11_dir}/cellcount_entropy.loco
+	mv ${section_11_dir}/cellcount_entropy.loco ${section_11_dir}/cellcount_entropy.loco.mlma
+	rm ${section_11_dir}/cellcount_entropy_chr23.mlma
+
 fi
 
 if [ "$sex" -gt "1" ] && [ "$age" -eq "1" ]
@@ -92,12 +97,13 @@ ${gcta} \
 	--out ${section_11_dir}/cellcount_entropy_chr23 \
 	--thread-num ${nthreads}
 
+	head -n1 ${section_11_dir}/cellcount_entropy.loco.mlma >${section_11_dir}/cellcount_entropy.loco
+	tail -q -n +2 ${section_11_dir}/cellcount_entropy.loco.mlma ${section_11_dir}/cellcount_entropy_chr23.mlma >>${section_11_dir}/cellcount_entropy.loco
+	mv ${section_11_dir}/cellcount_entropy.loco ${section_11_dir}/cellcount_entropy.loco.mlma
+	rm ${section_11_dir}/cellcount_entropy_chr23.mlma
+
 fi
 
-head -n1 ${section_11_dir}/cellcount_entropy.loco.mlma >${section_11_dir}/cellcount_entropy.loco
-tail -q -n +2 ${section_11_dir}/cellcount_entropy.loco.mlma ${section_11_dir}/cellcount_entropy_chr23.mlma >>${section_11_dir}/cellcount_entropy.loco
-mv ${section_11_dir}/cellcount_entropy.loco ${section_11_dir}/cellcount_entropy.loco.mlma
-rm ${section_11_dir}/cellcount_entropy_chr23.mlma
 
 echo "Compressing results"
 gzip -f ${section_11_dir}/cellcount_entropy.loco.mlma
