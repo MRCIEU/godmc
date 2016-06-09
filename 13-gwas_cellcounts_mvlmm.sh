@@ -58,6 +58,6 @@ echo "Compressing results"
 gzip -f output/cellcounts_mvlmm_${batch}.assoc.txt
 mv output/cellcounts_mvlmm_${batch}.* ${section_13_dir}
 
-rm ${bfile}_${batch}*
+rm ${bfile}_${batch}.*
 
 echo "Successfully performed multivariate LMM on cellcounts for chromsome ${batch}"
