@@ -42,7 +42,7 @@ index <- pkglist_related %in% rownames(installed.packages())
 
 if(any(!index))
 {
-	stop("Before continuing, the following packages need to be installed:\n", paste(pkglist[!index], collapse="\n"))
+	stop("Before continuing, the following packages need to be installed:\n", paste(pkglist_related[!index], collapse="\n"))
 }
 }
 
