@@ -53,6 +53,7 @@ if(length(w)>0)
 message("Checking strand")
 
 bim2<-data.frame(bim,alleles=paste(bim[,5],bim[,6],sep=""))
+bim2$alleles<-as.character(bim2$alleles)
 w<-which(bim2$alleles=="GA")
 bim2$alleles[w]<-"AG"
 w<-which(bim2$alleles=="CA")
