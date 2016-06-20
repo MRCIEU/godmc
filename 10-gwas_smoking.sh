@@ -84,6 +84,11 @@ ${gcta} \
 	--out ${section_10_dir}/${pheno}_chr23 \
 	--thread-num ${nthreads}
 
+	head -n1 ${section_10_dir}/${pheno}.loco.mlma >${section_10_dir}/${pheno}.loco
+	tail -q -n +2 ${section_10_dir}/${pheno}.loco.mlma ${section_10_dir}/${pheno}_chr23.mlma >>${section_10_dir}/${pheno}.loco
+	mv ${section_10_dir}/${pheno}.loco ${section_10_dir}/${pheno}.loco.mlma
+	rm ${section_10_dir}/${pheno}_chr23.mlma
+
 fi
 
 if [ "$sex" -gt "1" ] && [ "$age" -eq "1" ]
@@ -111,12 +116,13 @@ ${gcta} \
 	--out ${section_10_dir}/${pheno}_chr23 \
 	--thread-num ${nthreads}
 
+	head -n1 ${section_10_dir}/${pheno}.loco.mlma >${section_10_dir}/${pheno}.loco
+	tail -q -n +2 ${section_10_dir}/${pheno}.loco.mlma ${section_10_dir}/${pheno}_chr23.mlma >>${section_10_dir}/${pheno}.loco
+	mv ${section_10_dir}/${pheno}.loco ${section_10_dir}/${pheno}.loco.mlma
+	rm ${section_10_dir}/${pheno}_chr23.mlma
+
 fi
 
-head -n1 ${section_10_dir}/${pheno}.loco.mlma >${section_10_dir}/${pheno}.loco
-tail -q -n +2 ${section_10_dir}/${pheno}.loco.mlma ${section_10_dir}/${pheno}_chr23.mlma >>${section_10_dir}/${pheno}.loco
-mv ${section_10_dir}/${pheno}.loco ${section_10_dir}/${pheno}.loco.mlma
-rm ${section_10_dir}/${pheno}_chr23.mlma
 
 echo "Compressing results"
 gzip -f ${section_10_dir}/${pheno}.loco.mlma

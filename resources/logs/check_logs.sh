@@ -308,7 +308,7 @@ check_logs_12 () {
 check_logs_13 () {
 
 	compare_version "13"
-	nsuccess=`grep -i "success" ${section_13_logfile}* | wc -l`
+	nsuccess=`grep -i "Successfully performed multivariate LMM" ${section_13_logfile}* | wc -l`
 	if [ "${nsuccess}" = "${genetic_chunks}" ]; then
 		echo "13-gwas_cellcounts_mvlmm.sh completed successfully on all chromosomes."
 	else

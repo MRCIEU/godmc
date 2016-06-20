@@ -7,8 +7,11 @@ print_version
 
 #age=`awk '{print $3}' <${gwas_covariates}.aar.numeric |sort -u |wc -l`
 #echo "Age variable has $age levels"
-if [-f ${gwas_covariates}.aar.numeric]
+if [ ! -f ${gwas_covariates}.aar.numeric ]
 then
+	echo "No Age acceleration GWA will be performed as age is not variable"
+	exit 0
+fi
 
 sex=`awk '{print $3}' <${gwas_covariates}.aar.factor |sort -u |wc -l`
 echo "Sex variable has $sex levels"
@@ -42,6 +45,11 @@ ${gcta} \
 	--out ${section_09_dir}/aar_chr23 \
 	--thread-num ${nthreads}
 
+	head -n1 ${section_09_dir}/aar.loco.mlma >${section_09_dir}/aar.loco
+	tail -q -n +2 ${section_09_dir}/aar.loco.mlma ${section_09_dir}/aar_chr23.mlma >>${section_09_dir}/aar.loco
+	mv ${section_09_dir}/aar.loco ${section_09_dir}/aar.loco.mlma
+	rm ${section_09_dir}/aar_chr23.mlma
+
 fi
 
 if [ "$sex" -eq "1" ]
@@ -69,12 +77,13 @@ ${gcta} \
 	--out ${section_09_dir}/aar_chr23 \
 	--thread-num ${nthreads}
 
+	head -n1 ${section_09_dir}/aar.loco.mlma >${section_09_dir}/aar.loco
+	tail -q -n +2 ${section_09_dir}/aar.loco.mlma ${section_09_dir}/aar_chr23.mlma >>${section_09_dir}/aar.loco
+	mv ${section_09_dir}/aar.loco ${section_09_dir}/aar.loco.mlma
+	rm ${section_09_dir}/aar_chr23.mlma
+
 fi
 
-head -n1 ${section_09_dir}/aar.loco.mlma >${section_09_dir}/aar.loco
-tail -q -n +2 ${section_09_dir}/aar.loco.mlma ${section_09_dir}/aar_chr23.mlma >>${section_09_dir}/aar.loco
-mv ${section_09_dir}/aar.loco ${section_09_dir}/aar.loco.mlma
-rm ${section_09_dir}/aar_chr23.mlma
 
 echo "Compressing results"
 gzip -f ${section_09_dir}/aar.loco.mlma
@@ -95,7 +104,3 @@ Rscript resources/genetics/plot_gwas.R \
 
 
 echo "Successfully performed GWAS"
-
-else
-echo "No Age acceleration GWA will be performed as age is not variable"
-fi

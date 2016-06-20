@@ -45,15 +45,14 @@ fi
 
 if [ -f "${predicted_cellcounts}" ] && [ "${predicted_cellcounts_type}" == "houseman" ]
 then
-echo "Using the cellcounts provided in ${predicted_cellcounts} for GWA."
-
-cp ${predicted_cellcounts} ${cellcounts_gwa}
+	echo "Using the cellcounts provided in ${predicted_cellcounts} for GWA."
+	cp ${predicted_cellcounts} ${cellcounts_gwa}
 	
-    elif [ -f "${predicted_cellcounts}" ] && [ "${predicted_cellcounts_type}" != "houseman" ] && [ "${predicted_cellcounts_type}" != "NULL" ]
-    then
-        echo "Your study will not be used for the cellcounts GWA meta-analysis -only Houseman predicted cellcounts are used"
-    else
-        echo "Warning: The predicted cellcounts file ${predicted_cellcounts} or measured cellcounts file ${measured_cellcounts} doesn't exist. You have specified that cell counts are required. Please set 'predicted_cellcounts' to NULL if you want them to be estimated now, or specify a path to a file with the pre-specified cell counts."		
+elif [ -f "${predicted_cellcounts}" ] && [ "${predicted_cellcounts_type}" != "houseman" ] && [ "${predicted_cellcounts_type}" != "NULL" ]
+then
+	echo "Your study will not be used for the cellcounts GWA meta-analysis - only Houseman predicted cellcounts are used"
+else
+	echo "Warning: The predicted cellcounts file ${predicted_cellcounts} or measured cellcounts file ${measured_cellcounts} doesn't exist. You have specified that cell counts are required. Please set 'predicted_cellcounts' to NULL if you want them to be estimated now, or specify a path to a file with the pre-specified cell counts."		
 fi
 	
 if [ -f "${cellcounts_gwa}" ]
