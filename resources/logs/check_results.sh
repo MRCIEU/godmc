@@ -179,7 +179,7 @@ check_results_08 () {
 	fi
 
 	if grep -q "BMI" ${phenotype_list}; then
-		if [ -f "${section_08_dir}/results.BMI_allindiv.RData" ]; then
+		if [ -f "${section_08_dir}/results_BMI_allindiv.RData" ]; then
 			echo "BMI EWAS results present"
 		else
 			echo "Problem: BMI EWAS results absent"
