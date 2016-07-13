@@ -241,15 +241,24 @@ check_logs_08 () {
 		exit 1
 	fi
 
-	compare_version "08"
-	if grep -i -q "success" ${section_08_logfile}; then
-		echo "08-ewas.sh completed successfully."
+	compare_version "08a"
+	if grep -i -q "success" ${section_08a_logfile}; then
+		echo "08a-ewas.height.sh completed successfully."
 	else
-		echo "Problem: 08-ewas.sh did not complete successfully"
+		echo "Problem: 08a-ewas.height.sh did not complete successfully"
+		exit 1
+	fi
+
+	compare_version "08b"
+	if grep -i -q "success" ${section_08b_logfile}; then
+		echo "08b-ewas.bmi.sh completed successfully."
+	else
+		echo "Problem: 08b-ewas.bmi.sh did not complete successfully"
 		exit 1
 	fi
 
 }
+
 
 
 
