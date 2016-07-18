@@ -43,8 +43,9 @@ ${plink} \
 cut -d " " -f 1-5 ${bfile}_${batch}.fam | tr ' ' '\t' > ${bfile}_${batch}.fam.temp
 paste -d "\t" ${bfile}_${batch}.fam.temp ${cellcounts_tf}.gemma > ${bfile}_${batch}.fam
 
-cp ${section_12_dir}/cellcounts_columns.txt ${section_13_dir}/cellcounts_columns.txt
-nval=`awk '{ print NR }' ${section_13_dir}/cellcounts_columns.txt | tr '\n' ' '`
+#cp ${section_12_dir}/cellcounts_columns.txt ${section_13_dir}/cellcounts_columns.txt
+#nval=`awk '{ print NR }' ${section_13_dir}/cellcounts_columns.txt | tr '\n' ' '`
+nval=`awk '{ print NR }' ${section_12_dir}/cellcounts_columns.txt | tr '\n' ' '`
 echo "Performing multivariate LMM on ${nval} cellcount phenotypes"
 
 ${gemma} \
