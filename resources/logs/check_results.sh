@@ -76,8 +76,7 @@ check_results_04 () {
 	if [ -f "${age_pred_plot}" ]; then
 		echo "Age prediction plot present"
 	else
-		echo "Age prediction plot file not present"
-		exit 1
+		echo "WARNING: Age prediction plot file not present. GWAS on age acceleration will not be performed."
 	fi
 	
 	if [ -f "${section_04_dir}/positive_control_pcadjusted_${positive_control_cpg}.qassoc.gz" ]; then
