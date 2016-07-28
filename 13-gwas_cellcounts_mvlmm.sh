@@ -50,7 +50,7 @@ echo "Performing multivariate LMM on ${nval} cellcount phenotypes"
 
 ${gemma} \
 	-bfile ${bfile}_${batch} \
-	-k ${grmfile_all}.gemma \
+	-k ${grmfile_all}.filtered.gemma \
 	-n ${nval} \
 	-lmm 4 \
 	-o cellcounts_mvlmm_${batch}
