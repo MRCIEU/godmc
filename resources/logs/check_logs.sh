@@ -316,6 +316,15 @@ check_logs_12 () {
 
 check_logs_13 () {
 
+    compare_version "13a"
+	if grep -i -q "success" ${section_13a_logfile}; then
+		echo "13a-convert_gemma_format.sh completed successfully."
+	else
+		echo "Problem: 13a-convert_gemma_format.sh did not complete successfully"
+		exit 1
+	fi
+
+
 	compare_version "13"
 	nsuccess=`grep -i "Successfully performed multivariate LMM" ${section_13_logfile}* | wc -l`
 	if [ "${nsuccess}" = "${genetic_chunks}" ]; then
