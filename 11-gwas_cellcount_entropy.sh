@@ -5,6 +5,12 @@ source ./config
 exec &> >(tee ${section_11_logfile})
 print_version
 
+if [ ! -f ${cellcounts_gwa} ]
+then
+    	echo "No multivariate cellcounts GWA will be performed; please note we only run GWAS on Houseman estimates"
+        exit 0
+fi
+
 age=`awk '{print $4}' <${gwas_covariates}.cellcounts.numeric |sort -u |wc -l`
 echo "Age variable has $age levels"
 

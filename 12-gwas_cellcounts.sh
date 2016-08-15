@@ -2,6 +2,13 @@
 
 set -e
 source ./config
+
+if [ ! -f ${cellcounts_gwa} ]
+then
+    	echo "No multivariate cellcounts GWA will be performed; please note we only run GWAS on Houseman estimates"
+        exit 0
+fi
+
 batch=${1}
 re='^[0-9]+$'
 ncellcounts=`wc -l ${section_12_dir}/cellcounts_columns.txt | awk '{ print $1 }'`
