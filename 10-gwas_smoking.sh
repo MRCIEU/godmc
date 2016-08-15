@@ -7,10 +7,11 @@ source ./config
 
 IFS=$'\r\n' GLOBIGNORE='*' command eval  'pheno=($(cat ${section_10_dir}/gwas_list.txt))'
 ngwas=${#pheno[@]}
+echo "ngwas out of 3 GWAS will be performed"
 batch=${1}
-if [[ "$batch" -lt "1" ]] || [[ "$batch" -gt "${ngwas}" ]]
+if [[ "$batch" -lt "1" ]] || [[ "$batch" -gt "3" ]]
 then
-	echo "Error - please specify a batch variable between 1 and ${ngwas}"
+	echo "Error - please specify a batch variable between 1 and 3"
 	echo "Usage: ${0} [batch]"
 	exit
 fi
