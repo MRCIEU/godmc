@@ -7,16 +7,26 @@ source ./config
 
 IFS=$'\r\n' GLOBIGNORE='*' command eval  'pheno=($(cat ${section_10_dir}/gwas_list.txt))'
 ngwas=${#pheno[@]}
-echo "ngwas out of 3 GWAS will be performed"
 batch=${1}
-if [[ "$batch" -lt "1" ]] || [[ "$batch" -gt "3" ]]
+if [[ "$batch" -lt "1" ]] || [[ "$batch" -gt "${ngwas}" ]]
 then
-	echo "Error - please specify a batch variable between 1 and 3"
+	echo "Error - please specify a batch variable between 1 and ${ngwas}"
 	echo "Usage: ${0} [batch]"
 	exit
 fi
 
 batch=$(( ${1} - 1 ))
+
+echo "The following GWASs can be performed:"
+for i in $(seq 1 $ngwas)
+do
+	ii=$(( $i - 1 ))
+	echo "${i}. ${pheno[${ii}]}"
+done
+
+echo ""
+echo "Performing:"
+echo "${1}. ${pheno[${batch}]}"
 
 pheno_file="${methylation_processed_dir}/${pheno[${batch}]}.plink"
 pheno=${pheno[${batch}]}
