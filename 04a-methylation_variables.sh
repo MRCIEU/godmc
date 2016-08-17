@@ -136,7 +136,8 @@ Rscript resources/genetics/create_covariates_files.R \
 	${age_pred}.txt \
 	${smoking_pred}.txt \
 	${bfile}.fam \
-	${gwas_covariates}
+	${gwas_covariates} \
+	${covariates}
 
 # GEMMA files
 

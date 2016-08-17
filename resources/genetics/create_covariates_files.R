@@ -17,6 +17,7 @@ aar_file <- arguments[2]
 smok_file <- arguments[3]
 fam_file <- arguments[4]
 out_file <- arguments[5]
+covs_orig <- arguments[6]
 
 allcovs <- read.table(covs_file, he=T, stringsAsFactors=FALSE)
 smok <- read.table(smok_file, he=T, stringsAsFactors=FALSE)
