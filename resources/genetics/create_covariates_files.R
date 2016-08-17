@@ -58,19 +58,57 @@ if("Sex_factor" %in% names(allcovs) & "Age_numeric" %in% names(allcovs))
 
 covnames <- c("Age_numeric", "Sex_factor")
 covnames <- covnames[covnames %in% names(allcovs)]
-if(length(covnames) > 0)
+if("Age_numeric" %in% names(allcovs))
 {
 	dat <- merge(fam, subset(allcovs, select=c("IID", covnames)), by.x="V2", by.y="IID")
 	dat <- subset(dat, select=c("V1", "V2", covnames))
     dat_lt25 <- dat[which(dat$Age_numeric<25),]
     dat_ge25 <- dat[which(dat$Age_numeric>25),]
-
-} else {
-	dat <- fam[,1:2]
-}
 write_covs(dat, paste0(out_file, ".smoking"))
 write_covs(dat_lt25, paste0(out_file, "_lt25.smoking"))
 write_covs(dat_ge25, paste0(out_file, "_ge25.smoking"))
+}
+
+if(!"Age_numeric" %in% names(allcovs) & "Sex_factor" %in% names(allcovs))
+{	
+    covs_o <- read.table(covs_orig, he=T, stringsAsFactors=FALSE)
+    m<-match(fam[,2],covs_o$IID)
+    covs_o<-covs_o[m,]
+    dat <- merge(fam, subset(allcovs, select=c("IID", covnames)), by.x="V2", by.y="IID")
+	covnames <- c("Age_numeric", "Sex_factor")
+    dat <- merge(dat, subset(covs_o, select=c("IID", "Age_numeric")), by.x="V2", by.y="IID")
+	dat <- subset(dat, select=c("V1", "V2", covnames))
+    dat_lt25 <- dat[which(dat$Age_numeric<25),]
+    dat_ge25 <- dat[which(dat$Age_numeric>25),]
+    
+    dat <- subset(dat, select=c("V1", "V2", "Sex_factor"))
+    dat_lt25 <- subset(dat_lt25, select=c("V1", "V2", "Sex_factor"))
+    dat_ge25 <- subset(dat_ge25, select=c("V1", "V2", "Sex_factor"))
+
+write_covs(dat, paste0(out_file, ".smoking"))
+write_covs(dat_lt25, paste0(out_file, "_lt25.smoking"))
+write_covs(dat_ge25, paste0(out_file, "_ge25.smoking"))
+}
+
+if(!"Age_numeric" %in% names(allcovs) & !"Sex_factor" %in% names(allcovs))
+{	
+
+    covs_o <- read.table(covs_orig, he=T, stringsAsFactors=FALSE)
+    m<-match(fam[,2],covs_o$IID)
+    covs_o<-covs_o[m,]
+    dat <- merge(fam, subset(covs_o, select=c("IID", "Age_numeric")), by.x="V2", by.y="IID")
+	dat_lt25 <- dat[which(dat$Age_numeric<25),]
+    dat_ge25 <- dat[which(dat$Age_numeric>25),]
+    
+    dat <- subset(dat, select=c("V1", "V2"))
+    dat_lt25 <- subset(dat_lt25, select=c("V1", "V2"))
+    dat_ge25 <- subset(dat_ge25, select=c("V1", "V2"))
+
+write_covs(dat, paste0(out_file, ".smoking"))
+write_covs(dat_lt25, paste0(out_file, "_lt25.smoking"))
+write_covs(dat_ge25, paste0(out_file, "_ge25.smoking"))
+
+}
 
 
 # Create covariates for cellcounts GWAS
