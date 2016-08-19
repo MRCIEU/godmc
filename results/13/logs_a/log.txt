@@ -1,0 +1,50 @@
+
+
+GoDMC version 0.1.1
+Commit: 8e85b6f2be7e260a3c5d7e3d980fbbb89e18f705
+Commit date: 2016-08-17 15:39:23 +0100
+Current time: Fri Aug 19 16:55:24 BST 2016
+
+Please ensure your scripts are up to date.
+If in doubt, run 'git pull'
+
+
+Preparing inputfiles for GEMMA
+*******************************************************************
+* Genome-wide Complex Trait Analysis (GCTA)
+* version 1.24.4
+* (C) 2010-2013 Jian Yang, Hong Lee, Michael Goddard and Peter Visscher
+* The University of Queensland
+* MIT License
+*******************************************************************
+Analysis started: Fri Aug 19 16:55:24 2016
+
+Options:
+--grm /panfs/panasas01/sscm/epzjlm/repo/godmc/processed_data/genetic_data/data
+--keep /panfs/panasas01/sscm/epzjlm/repo/godmc/processed_data/genetic_data/data.indiv
+--make-grm-bin
+--out /panfs/panasas01/sscm/epzjlm/repo/godmc/processed_data/genetic_data/data.filtered
+--thread-num 16
+
+Note: the program will be running on 16 threads.
+
+Reading IDs of the GRM from [/panfs/panasas01/sscm/epzjlm/repo/godmc/processed_data/genetic_data/data.grm.id].
+1774 IDs read from [/panfs/panasas01/sscm/epzjlm/repo/godmc/processed_data/genetic_data/data.grm.id].
+Reading the GRM from [/panfs/panasas01/sscm/epzjlm/repo/godmc/processed_data/genetic_data/data.grm.bin].
+Reading the number of SNPs for the GRM from [/panfs/panasas01/sscm/epzjlm/repo/godmc/processed_data/genetic_data/data.grm.N.bin].
+Pairwise genetic relationships between 1774 individuals are included from [/panfs/panasas01/sscm/epzjlm/repo/godmc/processed_data/genetic_data/data.grm.bin].
+1774 individuals are kept from [/panfs/panasas01/sscm/epzjlm/repo/godmc/processed_data/genetic_data/data.indiv].
+GRM of 1774 individuals has been saved in the file [/panfs/panasas01/sscm/epzjlm/repo/godmc/processed_data/genetic_data/data.filtered.grm.bin] (in binary format).
+Number of SNPs to calcuate the genetic relationship between each pair of individuals has been saved in the file [/panfs/panasas01/sscm/epzjlm/repo/godmc/processed_data/genetic_data/data.filtered.grm.N.bin] (in binary format).
+IDs for the GRM file [/panfs/panasas01/sscm/epzjlm/repo/godmc/processed_data/genetic_data/data.filtered.grm.bin] have been saved in the file [/panfs/panasas01/sscm/epzjlm/repo/godmc/processed_data/genetic_data/data.filtered.grm.id].
+
+Analysis finished: Fri Aug 19 16:55:24 2016
+Computational time: 0:0:0
+Converting GRM into GEMMA format
+Reading IDs
+Reading GRM
+Reading N
+Creating data frame
+Writing GRM
+Converting cellcounts into GEMMA format
+Successfully formatted data for GEMMA
