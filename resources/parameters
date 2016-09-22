@@ -17,6 +17,7 @@ section_12_dir="${home_directory}/results/12"
 section_13_dir="${home_directory}/results/13"
 section_14_dir="${home_directory}/results/14"
 section_15_dir="${home_directory}/results/15"
+section_16_dir="${home_directory}/results/16"
 
 section_01_logfile="${section_01_dir}/logs/log.txt"
 section_02a_logfile="${section_02_dir}/logs_a/log.txt"
@@ -42,6 +43,8 @@ section_13a_logfile="${section_13_dir}/logs_a/log.txt"
 section_13_logfile="${section_13_dir}/logs/log.txt"
 section_14_logfile="${section_14_dir}/logs/log.txt"
 section_15_logfile="${section_15_dir}/logs/log.txt"
+section_16a_logfile="${section_16_dir}/logs_a/log.txt"
+section_16b_logfile="${section_16_dir}/logs_b/log.txt"
 
 # ID lists
 meth_ids="${home_directory}/processed_data/ids/meth_ids.txt"
@@ -129,6 +132,7 @@ gwas_covariates="${home_directory}/processed_data/genetic_data/gwas_covariates"
 hm3_snps="${home_directory}/resources/genetics/hapmap3_autosome.snplist.gz"
 ilmn_probesnps="${home_directory}/resources/qc/probesnps.txt"
 hm3_snps_no_ld="${home_directory}/resources/genetics/hapmap3_autosome.snplist_withoutlong-range.LDSNPs.txt.gz"
+hm3_snps_no_ld2="${home_directory}/resources/genetics/hapmap3_autosome.snplist_withoutlong-range.LDSNPs.txt"
 
 # Sample mixup checks
 bfile_probesnps="${bfile}_probesnps"
@@ -141,6 +145,7 @@ methylation_ids="${home_directory}/processed_data/genetic_data/methylation_ids.t
 methylation_adjusted="${home_directory}/processed_data/methylation_data/methylation_adjusted"
 methylation_adjusted_pcs="${home_directory}/processed_data/methylation_data/methylation_adjusted_pcs"
 methylation_adjusted_pcs_sq="${home_directory}/processed_data/methylation_data/methylation_adjusted_pcs_sq"
+methylation_subset="${home_directory}/processed_data/methylation_data/methylation_subset"
 
 # Smoking prediction
 methylation_processed_dir="${home_directory}/processed_data/methylation_data"
@@ -166,6 +171,9 @@ gwas_cellcounts_dir="${home_directory}/results/12"
 gwas_cellcounts_mvlmm_dir="${home_directory}/results/13"
 
 resname="res"
+
+boltlmm_res_dir="${home_directory}/results/16"
+
 
 #height prediction
 height_snps_wood="${home_directory}/resources/genetics/wood.height.snps_af0.1"
