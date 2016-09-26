@@ -94,7 +94,7 @@ SNPfail1="${home_directory}/processed_data/genetic_data/SNPfail1.txt"
 easyQC="${home_directory}/processed_data/genetic_data/data.easyqc"
 easyQCfile="${home_directory}/processed_data/genetic_data/CLEANED.data.easyqc.gz"
 easyQCscript="${home_directory}/resources/genetics/easyQC.ecf"
-
+genetic_processed_dir="${home_directory}/processed_data/genetic_data"
 
 # CNV file
 tabcnv="${home_directory}/processed_data/cnv_data/tabfile/data"
@@ -172,7 +172,7 @@ gwas_cellcounts_mvlmm_dir="${home_directory}/results/13"
 
 resname="res"
 
-boltlmm_res_dir="${home_directory}/results/16"
+lmm_res_dir="${home_directory}/results/16"
 
 
 #height prediction

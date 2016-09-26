@@ -1,10 +1,10 @@
 #!/bin/bash
 
-#PBS -N clump
-#PBS -o /panfs/panasas01/shared-godmc/job_report/clump
-#PBS -e /panfs/panasas01/shared-godmc/job_report/clump
+#PBS -N fastlmm
+#PBS -o /panfs/panasas01/shared-godmc/job_report/fastlmm
+#PBS -e /panfs/panasas01/shared-godmc/job_report/fastlmm
 #PBS -l walltime=100:00:00
-#PBS -t 1-47
+#PBS -t 1-74
 # PBS -t 3
 #PBS -l nodes=1:ppn=2
 #PBS -S /bin/bash
@@ -15,6 +15,9 @@ if [ -n "${1}" ]; then
   PBS_ARRAYID=${1}
 fi
 
+cd /panfs/panasas01/sscm/epzjlm/repo/godmc
+
+source ./config
 
 mydir="/panfs/panasas01/shared-godmc/counts"
 
@@ -39,6 +42,9 @@ no="1"
 filename=${methylation_processed_dir}/cis_trans.${i}\_${j}.ge${no}.allcohorts.probes
 echo $filename
 
+noprobes=`cat $filename |wc -l`
+echo $noprobes
+
 
 while read -r line
 do
@@ -46,15 +52,34 @@ do
     echo $probe
 fgrep $probe ${methylation_processed_dir}/cis_trans.${i}\_${j}.ge${no}.allcohorts.txt |awk '{print $2}' > ${methylation_processed_dir}/cis_trans.${i}\_${probe}.ge${no}.allcohorts.snps
 
-fastlmmc \
-  -bfile ${bfile} \
-  -extract ${methylation_processed_dir}/cis_trans.${i}\_${probe}.ge${no}.allcohorts.snps \
-  -pheno ${methylation_processed_dir}/methylation.subset.${i}\_${j}.ge${no}.txt \
-  -mpheno 1 \
-  -out ${boltlmm_res_dir}/fastlmm.${i}\_${probe}.ge${no}.txt \
-  -covar ${covariates_combined}.fastlmm \
-  -sim ${grmfile_all} \
-  -maxThreads 16
+awk -F":" '{print $1}' <${methylation_processed_dir}/cis_trans.${i}\_${probe}.ge${no}.allcohorts.snps | sort -u > ${methylation_processed_dir}/cis_trans.${i}\_${probe}.ge${no}.allcohorts.chrs
+
+Counter=0
+  while read -r line
+  do
+      chr="$line"
+      echo $chr
+  
+Counter=`expr $Counter + 1`
+echo "$Counter/$noprobes"
+  #echo ${header[${probe}]}
+
+  grep $chr ${methylation_processed_dir}/cis_trans.${i}\_${probe}.ge${no}.allcohorts.snps > ${methylation_processed_dir}/cis_trans.${i}\_${probe}.ge${no}.allcohorts.snps.$chr
+  
+  fastlmmc \
+    -bfile ${bfile} \
+    -extract ${methylation_processed_dir}/cis_trans.${i}\_${probe}.ge${no}.allcohorts.snps.$chr \
+    -pheno ${methylation_processed_dir}/methylation.subset.${i}\_${j}.ge${no}.txt \
+    -mpheno $Counter \
+    -out ${lmm_res_dir}/fastlmm.${i}\_${probe}.ge${no}.$chr.txt \
+    -covar ${covariates_combined}.fastlmm \
+    -sim $genetic_processed_dir/grm_minus_$chr \
+    -maxThreads 16
+  
+
+
+  done < ${methylation_processed_dir}/cis_trans.${i}\_${probe}.ge${no}.allcohorts.chrs
+
 
 done < $filename
 

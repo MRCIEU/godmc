@@ -1,8 +1,30 @@
 #!/bin/bash
 
+#PBS -N grm
+#PBS -o /panfs/panasas01/shared-godmc/job_report/fastlmm.o
+#PBS -e /panfs/panasas01/shared-godmc/job_report/fastlmm.e
+#PBS -l walltime=100:00:00
+#PBS -t 1-23
+#PBS -q himem
+# PBS -t 3
+#PBS -l nodes=1:ppn=16
+
+#PBS -S /bin/bash
+
 set -e
+
+cd /panfs/panasas01/sscm/epzjlm/repo/godmc
+
 source ./config
-exec &> >(tee ${section_16a_logfile})
+
+if [ -n "${1}" ]; then
+  echo "${1}"
+  PBS_ARRAYID=${1}
+fi
+
+batch_number=${PBS_ARRAYID}
+
+exec &> >(tee ${section_16a_logfile}${batch_number})
 print_version
 
 
@@ -15,7 +37,8 @@ cpgs=("cg0000[0-9]" "cg0001" "cg0002" "cg0003" "cg0004" "cg0005" "cg0006" "cg000
 
 #pval cut-off
 i="1e-05"
-cpgs=("cg0000[0-9]")
+
+#cpgs=("cg0000[0-9]")
 
 #found in number of cohorts
 no="1"
@@ -30,7 +53,8 @@ no="1"
 
 #done
 
-
+if [ batch_number == 1 ]
+do
 Rscript ./resources/methylation/extractprobesets2.R \
 	${betas} \
 	${covariates_combined}.txt \
@@ -38,3 +62,16 @@ Rscript ./resources/methylation/extractprobesets2.R \
 	${methylation_processed_dir} \
 	${bfile}.fam \
 	${covariates_combined}.fastlmm
+fi
+
+echo "generate genetic similarity matrix minus chromosome ${batch_number}"
+zcat ${hm3_snps_no_ld} | grep -v chr${batch_number} |sort -u > $genetic_processed_dir/grm_minus_chr${batch_number}.snps
+fastlmmc \
+	-bfile ${bfile} \
+	-bfileSim ${bfile} \
+	-extractSim $genetic_processed_dir/grm_minus_chr${batch_number}.snps \
+	-simOut $genetic_processed_dir/grm_minus_chr${batch_number} \
+	-pheno ${methylation_processed_dir}/methylation.subset.${i}\_${j}.ge${no}.txt \
+	-mpheno 1 \
+	-out ${section_16_dir}/data.txt
+
