@@ -56,7 +56,7 @@ while read -r line
 do
     probe="$line"
     echo $probe
-    fgrep $probe ${home_directory}/resources/phase2/cis_trans.${i}\_${j}.ge${no}.allcohorts.txt |awk '{print $2}' > ${methylation_processed_dir}/cis_trans.${i}\_${probe}.ge${no}.allcohorts.snps
+    zcat ${home_directory}/resources/phase2/cis_trans.${i}\_${j}.ge${no}.allcohorts.txt.gz |fgrep $probe |awk '{print $2}' > ${methylation_processed_dir}/cis_trans.${i}\_${probe}.ge${no}.allcohorts.snps
   
     Counter=`expr $Counter + 1`
     echo "$Counter/$noprobes"
