@@ -47,7 +47,7 @@ do
     zcat ${home_directory}/resources/phase2/cis_trans.${i}\_${j}.ge${no}.allcohorts.txt.gz | fgrep $probe | awk '{print $2}' > ${genetic_processed_dir}/cis_trans.${i}\_${probe}.ge${no}.allcohorts.snps
     
     #check fgrep
-    zcat ${home_directory}/resources/phase2/cis_trans.${i}\_${j}.ge${no}.allcohorts.txt.gz | fgrep $probe | awk '{print $1}' |sort -u > ${genetic_processed_dir}/cis_trans.${i}\_${probe}.ge${no}.allcohorts.probe
+    zcat ${home_directory}/resources/phase2/cis_trans.${i}\_${j}.ge${no}.allcohorts.txt.gz | fgrep $probe | awk '{print $3}' |sort -u > ${genetic_processed_dir}/cis_trans.${i}\_${probe}.ge${no}.allcohorts.probe
     
     awk -F":" '{print $1}' < ${genetic_processed_dir}/cis_trans.${i}\_${probe}.ge${no}.allcohorts.snps | sort -u > ${genetic_processed_dir}/cis_trans.${i}\_${probe}.ge${no}.allcohorts.chrs
 
@@ -104,15 +104,13 @@ do
             
             done < ${genetic_processed_dir}/cis_trans.${i}\_${probe}.ge${no}.allcohorts.chrs
 
-
-        fi
-
         cat ${section_16_dir}/gcta.${i}\_${probe}.ge${no}.chr${chrno}.mlma | sed 's/^/'$probe'\t/'| perl -pe 's/  \+/ /g'  >${methylation_processed_dir}/gcta.${i}\_${probe}.ge${no}.mlma.tmp
         tail -n +2 ${methylation_processed_dir}/gcta.${i}\_${probe}.ge${no}.mlma.tmp >>${section_16_dir}/gcta.${i}\_${j}.ge${no}.txt
         
         rm ${methylation_processed_dir}/gcta.${i}\_${probe}.ge${no}.mlma.tmp
         rm ${section_16_dir}/gcta.${i}\_${probe}.ge${no}.chr${chrno}.mlma
         
+        fi
         
 done < "$filename"
 
