@@ -87,8 +87,8 @@ mv plink.${i}\_${j}.ge${no}.txt.tmp plink.${i}\_${j}.ge${no}.txt
 cp plink.${i}\_${j}.ge${no}.txt plink.${i}.${PBS_ARRAYID}.ge${no}.txt
 perl ${home_directory}/resources/phase2/join_file.pl -i "${section_17_dir}/plink.${i}.${PBS_ARRAYID}.ge${no}.txt,TAB,2 data.frq.tmp,TAB,1" -o ${section_17_dir}/plink.${i}\_${j}.ge${no}.gwama.formatted.txt -a 1
 gzip ${section_17_dir}/plink.${i}\_${j}.ge${no}.gwama.formatted.txt
+rm plink.${i}\_${j}.ge${no}.txt plink.${i}.${PBS_ARRAYID}.ge${no}.txt
 
-#rm plink.${i}.${PBS_ARRAYID}.ge${no}.txt
 date
 
 echo "Successfully completed"

@@ -108,9 +108,9 @@ do
         fi
 
         cat ${section_16_dir}/gcta.${i}\_${probe}.ge${no}.chr${chrno}.mlma | sed 's/^/'$probe'\t/'| perl -pe 's/  \+/ /g'  >${methylation_processed_dir}/gcta.${i}\_${probe}.ge${no}.mlma.tmp
-        tail -n +2 ${methylation_processed_dir}/plink.${i}\_${probe}.ge${no}.mlma.tmp >>${section_16_dir}/gcta.${i}\_${j}.ge${no}.txt
+        tail -n +2 ${methylation_processed_dir}/gcta.${i}\_${probe}.ge${no}.mlma.tmp >>${section_16_dir}/gcta.${i}\_${j}.ge${no}.txt
         
-        rm ${methylation_processed_dir}/plink.${i}\_${probe}.ge${no}.mlma.tmp
+        rm ${methylation_processed_dir}/gcta.${i}\_${probe}.ge${no}.mlma.tmp
         rm ${section_16_dir}/gcta.${i}\_${probe}.ge${no}.chr${chrno}.mlma
         
         
