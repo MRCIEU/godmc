@@ -73,7 +73,7 @@ do
                     --make-bed \
                     --out ${bfile}.${i}\_${probe}.ge${no}.allcohorts.snps.$chr
 
-                if [ "$chr" -lt "23" ]
+                if [ "$chrno" -lt "23" ]
                 then
                 ${gcta} \
                     --bfile ${bfile}.${i}\_${probe}.ge${no}.allcohorts.snps.$chr \
@@ -87,9 +87,9 @@ do
                     --thread-num ${nthreads}
                 fi
                     
-                if [ "$chr" -eq "23" ]
+                if [ "$chrno" -eq "23" ]
                 then
-                echo ${gcta} \
+                ${gcta} \
                     --bfile ${bfile}.${i}\_${probe}.ge${no}.allcohorts.snps.$chr \
                     --mlma \
                     --grm ${grmfile_all} \
@@ -119,7 +119,7 @@ do
         
 done < "$filename"
 
-
+echo "Successfully completed ${batch_number}"
 
 
 

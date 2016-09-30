@@ -66,4 +66,5 @@ Rscript ./resources/methylation/extractprobesets3.R \
 #zcat ${lmm_res_dir}/data.frq.gz | sed -e 's/[[:space:]]\+/ /g' |perl -pe 's/^ //g'|perl -pe 's/ /\t/g'|awk -v OFS='\t' '{ if(NR>1) print $1,$2,$3,$4,$5,$6/2; else print $0;}'|perl -pe 's/A1/EA/g' |perl -pe 's/A2/NEA/g' |perl -pe 's/MAF/EAF/g'|perl -pe 's/NCHROBS/N/g' |perl -pe 's/ /\t/g'>${lmm_res_dir}/data.frq.tmp
 
 
+echo "Successfully completed script 16a"
 
