@@ -2,7 +2,7 @@
 
 set -e
 source ./config
-exec &> >(tee ${section_16a_logfile})
+exec &> >(tee ${section_17a_logfile})
 print_version
 
 #pvals=("1e-05" "1e-06" "1e-07" "1e-08" "1e-09" "1e-10" "1e-11" "1e-12" "1e-13")
@@ -42,7 +42,7 @@ ${plink} \
     --freq gz \
     --out ${lmm_res_dir}/data
 
-zcat ${lmm_res_dir}/data.frq.gz | sed -e 's/[[:space:]]\+/ /g' |perl -pe 's/^ //g'|perl -pe 's/ /\t/g'|awk -v OFS='\t' '{ if(NR>1) print $1,$2,$3,$4,$5,$6/2; else print $0;}'|perl -pe 's/A1/EA/g' |perl -pe 's/A2/NEA/g' |perl -pe 's/MAF/EAF/g'|perl -pe 's/NCHROBS/N/g' |perl -pe 's/ /\t/g'>${lmm_res_dir}/data.frq.tmp
+zcat ${section_17_dir}/data.frq.gz | sed -e 's/[[:space:]]\+/ /g' |perl -pe 's/^ //g'|perl -pe 's/ /\t/g'|awk -v OFS='\t' '{ if(NR>1) print $1,$2,$3,$4,$5,$6/2; else print $0;}'|perl -pe 's/A1/EA/g' |perl -pe 's/A2/NEA/g' |perl -pe 's/MAF/EAF/g'|perl -pe 's/NCHROBS/N/g' |perl -pe 's/ /\t/g'>${section_17_dir}/data.frq.tmp
 
 echo "Successfully completed"
 

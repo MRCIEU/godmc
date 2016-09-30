@@ -28,26 +28,24 @@ EOF
 
 
 
-#for i in `seq 1 22`; do
+for i in `seq 1 22`; do
 
-#echo "Creating kinship matrices minus chromosome ${i}"
-#zcat ${hm3_snps_no_ld} | grep -v chr${i} |sort -u > $genetic_processed_dir/grm_minus_chr${i}.snps
+echo "Creating kinship matrices minus chromosome ${i}"
+zcat ${hm3_snps} | grep -v -w chr${i} |sort -u > ${genetic_processed_dir}/grm_minus_chr${i}.snps
 
-#${plink} \
-#	--bfile ${bfile} \
-#	--extract $genetic_processed_dir/grm_minus_chr${i}.snps \
-#	--maf ${grm_maf_cutoff} \
-#	--make-grm-bin \
-#	--out ${section_16_dir}/grm.minuschr${i} \
-#	--threads ${nthreads} \
-#	--autosome
-	
-#done
+${plink} \
+	--bfile ${bfile} \
+	--extract ${genetic_processed_dir}/grm_minus_chr${i}.snps \
+	--maf ${grm_maf_cutoff} \
+	--make-grm-bin \
+	--out ${grmfile_all}_minus_chr${i} \
+	--threads ${nthreads} \
+	--autosome
 
+#rm $genetic_processed_dir/grm_minus_chr${i}.snps
 
+done
 
-#if [ "$batch_number" -eq "1" ]
-#then
 echo "Creating files for gcta"
 
 Rscript ./resources/methylation/extractprobesets3.R \
@@ -59,14 +57,13 @@ Rscript ./resources/methylation/extractprobesets3.R \
 	${bfile}.fam \
 	${covariates_combined}.gcta
 
-echo "Calculating MAF"
-${plink} \
-    --bfile ${bfile} \
-    --freq gz \
-    --out ${lmm_res_dir}/data
+#echo "Calculating MAF"
+#${plink} \
+#    --bfile ${bfile} \
+#    --freq gz \
+#    --out ${lmm_res_dir}/data
 
-zcat ${lmm_res_dir}/data.frq.gz | sed -e 's/[[:space:]]\+/ /g' |perl -pe 's/^ //g'|perl -pe 's/ /\t/g'|awk -v OFS='\t' '{ if(NR>1) print $1,$2,$3,$4,$5,$6/2; else print $0;}'|perl -pe 's/A1/EA/g' |perl -pe 's/A2/NEA/g' |perl -pe 's/MAF/EAF/g'|perl -pe 's/NCHROBS/N/g' |perl -pe 's/ /\t/g'>${lmm_res_dir}/data.frq.tmp
+#zcat ${lmm_res_dir}/data.frq.gz | sed -e 's/[[:space:]]\+/ /g' |perl -pe 's/^ //g'|perl -pe 's/ /\t/g'|awk -v OFS='\t' '{ if(NR>1) print $1,$2,$3,$4,$5,$6/2; else print $0;}'|perl -pe 's/A1/EA/g' |perl -pe 's/A2/NEA/g' |perl -pe 's/MAF/EAF/g'|perl -pe 's/NCHROBS/N/g' |perl -pe 's/ /\t/g'>${lmm_res_dir}/data.frq.tmp
 
-#fi
 
 

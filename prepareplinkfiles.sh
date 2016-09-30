@@ -18,23 +18,23 @@ i="1e-05"
 no="1.2"
 
 
-	sftp ${sftp_username}@${sftp_address}:${sftp_path}/resources/phase2 <<EOF
-mget cis_trans.1e-05_*.ge${no}.allcohorts.txt.gz
-mget cis_trans.1e-05_*.ge${no}.allcohorts.probes
-EOF
+#	sftp ${sftp_username}@${sftp_address}:${sftp_path}/resources/phase2 <<EOF
+#mget cis_trans.1e-05_*.ge${no}.allcohorts.txt.gz
+#mget cis_trans.1e-05_*.ge${no}.allcohorts.probes
+#EOF
 
-	mv cis_trans.1e-05_*.ge${no}.allcohorts.txt.gz ${home_directory}/resources/phase2
-	mv cis_trans.1e-05_*.ge${no}.allcohorts.probes ${home_directory}/resources/phase2
-
-
+#	mv cis_trans.1e-05_*.ge${no}.allcohorts.txt.gz ${home_directory}/resources/phase2
+#	mv cis_trans.1e-05_*.ge${no}.allcohorts.probes ${home_directory}/resources/phase2
 
 
-Rscript ./resources/methylation/convertbetamatrix.R \
-	${methylation_adjusted_pcs}.RData \
-	${#cpgs[@]} \
-	${methylation_processed_dir} \
-	./resources/phase2 \
-	${bfile}.fam
+
+
+#Rscript ./resources/methylation/convertbetamatrix.R \
+#	${methylation_adjusted_pcs}.RData \
+#	${#cpgs[@]} \
+#	${methylation_processed_dir} \
+#	./resources/phase2 \
+#	${bfile}.fam
 
 
 ${plink} \
@@ -44,5 +44,6 @@ ${plink} \
 
 zcat ${lmm_res_dir}/data.frq.gz | sed -e 's/[[:space:]]\+/ /g' |perl -pe 's/^ //g'|perl -pe 's/ /\t/g'|awk -v OFS='\t' '{ if(NR>1) print $1,$2,$3,$4,$5,$6/2; else print $0;}'|perl -pe 's/A1/EA/g' |perl -pe 's/A2/NEA/g' |perl -pe 's/MAF/EAF/g'|perl -pe 's/NCHROBS/N/g' |perl -pe 's/ /\t/g'>${lmm_res_dir}/data.frq.tmp
 
+echo "Successfully completed"
 
 

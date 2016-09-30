@@ -10,13 +10,13 @@ if ! [[ $batch_number =~ $re ]] ; then
     echo "Usage: ${0} [batch number]"
     exit 1
 fi
-exec &> >(tee ${section_16_logfile}${batch_number})
+exec &> >(tee ${section_17b_logfile}${batch_number})
 print_version
 
 mydir="${methylation_processed_dir}"
 cd $mydir
 
-myout="${section_16_dir}"
+myout="${section_17_dir}"
 echo $myout
 
 i="1e-05"
@@ -36,7 +36,7 @@ echo $filename
 noprobes=`cat $filename |wc -l`
 echo $noprobes
 
-echo "CpG" "CHR" "SNP" "BP" "NMISS" "BETA" "SE" "R2" "T" "P" |perl -pe 's/ /\t/g' >${lmm_res_dir}/plink.${i}\_${j}.ge${no}.txt
+echo "CpG" "CHR" "SNP" "BP" "NMISS" "BETA" "SE" "R2" "T" "P" |perl -pe 's/ /\t/g' >$${section_17_dir}/plink.${i}\_${j}.ge${no}.txt
 
 Counter=0
 
@@ -60,20 +60,20 @@ do
             --extract ${methylation_processed_dir}/cis_trans.${i}\_${probe}.ge${no}.allcohorts.snps \
             --pheno ${methylation_processed_dir}/methylation.subset.${i}\_${j}.ge${no}.txt \
             --mpheno $Counter \
-            --out ${lmm_res_dir}/plink.${i}\_${probe}.ge${no} \
+            --out ${section_17_dir}/plink.${i}\_${probe}.ge${no} \
             --assoc \
             --threads ${nthreads}
 
 
 
-        sed 's/^/'$probe'/' <${lmm_res_dir}/plink.${i}\_${probe}.ge${no}.qassoc | perl -pe 's/  \+/ /g'  >${methylation_processed_dir}/plink.${i}\_${probe}.ge${no}.qassoc.tmp
+        sed 's/^/'$probe'/' <${section_17_dir}/plink.${i}\_${probe}.ge${no}.qassoc | perl -pe 's/  \+/ /g'  >${methylation_processed_dir}/plink.${i}\_${probe}.ge${no}.qassoc.tmp
         
 
-        tail -n +2 ${methylation_processed_dir}/plink.${i}\_${probe}.ge${no}.qassoc.tmp >>${lmm_res_dir}/plink.${i}\_${j}.ge${no}.txt
+        tail -n +2 ${methylation_processed_dir}/plink.${i}\_${probe}.ge${no}.qassoc.tmp >>${section_17_dir}/plink.${i}\_${j}.ge${no}.txt
         
         rm ${methylation_processed_dir}/plink.${i}\_${probe}.ge${no}.qassoc.tmp
-        rm ${lmm_res_dir}/plink.${i}\_${probe}.ge${no}.qassoc
-        rm ${lmm_res_dir}/plink.${i}\_${probe}.ge${no}.log
+        rm ${section_17_dir}/plink.${i}\_${probe}.ge${no}.qassoc
+        rm ${section_17_dir}/plink.${i}\_${probe}.ge${no}.log
         
         fi
 done < "$filename"
@@ -81,12 +81,12 @@ done < "$filename"
 #merge effect alleles and AF to output files
 
 echo "merge effect alleles and AF to output files"
-cd ${lmm_res_dir}
+cd ${section_17_dir}
 sed 's/  \+/\t/g' < plink.${i}\_${j}.ge${no}.txt | sed 's/^ //g'  >plink.${i}\_${j}.ge${no}.txt.tmp
 mv plink.${i}\_${j}.ge${no}.txt.tmp plink.${i}\_${j}.ge${no}.txt
 cp plink.${i}\_${j}.ge${no}.txt plink.${i}.${PBS_ARRAYID}.ge${no}.txt
-perl ${home_directory}/resources/phase2/join_file.pl -i "${lmm_res_dir}/plink.${i}.${PBS_ARRAYID}.ge${no}.txt,TAB,2 data.frq.tmp,TAB,1" -o ${lmm_res_dir}/plink.${i}\_${j}.ge${no}.gwama.formatted.txt -a 1
-gzip ${lmm_res_dir}/plink.${i}\_${j}.ge${no}.gwama.formatted.txt
+perl ${home_directory}/resources/phase2/join_file.pl -i "${section_17_dir}/plink.${i}.${PBS_ARRAYID}.ge${no}.txt,TAB,2 data.frq.tmp,TAB,1" -o ${section_17_dir}/plink.${i}\_${j}.ge${no}.gwama.formatted.txt -a 1
+gzip ${section_17_dir}/plink.${i}\_${j}.ge${no}.gwama.formatted.txt
 
 #rm plink.${i}.${PBS_ARRAYID}.ge${no}.txt
 date

@@ -365,5 +365,31 @@ check_logs_15 () {
 }
 
 
+check_logs_16 () {
 
+	compare_version "16"
+	nbatch=`ls -l ${methylation_processed_dir}/methylation.subset*ge1.2.txt | wc -l`
+	nsuccess=`tail ${section_16_logfile}* | grep -i "success" | wc -l`
+	if [ "${nbatch}" = "${nsuccess}" ]; then
+		echo "16-gcta.sh completed successfully for all batches"
+	else
+		echo "Problem: 16-gcta.sh only ${nsuccess} of ${nbatch} mQTL batches completed"
+		exit 1
+	fi
+
+}
+
+check_logs_17 () {
+
+	compare_version "05"
+	nbatch=`ls -l ${methylation_processed_dir}/methylation.subset*ge1.2.txt | wc -l`
+	nsuccess=`tail ${section_17_logfile}* | grep -i "success" | wc -l`
+	if [ "${nbatch}" = "${nsuccess}" ]; then
+		echo "17-methQTL.plink.sh completed successfully for all batches"
+	else
+		echo "Problem: 17-methQTL.plink.sh only ${nsuccess} of ${nbatch} mQTL batches completed"
+		exit 1
+	fi
+
+}
 

@@ -10,7 +10,7 @@ if ! [[ $batch_number =~ $re ]] ; then
     echo "Usage: ${0} [batch number]"
     exit 1
 fi
-exec &> >(tee ${section_16_logfile}${batch_number})
+exec &> >(tee ${section_16b_logfile}${batch_number})
 print_version
 
 mydir="${methylation_processed_dir}"
@@ -36,7 +36,7 @@ echo $filename
 noprobes=`cat $filename | wc -l`
 echo $noprobes
 
-echo "CpG" "SNP" "BP" "EA" "NEA" "EAF" "BETA" "SE" "P" | perl -pe 's/ /\t/g' > ${lmm_res_dir}/gcta.${i}\_${j}.ge${no}.txt
+echo "CpG" "CHR" "SNP" "BP" "EA" "NEA" "EAF" "BETA" "SE" "P" | perl -pe 's/ /\t/g' > ${section_16_dir}/gcta.${i}\_${j}.ge${no}.txt
 
 Counter=0
 
@@ -83,7 +83,7 @@ do
                     --mpheno $Counter \
                     --qcovar ${covariates_combined}.gcta.numeric \
                     --covar ${covariates_combined}.gcta.factor \
-                    --out ${lmm_res_dir}/gcta.${i}\_${probe}.ge${no}.chr${chrno} \
+                    --out ${section_16_dir}/gcta.${i}\_${probe}.ge${no}.chr${chrno} \
                     --thread-num ${nthreads}
                 fi
                     
@@ -97,7 +97,7 @@ do
                     --mpheno $Counter \
                     --qcovar ${covariates_combined}.gcta.numeric \
                     --covar ${covariates_combined}.gcta.factor \
-                    --out ${lmm_res_dir}/gcta.${i}\_${probe}.ge${no}.chr${chrno} \
+                    --out ${section_16_dir}/gcta.${i}\_${probe}.ge${no}.chr${chrno} \
                     --thread-num ${nthreads}
                 fi        
 
@@ -107,14 +107,11 @@ do
 
         fi
 
-        #sed 's/^/'$probe'/' <${lmm_res_dir}/gcta.${i}\_${probe}.ge${no}.chr${chrno}.mlma | perl -pe 's/  \+/ /g'  >${methylation_processed_dir}/plink.${i}\_${probe}.ge${no}.qassoc.tmp
+        cat ${section_16_dir}/gcta.${i}\_${probe}.ge${no}.chr${chrno}.mlma | sed 's/^/'$probe'\t/'| perl -pe 's/  \+/ /g'  >${methylation_processed_dir}/gcta.${i}\_${probe}.ge${no}.mlma.tmp
+        tail -n +2 ${methylation_processed_dir}/plink.${i}\_${probe}.ge${no}.mlma.tmp >>${section_16_dir}/gcta.${i}\_${j}.ge${no}.txt
         
-
-        #tail -n +2 ${methylation_processed_dir}/plink.${i}\_${probe}.ge${no}.qassoc.tmp >>${lmm_res_dir}/plink.${i}\_${j}.ge${no}.txt
-        
-        #rm ${methylation_processed_dir}/plink.${i}\_${probe}.ge${no}.qassoc.tmp
-        #rm ${lmm_res_dir}/plink.${i}\_${probe}.ge${no}.qassoc
-        #rm ${lmm_res_dir}/plink.${i}\_${probe}.ge${no}.log
+        rm ${methylation_processed_dir}/plink.${i}\_${probe}.ge${no}.mlma.tmp
+        rm ${section_16_dir}/gcta.${i}\_${probe}.ge${no}.chr${chrno}.mlma
         
         
 done < "$filename"
