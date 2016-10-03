@@ -48,7 +48,7 @@ done
 
 echo "Creating files for gcta"
 
-Rscript ./resources/methylation/extractprobesets3.R \
+	Rscript ./resources/methylation/extractprobesets3.R \
 	${betas} \
 	${covariates_combined}.txt \
 	${#cpgs[@]} \

@@ -21,9 +21,11 @@ echo $myout
 
 i="1e-05"
 
-cpgs=("cg0000[0-9]" "cg0001" "cg0002" "cg0003" "cg0004" "cg0005" "cg0006" "cg0007" "cg0008" "cg0009" "cg001" "cg002" "cg003" "cg004" "cg005" "cg006" "cg007" "cg008" "cg009" "cg01" "cg02" "cg03" "cg04" "cg05" "cg06" "cg07" "cg08" "cg09" "cg10" "cg11" "cg12" "cg13" "cg14" "cg15" "cg16" "cg17" "cg18" "cg19" "cg20" "cg21" "cg22" "cg23" "cg24" "cg25" "cg26" "cg27" "_ch")
+cpgs=("cg0000[0-9]" "cg0001" "cg0002" "cg0003" "cg0004" "cg0005" "cg0006" "cg0007" "cg0008" "cg0009" "cg001" "cg002" "cg003" "cg004" "cg005" "cg006" "cg007" "cg008" "cg009" "cg01[0-4]" "cg01[5-9]" "cg02[0-4]" "cg02[5-9]" "cg03[0-4]" "cg03[5-9]" "cg04[0-4]" "cg04[5-9]" "cg05[0-4]" "cg05[5-9]" "cg06[0-4]" "cg06[5-9]" "cg07[0-4]" "cg07[5-9]" "cg08[0-4]" "cg08[5-9]" "cg09[0-4]" "cg09[5-9]" "cg10[0-4]" "cg10[5-9]" "cg11[0-4]" "cg11[5-9]" "cg12[0-4]" "cg12[5-9]" "cg13[0-4]" "cg13[5-9]" "cg14[0-4]" "cg14[5-9]" "cg15[0-4]" "cg15[5-9]" "cg16[0-4]" "cg16[5-9]" "cg17[0-4]" "cg17[5-9]" "cg18[0-4]" "cg18[5-9]" "cg19[0-4]" "cg19[5-9]" "cg20[0-4]" "cg20[5-9]" "cg21[0-4]" "cg21[5-9]" "cg22[0-4]" "cg22[5-9]" "cg23[0-4]" "cg23[5-9]" "cg24[0-4]" "cg24[5-9]" "cg25[0-4]" "cg25[5-9]" "cg26[0-4]" "cg26[5-9]" "cg27[0-4]" "cg27[5-9]" "_ch")
+
 #cpgs2=`printf '${cpgs}\n%.0s' {1..$nocohorts}`
 
+echo $batch_number
 batch_number_zero=$((batch_number - 1))
 j=${cpgs[${batch_number_zero}]}
 echo $j
@@ -44,27 +46,35 @@ while read -r line
 do
     probe="$line"
     echo $probe
+
+        probes=`grep -w $probe ${methylation_processed_dir}/methylation.subset.${i}\_${j}.ge${no}.txt | wc -l`
+
+        if [ "$probes" -gt "0" ]   
+        then
+        
     zcat ${home_directory}/resources/phase2/cis_trans.${i}\_${j}.ge${no}.allcohorts.txt.gz | fgrep $probe | awk '{print $2}' > ${genetic_processed_dir}/cis_trans.${i}\_${probe}.ge${no}.allcohorts.snps
     
-    #check fgrep
-    zcat ${home_directory}/resources/phase2/cis_trans.${i}\_${j}.ge${no}.allcohorts.txt.gz | fgrep $probe | awk '{print $3}' |sort -u > ${genetic_processed_dir}/cis_trans.${i}\_${probe}.ge${no}.allcohorts.probe
+    #check whether fgrep is grepping one probe only
+    #zcat ${home_directory}/resources/phase2/cis_trans.${i}\_${j}.ge${no}.allcohorts.txt.gz | fgrep $probe | awk '{print $3}' |sort -u > ${genetic_processed_dir}/cis_trans.${i}\_${probe}.ge${no}.allcohorts.probe
     
     awk -F":" '{print $1}' < ${genetic_processed_dir}/cis_trans.${i}\_${probe}.ge${no}.allcohorts.snps | sort -u > ${genetic_processed_dir}/cis_trans.${i}\_${probe}.ge${no}.allcohorts.chrs
 
     Counter=`expr $Counter + 1`
     echo "$Counter/$noprobes probes"
 
-    nosnps=`grep -f ${genetic_processed_dir}/cis_trans.${i}\_${probe}.ge${no}.allcohorts.snps ${bfile}.bim | wc -l`
-    echo "no snps= $nosnps"
-        if [ "$nosnps" -gt "0" ]   
-        then
+
+
             while read -r line
             do
                 chr="$line"
                 echo $chr
       
                 grep -w $chr ${genetic_processed_dir}/cis_trans.${i}\_${probe}.ge${no}.allcohorts.snps > ${genetic_processed_dir}/cis_trans.${i}\_${probe}.ge${no}.allcohorts.snps.$chr
-                
+                nosnps=`grep -f ${genetic_processed_dir}/cis_trans.${i}\_${probe}.ge${no}.allcohorts.snps.$chr ${bfile}.bim | wc -l`
+                echo "no snps = $nosnps"
+
+                if [ "$nosnps" -gt "0" ]
+                then
                 chrno=`echo $chr |sed 's/chr//g'`     
 
                 ${plink} \
@@ -101,15 +111,17 @@ do
                     --thread-num ${nthreads}
                 fi        
 
+                cat ${section_16_dir}/gcta.${i}\_${probe}.ge${no}.chr${chrno}.mlma | sed 's/^/'$probe'\t/'| perl -pe 's/  \+/ /g'  >${methylation_processed_dir}/gcta.${i}\_${probe}.ge${no}.mlma.tmp
+                tail -n +2 ${methylation_processed_dir}/gcta.${i}\_${probe}.ge${no}.mlma.tmp >>${section_16_dir}/gcta.${i}\_${j}.ge${no}.txt
+        
+                rm ${methylation_processed_dir}/gcta.${i}\_${probe}.ge${no}.mlma.tmp
+                rm ${section_16_dir}/gcta.${i}\_${probe}.ge${no}.chr${chrno}.mlma
+
+                fi
             
             done < ${genetic_processed_dir}/cis_trans.${i}\_${probe}.ge${no}.allcohorts.chrs
 
-        cat ${section_16_dir}/gcta.${i}\_${probe}.ge${no}.chr${chrno}.mlma | sed 's/^/'$probe'\t/'| perl -pe 's/  \+/ /g'  >${methylation_processed_dir}/gcta.${i}\_${probe}.ge${no}.mlma.tmp
-        tail -n +2 ${methylation_processed_dir}/gcta.${i}\_${probe}.ge${no}.mlma.tmp >>${section_16_dir}/gcta.${i}\_${j}.ge${no}.txt
-        
-        rm ${methylation_processed_dir}/gcta.${i}\_${probe}.ge${no}.mlma.tmp
-        rm ${section_16_dir}/gcta.${i}\_${probe}.ge${no}.chr${chrno}.mlma
-        
+            
         fi
         
 done < "$filename"
