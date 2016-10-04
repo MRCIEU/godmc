@@ -22,8 +22,11 @@ if(file.exists(phenotype_descriptives))
 	l <- c(l, cohort_summary)
 }
 
-load(cnv_descriptives)
-l <- c(l, cohort_summary)
+if(file.exists(cnv_descriptives))
+{
+	load(cnv_descriptives)
+	l <- c(l, cohort_summary)
+}
 
 cohort_summary <- l
 save(cohort_summary, file=cohort_descriptives)
