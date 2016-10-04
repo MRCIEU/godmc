@@ -28,8 +28,16 @@ message("read easyQC file successfully")
 
 r<-r[match(bim[,2],r$SNP),]
 message("read mismatch file")
+
+if(file.exists(paste(out_file,".mismatch.txt",sep=""))){
 mm<-read.table(paste(out_file,".mismatch.txt",sep=""),header=T)
 message("read mismatch file successfully")
+}
+
+if(!file.exists(paste(out_file,".mismatch.txt",sep=""))){
+mm$SNP<-NULL
+message("WARNING: couldn't find file data.easyqc.mismatch.txt")
+}
 
 message("read not in ref file")
 notinref<-read.table(paste(out_file,".notinref.txt",sep=""),header=T)
