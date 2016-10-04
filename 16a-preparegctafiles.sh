@@ -42,7 +42,7 @@ ${plink} \
 	--threads ${nthreads} \
 	--autosome
 
-#rm $genetic_processed_dir/grm_minus_chr${i}.snps
+rm $genetic_processed_dir/grm_minus_chr${i}.snps
 
 done
 
@@ -57,14 +57,21 @@ echo "Creating files for gcta"
 	${bfile}.fam \
 	${covariates_combined}.gcta
 
-#echo "Calculating MAF"
-#${plink} \
-#    --bfile ${bfile} \
-#    --freq gz \
-#    --out ${lmm_res_dir}/data
+echo "Creating files for plink"
+Rscript ./resources/methylation/convertbetamatrix.R \
+	${methylation_adjusted_pcs}.RData \
+	${#cpgs[@]} \
+	${methylation_processed_dir} \
+	./resources/phase2 \
+	${bfile}.fam
 
-#zcat ${lmm_res_dir}/data.frq.gz | sed -e 's/[[:space:]]\+/ /g' |perl -pe 's/^ //g'|perl -pe 's/ /\t/g'|awk -v OFS='\t' '{ if(NR>1) print $1,$2,$3,$4,$5,$6/2; else print $0;}'|perl -pe 's/A1/EA/g' |perl -pe 's/A2/NEA/g' |perl -pe 's/MAF/EAF/g'|perl -pe 's/NCHROBS/N/g' |perl -pe 's/ /\t/g'>${lmm_res_dir}/data.frq.tmp
+echo "Calculating MAF"
+${plink} \
+    --bfile ${bfile} \
+    --freq gz \
+    --out ${section_16_dir}/data
 
+zcat ${section_16_dir}/data.frq.gz | sed -e 's/[[:space:]]\+/ /g' |perl -pe 's/^ //g'|perl -pe 's/ /\t/g'|awk -v OFS='\t' '{ if(NR>1) print $1,$2,$3,$4,$5,$6/2; else print $0;}'|perl -pe 's/A1/EA/g' |perl -pe 's/A2/NEA/g' |perl -pe 's/MAF/EAF/g'|perl -pe 's/NCHROBS/N/g' |perl -pe 's/ /\t/g'>${section_16_dir}/data.frq.tmp
 
 echo "Successfully completed script 16a"
 

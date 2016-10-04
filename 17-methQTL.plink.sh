@@ -37,7 +37,7 @@ echo $filename
 noprobes=`cat $filename |wc -l`
 echo $noprobes
 
-echo "CpG" "CHR" "SNP" "BP" "NMISS" "BETA" "SE" "R2" "T" "P" |perl -pe 's/ /\t/g' >$${section_17_dir}/plink.${i}\_${j}.ge${no}.txt
+echo "CpG" "CHR" "SNP" "BP" "NMISS" "BETA" "SE" "R2" "T" "P" |perl -pe 's/ /\t/g' >${section_17_dir}/plink.${i}\_${j}.ge${no}.txt
 
 Counter=0
 

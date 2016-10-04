@@ -1,5 +1,4 @@
 #!/bin/bash
-
 set -e
 source ./config
 
@@ -25,7 +24,6 @@ cpgs=("cg0000[0-9]" "cg0001" "cg0002" "cg0003" "cg0004" "cg0005" "cg0006" "cg000
 
 #cpgs2=`printf '${cpgs}\n%.0s' {1..$nocohorts}`
 
-echo $batch_number
 batch_number_zero=$((batch_number - 1))
 j=${cpgs[${batch_number_zero}]}
 echo $j
@@ -39,6 +37,8 @@ noprobes=`cat $filename | wc -l`
 echo $noprobes
 
 echo "CpG" "CHR" "SNP" "BP" "EA" "NEA" "EAF" "BETA" "SE" "P" | perl -pe 's/ /\t/g' > ${section_16_dir}/gcta.${i}\_${j}.ge${no}.txt
+
+echo "CpG" "CHR" "SNP" "BP" "NMISS" "BETA" "SE" "R2" "T" "P" | perl -pe 's/ /\t/g' > ${section_16_dir}/plink.${i}\_${j}.ge${no}.txt
 
 Counter=0
 
@@ -88,27 +88,70 @@ do
                 ${gcta} \
                     --bfile ${bfile}.${i}\_${probe}.ge${no}.allcohorts.snps.$chr \
                     --mlma \
+                    --reml-no-constrain \
                     --grm ${grmfile_all}_minus_chr${chrno} \
-                    --pheno ${methylation_processed_dir}/methylation.subset.${i}\_${j}.ge${no}.txt \
+                    --pheno ${methylation_processed_dir}/gcta.methylation.subset.${i}\_${j}.ge${no}.txt \
                     --mpheno $Counter \
                     --qcovar ${covariates_combined}.gcta.numeric \
                     --covar ${covariates_combined}.gcta.factor \
                     --out ${section_16_dir}/gcta.${i}\_${probe}.ge${no}.chr${chrno} \
                     --thread-num ${nthreads}
-                fi
+                
+                #    if [ ! "$?" -eq "0" ]
+                 #   then 
+                  #  ${plink} \
+                   #     --bfile ${bfile}.${i}\_${probe}.ge${no}.allcohorts.snps.$chr \
+                    #    --assoc \
+                     #   --pheno ${methylation_processed_dir}/plink.methylation.subset.${i}\_${j}.ge${no}.txt \
+                      #  --mpheno $Counter \
+                       # --out ${section_16_dir}/plink.${i}\_${probe}.ge${no}.chr${chrno} \
+                        #--threads ${nthreads}
                     
+                    #sed 's/^/'$probe'/' <${section_16_dir}/plink.${i}\_${probe}.ge${no}.qassoc | perl -pe 's/  \+/ /g'  >${methylation_processed_dir}/plink.${i}\_${probe}.ge${no}.qassoc.tmp
+                    #tail -n +2 ${methylation_processed_dir}/plink.${i}\_${probe}.ge${no}.qassoc.tmp >>${section_16_dir}/plink.${i}\_${j}.ge${no}.txt
+        
+                    #rm ${methylation_processed_dir}/plink.${i}\_${probe}.ge${no}.qassoc.tmp
+                    #rm ${section_16_dir}/plink.${i}\_${probe}.ge${no}.qassoc
+                    #rm ${section_16_dir}/plink.${i}\_${probe}.ge${no}.log
+
+
+
+                    #fi
+                fi
+                
                 if [ "$chrno" -eq "23" ]
                 then
                 ${gcta} \
                     --bfile ${bfile}.${i}\_${probe}.ge${no}.allcohorts.snps.$chr \
                     --mlma \
+                    --reml-no-constrain \
                     --grm ${grmfile_all} \
-                    --pheno ${methylation_processed_dir}/methylation.subset.${i}\_${j}.ge${no}.txt \
+                    --pheno ${methylation_processed_dir}/gcta.methylation.subset.${i}\_${j}.ge${no}.txt \
                     --mpheno $Counter \
                     --qcovar ${covariates_combined}.gcta.numeric \
                     --covar ${covariates_combined}.gcta.factor \
                     --out ${section_16_dir}/gcta.${i}\_${probe}.ge${no}.chr${chrno} \
                     --thread-num ${nthreads}
+                
+                    #if [ ! "$?" -eq "0" ]
+                    #then 
+                    #${plink} \
+                     #   --bfile ${bfile}.${i}\_${probe}.ge${no}.allcohorts.snps.$chr \
+                     #   --assoc \
+                     #   --pheno ${methylation_processed_dir}/plink.methylation.subset.${i}\_${j}.ge${no}.txt \
+                     #   --mpheno $Counter \
+                     #   --out ${section_16_dir}/plink.${i}\_${probe}.ge${no}.chr${chrno} \
+                     #   --threads ${nthreads}
+                    
+                    #sed 's/^/'$probe'/' <${section_16_dir}/plink.${i}\_${probe}.ge${no}.qassoc | perl -pe 's/  \+/ /g'  >${methylation_processed_dir}/plink.${i}\_${probe}.ge${no}.qassoc.tmp
+                    #tail -n +2 ${methylation_processed_dir}/plink.${i}\_${probe}.ge${no}.qassoc.tmp >>${section_16_dir}/plink.${i}\_${j}.ge${no}.txt
+        
+                    #rm ${methylation_processed_dir}/plink.${i}\_${probe}.ge${no}.qassoc.tmp
+                    #rm ${section_16_dir}/plink.${i}\_${probe}.ge${no}.qassoc
+                    #rm ${section_16_dir}/plink.${i}\_${probe}.ge${no}.log
+
+
+                    fi
                 fi        
 
                 cat ${section_16_dir}/gcta.${i}\_${probe}.ge${no}.chr${chrno}.mlma | sed 's/^/'$probe'\t/'| perl -pe 's/  \+/ /g'  >${methylation_processed_dir}/gcta.${i}\_${probe}.ge${no}.mlma.tmp
@@ -128,5 +171,15 @@ done < "$filename"
 
 echo "Successfully completed ${batch_number}"
 
+#merge effect alleles and AF to output files
+
+#echo "merge effect alleles and AF to plink output files"
+#cd ${section_16_dir}
+#sed 's/  \+/\t/g' < plink.${i}\_${j}.ge${no}.txt | sed 's/^ //g'  >plink.${i}\_${j}.ge${no}.txt.tmp
+#mv plink.${i}\_${j}.ge${no}.txt.tmp plink.${i}\_${j}.ge${no}.txt
+#cp plink.${i}\_${j}.ge${no}.txt plink.${i}.${PBS_ARRAYID}.ge${no}.txt
+#perl ${home_directory}/resources/phase2/join_file.pl -i "${section_16_dir}/plink.${i}.${PBS_ARRAYID}.ge${no}.txt,TAB,2 data.frq.tmp,TAB,1" -o ${section_16_dir}/plink.${i}\_${j}.ge${no}.gwama.formatted.txt -a 1
+#gzip ${section_17_dir}/plink.${i}\_${j}.ge${no}.gwama.formatted.txt
+#rm plink.${i}\_${j}.ge${no}.txt plink.${i}.${PBS_ARRAYID}.ge${no}.txt
 
 
