@@ -303,20 +303,11 @@ check_results_16 () {
 	if [ "${nsuccess}" = "${nbatch}" ]; then
 		echo "All GCTA results present"
 	else
-		echo "Problem: Only ${nsuccess} of ${nbatch} GCTA mQTL result files are present"
-		exit 1
-	fi
-
-}check_results_17 () {
-
-	nbatch="1"
-	nsuccess=`ls -l ${section_17_dir}/plink*.txt | wc -l`
-	if [ "${nsuccess}" = "${nbatch}" ]; then
-		echo "All PLINK results present"
-	else
-		echo "Problem: Only ${nsuccess} of ${nbatch} PLINK mQTL result files are present"
+		echo "Problem: Only ${nsuccess} of ${nbatch} GCTA mQTL results files are present"
 		exit 1
 	fi
 
 }
+
+
 

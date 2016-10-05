@@ -367,6 +367,14 @@ check_logs_15 () {
 
 check_logs_16 () {
 
+	compare_version "16a"
+	if grep -i -q "success" ${section_16a_logfile}*; then
+		echo "16a-preparegctafiles.sh completed successfully."
+	else
+		echo "Problem: 16a-preparegctafiles.sh did not complete successfully"
+		exit 1
+	fi
+
 	compare_version "16"
 	nbatch=`ls -l ${methylation_processed_dir}/methylation.subset*ge1.2.txt | wc -l`
 	nsuccess=`tail ${section_16_logfile}* | grep -i "success" | wc -l`
@@ -377,19 +385,16 @@ check_logs_16 () {
 		exit 1
 	fi
 
-}
-
-check_logs_17 () {
-
-	compare_version "05"
-	nbatch=`ls -l ${methylation_processed_dir}/methylation.subset*ge1.2.txt | wc -l`
-	nsuccess=`tail ${section_17_logfile}* | grep -i "success" | wc -l`
-	if [ "${nbatch}" = "${nsuccess}" ]; then
-		echo "17-methQTL.plink.sh completed successfully for all batches"
+	compare_version "16c"
+	if grep -i -q "success" ${section_16c_logfile}*; then
+		echo "16c-methQTL.plink.sh completed successfully."
 	else
-		echo "Problem: 17-methQTL.plink.sh only ${nsuccess} of ${nbatch} mQTL batches completed"
+		echo "Problem: 16c-methQTL.plink.sh did not complete successfully"
 		exit 1
 	fi
 
+
 }
+
+
 
