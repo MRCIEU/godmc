@@ -88,9 +88,9 @@ do
             sed 's/^/'$probe'/' <${section_16_dir}/plink.${i}\_${probe}.ge${no}.qassoc | perl -pe 's/  \+/ /g'  >${methylation_processed_dir}/plink.${i}\_${probe}.ge${no}.qassoc.tmp
             tail -n +2 ${methylation_processed_dir}/plink.${i}\_${probe}.ge${no}.qassoc.tmp >>${section_16_dir}/plink.${i}\_${j}.ge${no}.txt
         
-            #rm ${methylation_processed_dir}/plink.${i}\_${probe}.ge${no}.qassoc.tmp
-            #rm ${section_16_dir}/plink.${i}\_${probe}.ge${no}.qassoc
-            #rm ${section_16_dir}/plink.${i}\_${probe}.ge${no}.log
+            rm ${methylation_processed_dir}/plink.${i}\_${probe}.ge${no}.qassoc.tmp
+            rm ${section_16_dir}/plink.${i}\_${probe}.ge${no}.qassoc
+            rm ${section_16_dir}/plink.${i}\_${probe}.ge${no}.log
         
                 fi
         fi
@@ -110,7 +110,7 @@ gzip ${section_16_dir}/plink.${i}\_${j}.ge${no}.gwama.formatted.txt
 rm plink.${i}\_${j}.ge${no}.txt plink.${i}.${PBS_ARRAYID}.ge${no}.txt
 date
 
-Rscript ./resources/genetics/plotplinkvsgcta.R \
+Rscript ${home_directory}/resources/genetics/plotplinkvsgcta.R \
     ${section_16_dir}/plink.${i}\_${j}.ge${no}.gwama.formatted.txt.gz \
     ${section_16_dir}/gcta.${i}\_${j}.ge${no}.txt.gz \
     $j \
