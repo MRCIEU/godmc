@@ -38,7 +38,11 @@ echo $noprobes
 
 echo "CpG" "CHR" "SNP" "BP" "EA" "NEA" "EAF" "BETA" "SE" "P" | perl -pe 's/ /\t/g' > ${section_16_dir}/gcta.${i}\_${j}.ge${no}.txt
 
-echo "CpG" "CHR" "SNP" "BP" "NMISS" "BETA" "SE" "R2" "T" "P" | perl -pe 's/ /\t/g' > ${section_16_dir}/plink.${i}\_${j}.ge${no}.txt
+nprobes=`awk -F' ' '{print NF; exit}'< ${methylation_processed_dir}/gcta.methylation.subset.${i}\_${j}.ge${no}.txt`
+nprobes=$((nprobes - 2))
+
+echo "$nprobes/$noprobes probes found in methylation data"
+#echo "CpG" "CHR" "SNP" "BP" "NMISS" "BETA" "SE" "R2" "T" "P" | perl -pe 's/ /\t/g' > ${section_16_dir}/plink.${i}\_${j}.ge${no}.txt
 
 Counter=0
 
@@ -60,7 +64,7 @@ do
     awk -F":" '{print $1}' < ${genetic_processed_dir}/cis_trans.${i}\_${probe}.ge${no}.allcohorts.snps | sort -u > ${genetic_processed_dir}/cis_trans.${i}\_${probe}.ge${no}.allcohorts.chrs
 
     Counter=`expr $Counter + 1`
-    echo "$Counter/$noprobes probes"
+    echo "$Counter/$nprobes probes"
 
 
 
@@ -73,6 +77,13 @@ do
                 nosnps=`grep -f ${genetic_processed_dir}/cis_trans.${i}\_${probe}.ge${no}.allcohorts.snps.$chr ${bfile}.bim | wc -l`
                 echo "no snps = $nosnps"
 
+                
+                #check whether right probes are selected from methylation matrix
+                probecheck=`expr $Counter + 2`
+                probecheck2=`head -n1 ${methylation_processed_dir}/gcta.methylation.subset.${i}\_${j}.ge${no}.txt | cut -f $probecheck -d" "` 
+
+                echo "$probe is $probecheck2"
+                
                 if [ "$nosnps" -gt "0" ]
                 then
                 chrno=`echo $chr |sed 's/chr//g'`     
@@ -82,9 +93,16 @@ do
                     --extract ${genetic_processed_dir}/cis_trans.${i}\_${probe}.ge${no}.allcohorts.snps.$chr \
                     --make-bed \
                     --out ${bfile}.${i}\_${probe}.ge${no}.allcohorts.snps.$chr
+        
+                if ! [[ "$probe" -eq "$probecheck2" ]] ; then
+                echo "error: $probe doesn't match to methylation $probecheck2"
+                exit 1
+                fi
 
+                
                 if [ "$chrno" -lt "23" ]
                 then
+
                 ${gcta} \
                     --bfile ${bfile}.${i}\_${probe}.ge${no}.allcohorts.snps.$chr \
                     --mlma \
@@ -97,6 +115,8 @@ do
                     --out ${section_16_dir}/gcta.${i}\_${probe}.ge${no}.chr${chrno} \
                     --thread-num ${nthreads}
                 
+
+
                 #    if [ ! "$?" -eq "0" ]
                  #   then 
                   #  ${plink} \
@@ -151,25 +171,50 @@ do
                     #rm ${section_16_dir}/plink.${i}\_${probe}.ge${no}.log
 
 
-                    fi
+                    #fi
+                
                 fi        
+
+
 
                 cat ${section_16_dir}/gcta.${i}\_${probe}.ge${no}.chr${chrno}.mlma | sed 's/^/'$probe'\t/'| perl -pe 's/  \+/ /g'  >${methylation_processed_dir}/gcta.${i}\_${probe}.ge${no}.mlma.tmp
                 tail -n +2 ${methylation_processed_dir}/gcta.${i}\_${probe}.ge${no}.mlma.tmp >>${section_16_dir}/gcta.${i}\_${j}.ge${no}.txt
         
                 rm ${methylation_processed_dir}/gcta.${i}\_${probe}.ge${no}.mlma.tmp
                 rm ${section_16_dir}/gcta.${i}\_${probe}.ge${no}.chr${chrno}.mlma
-
+                rm ${genetic_processed_dir}/cis_trans.${i}\_${probe}.ge${no}.allcohorts.snps.$chr
+                #rm ${genetic_processed_dir}/cis_trans.${i}\_${probe}.ge${no}.allcohorts.snps
+                #rm ${genetic_processed_dir}/cis_trans.${i}\_${probe}.ge${no}.allcohorts.probe
+                #rm ${genetic_processed_dir}/cis_trans.${i}\_${probe}.ge${no}.allcohorts.chrs
+                rm ${bfile}.${i}\_${probe}.ge${no}.allcohorts.snps.$chr.bed
+                rm ${bfile}.${i}\_${probe}.ge${no}.allcohorts.snps.$chr.bim
+                rm ${bfile}.${i}\_${probe}.ge${no}.allcohorts.snps.$chr.fam
+                rm ${bfile}.${i}\_${probe}.ge${no}.allcohorts.snps.$chr.log
+                
                 fi
             
             done < ${genetic_processed_dir}/cis_trans.${i}\_${probe}.ge${no}.allcohorts.chrs
 
+        rm ${genetic_processed_dir}/cis_trans.${i}\_${probe}.ge${no}.allcohorts.snps
+        rm ${genetic_processed_dir}/cis_trans.${i}\_${probe}.ge${no}.allcohorts.chrs
+ 
             
         fi
         
 done < "$filename"
 
-echo "Successfully completed ${batch_number}"
+
+
+nprobes2=`tail -n +2 ${section_16_dir}/gcta.${i}\_${j}.ge${no}.txt |awk '{print $1}'|sort -u |wc -l`
+
+if [ $nprobes2 -eq $nprobes ]
+    then
+    echo "Successfully completed ${batch_number}"
+else
+    echo "Completed $nprobes2 / $nprobes"
+
+    exit 1
+fi
 
 #merge effect alleles and AF to output files
 
