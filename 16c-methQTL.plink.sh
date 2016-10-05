@@ -104,7 +104,8 @@ cd ${section_16_dir}
 sed 's/  \+/\t/g' < plink.${i}\_${j}.ge${no}.txt | sed 's/^ //g'  >plink.${i}.${PBS_ARRAYID}.ge${no}.txt
 perl ${home_directory}/resources/phase2/join_file.pl -i "${section_16_dir}/plink.${i}.${PBS_ARRAYID}.ge${no}.txt,TAB,2 data.frq.tmp,TAB,1" -o ${section_16_dir}/plink.${i}\_${j}.ge${no}.gwama.formatted.txt -a 1
 #CpG    CHR SNP BP  NMISS   BETA    SE  R2  T   P   CHR SNP EA  NEA EAF N
-awk '{print $1,$2,$3,$4,$13,$14,$15,$6,$7,$10,$16}' <${section_16_dir}/plink.${i}\_${j}.ge${no}.gwama.formatted.txt
+awk '{print $1,$2,$3,$4,$13,$14,$15,$6,$7,$10,$16}' <${section_16_dir}/plink.${i}\_${j}.ge${no}.gwama.formatted.txt >${section_16_dir}/plink.${i}\_${j}.ge${no}.gwama.formatted.txt.tmp
+mv ${section_16_dir}/plink.${i}\_${j}.ge${no}.gwama.formatted.txt.tmp ${section_16_dir}/plink.${i}\_${j}.ge${no}.gwama.formatted.txt
 gzip ${section_16_dir}/plink.${i}\_${j}.ge${no}.gwama.formatted.txt
 rm plink.${i}\_${j}.ge${no}.txt plink.${i}.${PBS_ARRAYID}.ge${no}.txt
 date
