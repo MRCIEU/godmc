@@ -30,3 +30,4 @@ if(file.exists(cnv_descriptives))
 
 cohort_summary <- l
 save(cohort_summary, file=cohort_descriptives)
+message("All descriptives are successfully saved to ./results/01/cohort_descriptives.RData")
