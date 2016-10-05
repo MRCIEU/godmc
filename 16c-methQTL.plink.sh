@@ -91,6 +91,7 @@ do
             rm ${methylation_processed_dir}/plink.${i}\_${probe}.ge${no}.qassoc.tmp
             rm ${section_16_dir}/plink.${i}\_${probe}.ge${no}.qassoc
             rm ${section_16_dir}/plink.${i}\_${probe}.ge${no}.log
+            rm ${genetic_processed_dir}/cis_trans.${i}\_${probe}.ge${no}.allcohorts.snps
         
                 fi
         fi
