@@ -68,7 +68,9 @@ rntransform <- function(x)
 	rownames(fam)<-fam$IID
 	fam <- subset(fam, IID %in% colnames(norm.beta), select=-c(V3,V4,V5,V6))
     norm.beta <- norm.beta[, colnames(norm.beta) %in% fam$IID]
-    
+    m<-match(fam$IID,colnames(norm.beta))
+    norm.beta<-norm.beta[,m]
+    n<-colnames(norm.beta)
     message("Identifying methylation outliers, this will take a while")
 
 	niter <- 3
@@ -104,7 +106,7 @@ rntransform <- function(x)
     probefiles=list.files(path=probedir,pattern=".allcohorts.probes")
     
     message("Found " ,length(probefiles)," probefiles")
-
+    colnames(norm.beta2)<-colnames(norm.beta)
     norm.beta<-norm.beta2
     for (p in 1:no.probesets){
     

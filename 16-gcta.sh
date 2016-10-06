@@ -9,7 +9,7 @@ if ! [[ $batch_number =~ $re ]] ; then
     echo "Usage: ${0} [batch number]"
     exit 1
 fi
-exec &> >(tee ${section_16b_logfile}${batch_number})
+exec &> >(tee ${section_16c_logfile}${batch_number})
 print_version
 
 mydir="${methylation_processed_dir}"
