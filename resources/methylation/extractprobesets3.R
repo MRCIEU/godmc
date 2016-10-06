@@ -1,7 +1,7 @@
 library(parallel)
 suppressMessages(library(matrixStats))
 
-rntransform_betas <- function(B, mc.cores=mc.cores)
+rntransform_betas<-function(B, mc.cores=mc.cores)
 {
     l1 <- get.index.list(nrow(B), mc.cores)
     l <- lapply(l1, function(ii)
@@ -13,9 +13,9 @@ rntransform_betas <- function(B, mc.cores=mc.cores)
         }, mc.cores=mc.cores)
         return(do.call(rbind, res))
     })
-    l <- do.call(rbind, l)
-    rownames(l) <- rownames(B)
-    colnames(l) <- colnames(B)
+    l <- do.call(rbind, t(l))
+    #rownames(l) <- rownames(B)
+    #colnames(l) <- colnames(B)
     return(l)
 }
 
@@ -69,7 +69,7 @@ rntransform <- function(x)
 	fam <- subset(fam, IID %in% colnames(norm.beta), select=-c(V3,V4,V5,V6))
     norm.beta <- norm.beta[, colnames(norm.beta) %in% fam$IID]
     
-    message("Identifying methylation outliers")
+    message("Identifying methylation outliers, this will take a while")
 
 	niter <- 3
 	outlier_threshold <- 10
@@ -84,18 +84,20 @@ rntransform <- function(x)
 	norm.beta.copy <- is.na(norm.beta.copy)
     norm.beta[norm.beta.copy] <- NA
 
-    message("Rank transform methylation betas")
-
-    # norm.beta2<- t(apply(norm.beta, 1,rntransform))
-    # norm.beta<-norm.beta2
-
-    if(is.na(nthreads) | nthreads == 1)
-    {
-        norm.beta <- t(apply(norm.beta,1,rntransform)
-    } else {
-        message("Running with ", nthreads, " threads")
-        norm.beta <- rntransform_betas(norm.beta, nthreads) 
-    }
+    message("Rank transform methylation betas; this will take a while (12 minutes for 1774 ARIES samples)")
+    norm.beta2 <- t(apply(norm.beta,1,rntransform))
+    
+    #check<-qnorm((rank(norm.beta[1,],na.last="keep")-0.5)/sum(!is.na(norm.beta[1,])))
+    #data.frame(norm.beta2[1,],check)
+    
+    #if(is.na(nthreads) | nthreads == 1)
+    #{
+    #    norm.beta2 <- t(apply(norm.beta,1,rntransform))
+    #} else {
+    #    message("Running with ", nthreads, " threads")
+        
+    #    norm.beta <- rntransform_betas(norm.beta, nthreads) 
+    #}
 
     message("Extracted " ,no.probesets," probe subsets")
     
@@ -103,6 +105,7 @@ rntransform <- function(x)
     
     message("Found " ,length(probefiles)," probefiles")
 
+    norm.beta<-norm.beta2
     for (p in 1:no.probesets){
     
     probes <- read.table(paste(probedir,probefiles[p],sep="/"), he=F, stringsAsFactors=F)
