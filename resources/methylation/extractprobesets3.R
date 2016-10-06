@@ -1,6 +1,44 @@
 library(parallel)
 suppressMessages(library(matrixStats))
 
+rntransform_betas <- function(B, mc.cores=mc.cores)
+{
+    l1 <- get.index.list(nrow(B), mc.cores)
+    l <- lapply(l1, function(ii)
+    {
+        res <- mclapply(ii, function(i)
+        {
+            message("Probe ", i, " of ", nrow(B))
+            rntransform(B[i,])
+        }, mc.cores=mc.cores)
+        return(do.call(rbind, res))
+    })
+    l <- do.call(rbind, l)
+    rownames(l) <- rownames(B)
+    colnames(l) <- colnames(B)
+    return(l)
+}
+
+get.index.list <- function(n, mc.cores)
+{
+    mc.cores <- ifelse(mc.cores < 1, 1, mc.cores)
+    div <- floor(n / mc.cores)
+    rem <- n %% mc.cores
+    l1 <- lapply(1:div, function(x) (x-1) * mc.cores + 1:mc.cores)
+    if(rem != 0) l1[[div+1]] <- l1[[div]][mc.cores] + 1:rem
+    return(l1)
+}
+
+rntransform <- function(x)
+{
+    out <- rank(x) - 0.5
+    out[is.na(x)] <- NA
+    mP <- 0.5/max(out, na.rm = T)
+    out <- out/(max(out, na.rm = T) + 0.5)
+    out <- scale(qnorm(out))
+    out
+}
+
 	arguments <- commandArgs(T)
 
 	methylationfile <- arguments[1]
@@ -48,8 +86,16 @@ suppressMessages(library(matrixStats))
 
     message("Rank transform methylation betas")
 
-    norm.beta2<-mclapply(1:dim(norm.beta)[1], rntransform,mc.cores=nthreads)
-    norm.beta<-norm.beta2
+    # norm.beta2<- t(apply(norm.beta, 1,rntransform))
+    # norm.beta<-norm.beta2
+
+    if(is.na(nthreads) | nthreads == 1)
+    {
+        norm.beta <- t(apply(norm.beta,1,rntransform)
+    } else {
+        message("Running with ", nthreads, " threads")
+        norm.beta <- rntransform_betas(norm.beta, nthreads) 
+    }
 
     message("Extracted " ,no.probesets," probe subsets")
     
@@ -77,6 +123,7 @@ suppressMessages(library(matrixStats))
     #message("Replace ",length(index)," missing values with rowmeans")
     #norm.beta[index] <- rowMeans(norm.beta, na.rm = TRUE)[index[, "row"]] }
 
+
     write.table(norm.beta.subset, paste(methylationdir,"/gcta.methylation.subset.",p1,".txt",sep=""),sep=" ",na = "NA",col.names=T,row.names=F,quote=F)
     message("Successfully extracted probes from beta matrix for probeset ",p)
     }
@@ -95,17 +142,7 @@ suppressMessages(library(matrixStats))
     m<-match(fam$IID,rownames(covs.n))
     covs.n<-data.frame(fam,covs.n[m,])
     write.table(covs.n,paste(cov_out,".numeric",sep="") ,sep=" ",na = "NA",col.names=F,row.names=F,quote=F)    
-   
-    rntransform <- function(x)
-{
-    out <- rank(x) - 0.5
-    out[is.na(x)] <- NA
-    mP <- 0.5/max(out, na.rm = T)
-    out <- out/(max(out, na.rm = T) + 0.5)
-    out <- scale(qnorm(out))
-    out
-}
-
+  
     
     
 
