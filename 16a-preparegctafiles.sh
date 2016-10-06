@@ -18,13 +18,13 @@ i="1e-05"
 no="1.2"
 
 
-	sftp ${sftp_username}@${sftp_address}:${sftp_path}/resources/phase2 <<EOF
-mget cis_trans.1e-05_*.ge${no}.allcohorts.txt.gz
-mget cis_trans.1e-05_*.ge${no}.allcohorts.probes
-EOF
+#	sftp ${sftp_username}@${sftp_address}:${sftp_path}/resources/phase2 <<EOF
+#mget cis_trans.1e-05_*.ge${no}.allcohorts.txt.gz
+#mget cis_trans.1e-05_*.ge${no}.allcohorts.probes
+#EOF
 
-	mv cis_trans.1e-05_*.ge${no}.allcohorts.txt.gz ${home_directory}/resources/phase2
-	mv cis_trans.1e-05_*.ge${no}.allcohorts.probes ${home_directory}/resources/phase2
+#	mv cis_trans.1e-05_*.ge${no}.allcohorts.txt.gz ${home_directory}/resources/phase2
+#	mv cis_trans.1e-05_*.ge${no}.allcohorts.probes ${home_directory}/resources/phase2
 
 
 
@@ -55,7 +55,8 @@ echo "Creating files for gcta"
 	./resources/phase2 \
 	${methylation_processed_dir} \
 	${bfile}.fam \
-	${covariates_combined}.gcta
+	${covariates_combined}.gcta \
+	${nthreads}
 
 echo "Creating files for plink"
 Rscript ./resources/methylation/convertbetamatrix.R \
