@@ -10,6 +10,7 @@ suppressMessages(library(matrixStats))
     methylationdir <-arguments[5]
     fam_file <- arguments[6]
     cov_out <-arguments[7]
+    nthreads<-as.numeric(arguments[8])
   
 
     message("Reading methylation data...")
@@ -44,6 +45,11 @@ suppressMessages(library(matrixStats))
 	outlier_count <- apply(norm.beta.copy, 1, function(x) sum(is.na(x)))
 	norm.beta.copy <- is.na(norm.beta.copy)
     norm.beta[norm.beta.copy] <- NA
+
+    message("Rank transform methylation betas")
+
+    norm.beta2<-mclapply(1:dim(norm.beta)[1], rntransform,mc.cores=nthreads)
+    norm.beta<-norm.beta2
 
     message("Extracted " ,no.probesets," probe subsets")
     
@@ -90,7 +96,15 @@ suppressMessages(library(matrixStats))
     covs.n<-data.frame(fam,covs.n[m,])
     write.table(covs.n,paste(cov_out,".numeric",sep="") ,sep=" ",na = "NA",col.names=F,row.names=F,quote=F)    
    
-
+    rntransform <- function(x)
+{
+    out <- rank(x) - 0.5
+    out[is.na(x)] <- NA
+    mP <- 0.5/max(out, na.rm = T)
+    out <- out/(max(out, na.rm = T) + 0.5)
+    out <- scale(qnorm(out))
+    out
+}
 
     
     
