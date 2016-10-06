@@ -34,6 +34,12 @@ main <- function()
 		stop("Negative values in position column")
 	}
 
+	if(length(which(a[,pval_column]==0)))
+	{
+		w<-which(a[,pval_column]==0)
+		a[w,pval_column]<-as.numeric(.Machine$double.xmin)
+	}
+
 	message("Generating QQ-plot")
 	lambda <- qqplot_pval(a[,pval_column], plot=TRUE, filename=paste0(out, "_qqplot.png"))
 
