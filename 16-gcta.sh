@@ -176,10 +176,11 @@ do
                 fi        
 
 
-
+                echo "format 1"
                 cat ${section_16_dir}/gcta.${i}\_${probe}.ge${no}.chr${chrno}.mlma | sed 's/^/'$probe'\t/'| perl -pe 's/  \+/ /g'  >${methylation_processed_dir}/gcta.${i}\_${probe}.ge${no}.mlma.tmp
+                echo "format 2"
                 tail -n +2 ${methylation_processed_dir}/gcta.${i}\_${probe}.ge${no}.mlma.tmp >>${section_16_dir}/gcta.${i}\_${j}.ge${no}.txt
-        
+                echo "format 3" 
                 rm ${methylation_processed_dir}/gcta.${i}\_${probe}.ge${no}.mlma.tmp
                 rm ${section_16_dir}/gcta.${i}\_${probe}.ge${no}.chr${chrno}.mlma
                 rm ${genetic_processed_dir}/cis_trans.${i}\_${probe}.ge${no}.allcohorts.snps.$chr
@@ -203,15 +204,16 @@ do
         
 done < "$filename"
 
-Nsubj=`grep observations ${section_16_dir}/logs_b/log.txt${batch_number} |tail -n1 |cut -d " " -f 1` 
+Nsubj=`grep observations ${section_16_dir}/logs_c/log.txt${batch_number} |tail -n1 |cut -d " " -f 1` 
 
 awk '{if (NR==1) print $0,"N"; else print $0, '$Nsubj'}' OFS='\t' ${section_16_dir}/gcta.${i}\_${j}.ge${no}.txt > ${section_16_dir}/gcta.${i}\_${j}.ge${no}.txt.tmp
 mv ${section_16_dir}/gcta.${i}\_${j}.ge${no}.txt.tmp ${section_16_dir}/gcta.${i}\_${j}.ge${no}.txt
-gzip ${section_16_dir}/gcta.${i}\_${j}.ge${no}.txt
 
 nprobes2=`tail -n +2 ${section_16_dir}/gcta.${i}\_${j}.ge${no}.txt |awk '{print $1}'|sort -u |wc -l`
-zerosnps=`grep "no snps = 0"  ${section_16_dir}/logs_b/log.txt${batch_number} |wc -l`
+zerosnps=`grep "no snps = 0"  ${section_16_dir}/logs_c/log.txt${batch_number} |wc -l`
 nprobes2=$(($nprobes2 + $zerosnps))
+
+gzip ${section_16_dir}/gcta.${i}\_${j}.ge${no}.txt
 
 
 if [ $nprobes2 -eq $nprobes ]
