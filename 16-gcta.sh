@@ -51,7 +51,7 @@ do
     probe="$line"
     echo $probe
 
-        probes=`grep -w $probe ${methylation_processed_dir}/methylation.subset.${i}\_${j}.ge${no}.txt | wc -l`
+        probes=`grep -w $probe ${methylation_processed_dir}/gcta.methylation.subset.${i}\_${j}.ge${no}.txt | wc -l`
 
         if [ "$probes" -gt "0" ]   
         then
@@ -205,7 +205,7 @@ done < "$filename"
 
 Nsubj=`grep observations ${section_16_dir}/logs_b/log.txt${batch_number} |tail -n1 |cut -d " " -f 1` 
 
-awk '{if (NR==1) print $0,"N"; else print $0, '$Nsubj'}' OFS='\t' ${section_16_dir}/gcta.${i}\_${j}.ge${no}.txt |${section_16_dir}/gcta.${i}\_${j}.ge${no}.txt.tmp
+awk '{if (NR==1) print $0,"N"; else print $0, '$Nsubj'}' OFS='\t' ${section_16_dir}/gcta.${i}\_${j}.ge${no}.txt > ${section_16_dir}/gcta.${i}\_${j}.ge${no}.txt.tmp
 mv ${section_16_dir}/gcta.${i}\_${j}.ge${no}.txt.tmp ${section_16_dir}/gcta.${i}\_${j}.ge${no}.txt
 gzip ${section_16_dir}/gcta.${i}\_${j}.ge${no}.txt
 
