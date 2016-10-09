@@ -93,9 +93,10 @@ do
                     --extract ${genetic_processed_dir}/cis_trans.${i}\_${probe}.ge${no}.allcohorts.snps.$chr \
                     --make-bed \
                     --out ${bfile}.${i}\_${probe}.ge${no}.allcohorts.snps.$chr
-        
-                if ! [[ "$probe" -eq "$probecheck2" ]] ; then
+                
+                if ! [ "${probe}" = "${probecheck2}" ] ; then
                 echo "error: $probe doesn't match to methylation $probecheck2"
+                echo $probe
                 exit 1
                 fi
 
@@ -106,7 +107,6 @@ do
                 ${gcta} \
                     --bfile ${bfile}.${i}\_${probe}.ge${no}.allcohorts.snps.$chr \
                     --mlma \
-                    --reml-no-constrain \
                     --grm ${grmfile_all}_minus_chr${chrno} \
                     --pheno ${methylation_processed_dir}/gcta.methylation.subset.${i}\_${j}.ge${no}.txt \
                     --mpheno $Counter \
@@ -144,7 +144,6 @@ do
                 ${gcta} \
                     --bfile ${bfile}.${i}\_${probe}.ge${no}.allcohorts.snps.$chr \
                     --mlma \
-                    --reml-no-constrain \
                     --grm ${grmfile_all} \
                     --pheno ${methylation_processed_dir}/gcta.methylation.subset.${i}\_${j}.ge${no}.txt \
                     --mpheno $Counter \
