@@ -37,6 +37,7 @@ noprobes=`cat $filename | wc -l`
 echo $noprobes
 
 echo "CpG" "CHR" "SNP" "BP" "EA" "NEA" "EAF" "BETA" "SE" "P" | perl -pe 's/ /\t/g' > ${section_16_dir}/gcta.${i}\_${j}.ge${no}.txt
+touch ${section_16_dir}/probeswithoutsnpsincohort.${i}\_${j}.ge${no}.txt
 
 nprobes=`awk -F' ' '{print NF; exit}'< ${methylation_processed_dir}/gcta.methylation.subset.${i}\_${j}.ge${no}.txt`
 nprobes=$((nprobes - 2))
@@ -84,6 +85,12 @@ do
 
                 echo "$probe is $probecheck2"
                 
+
+                if [ "$nosnps" -eq "0" ]
+                then
+                echo $probe >> ${section_16_dir}/probeswithoutsnpsincohort.${i}\_${j}.ge${no}.txt
+                fi
+
                 if [ "$nosnps" -gt "0" ]
                 then
                 chrno=`echo $chr |sed 's/chr//g'`     
@@ -209,17 +216,29 @@ awk '{if (NR==1) print $0,"N"; else print $0, '$Nsubj'}' OFS='\t' ${section_16_d
 mv ${section_16_dir}/gcta.${i}\_${j}.ge${no}.txt.tmp ${section_16_dir}/gcta.${i}\_${j}.ge${no}.txt
 
 nprobes2=`tail -n +2 ${section_16_dir}/gcta.${i}\_${j}.ge${no}.txt |awk '{print $1}'|sort -u |wc -l`
-zerosnps=`grep "no snps = 0"  ${section_16_dir}/logs_c/log.txt${batch_number} |wc -l`
-nprobes2=$(($nprobes2 + $zerosnps))
+
+#zerosnps=`grep "no snps = 0"  ${section_16_dir}/logs_c/log.txt${batch_number} |wc -l`
+
+sort -u ${section_16_dir}/probeswithoutsnpsincohort.${i}\_${j}.ge${no}.txt > ${section_16_dir}/probeswithoutsnpsincohort.${i}\_${j}.ge${no}.txt.tmp
+mv ${section_16_dir}/probeswithoutsnpsincohort.${i}\_${j}.ge${no}.txt.tmp ${section_16_dir}/probeswithoutsnpsincohort.${i}\_${j}.ge${no}.txt
+
+zeroprobes0=`cat ${section_16_dir}/probeswithoutsnpsincohort.${i}\_${j}.ge${no}.txt |wc -l`
+
+zeroprobes=`tail -n +2 ${section_16_dir}/gcta.${i}\_${j}.ge${no}.txt |awk '{print $1}'|sort -u |grep -f ${section_16_dir}/probeswithoutsnpsincohort.${i}\_${j}.ge${no}.txt - |wc -l`
+#rm ${section_16_dir}/probeswithoutsnpsincohort.${i}\_${j}.ge${no}.txt
+
+echo "$nprobes2,$zeroprobes0, $zeroprobes"
+
+nprobes2=$(($nprobes2 + $zeroprobes0 - $zeroprobes))
 
 gzip ${section_16_dir}/gcta.${i}\_${j}.ge${no}.txt
 
 
 if [ $nprobes2 -eq $nprobes ]
     then
-    echo "Successfully completed ${batch_number}"
+    echo "Successfully completed ${batch_number} for $nprobes2 / $nprobes"
 else
-    echo "Completed $nprobes2 / $nprobes"
+    echo "error: Completed $nprobes2 / $nprobes"
 
     exit 1
 fi
