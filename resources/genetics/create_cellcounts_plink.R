@@ -70,15 +70,22 @@ m<-match(data$IID,cov$IID)
 data<-data.frame(data,cov[m,-1])
 smoking<-read.table(paste(smoking.pred,".txt",sep=""),header=T)
 m<-match(data$IID,smoking$IID)
-data<-data.frame(data,cov[m,-1],Smoking=smoking[m,-1])
+data<-data.frame(data,Smoking=smoking[m,-1])
 
 trait_var =traits[tr]
 
 data$trait <- data[[trait_var]]
 #data <- data[which(data$Sex!="NA" &data$trait!="NA"& data$trait!="na"&data$trait!="0"),] 
 
+# Plot covariates that are invariate
+if(var(data$trait,na.rm=T)!=0){
+
 
 data$trait <- as.numeric(data$trait)
+
+male <- data[which(data$Sex_factor=="M"),]
+female <- data[which(data$Sex_factor=="F"),]
+
 
 w.test=1
 if (length(which(names(data)%in%"Sex_factor"))>0 & length(rownames(table(data$Sex_factor)))>1){
@@ -101,7 +108,7 @@ legend("topright",sex_names,col=colors,lty=1)
 
 #### plot the distribution of raw phenotypes
 par(mfrow=c(2,2))
-if (w.test>0.05|length(rownames(table(data$Sex_factor)))==1){
+if (w.test>0.05|length(rownames(table(data$Sex_factor)))==1| var(female$trait,na.rm=T)==0 |var(male$trait,na.rm=T)==0) {
 data <- data[which(data$trait!="NA"& data$trait!="na"),]
 plot(data$trait, xlab="", main=paste("raw ",trait_var," (N=", length(which(!is.na(data$trait))),")",sep=""),cex.main=0.7)
 hist(data$trait, xlab="", main=paste("raw ",trait_var," (N=", length(which(!is.na(data$trait))),")",sep=""),cex.main=0.7)
@@ -190,6 +197,14 @@ abline(v=mean(male$trait,na.rm=T)+SD*sd(male$trait,na.rm=T),lty=2)
 qqnorm(male$trait, main=paste("raw ",trait_var," (males, N=", length(which(!is.na(male$trait))),"; shapiroP=",signif(as.numeric(shapiro.test(male$trait)[2]),2),")",sep=""),cex.main=0.7)
 qqline(male$trait)
 
+#remove outliers
+outlierm <- which(male$trait<(mean(male$trait,na.rm=T)-SD*sd(male$trait,na.rm=T)) | male$trait> (mean(male$trait,na.rm=T)+SD*sd(male$trait,na.rm=T)))
+if (length(outlierm)>0){male<-male[-outlierm,]}
+
+#transform
+male$trait <-qnorm((rank(male$trait,na.last="keep")-0.5)/sum(!is.na(male$trait)))
+male$trait_smokadj<-male$trait
+
 par(mfrow=c(2,2))
 plot(female$trait, xlab="", main=paste("raw ",trait_var," (females, N=", length(which(!is.na(female$trait))),")",sep=""),cex.main=0.7)
 hist(female$trait, xlab="", main=paste("raw ",trait_var," (females, N=", length(which(!is.na(female$trait))),")",sep=""),cex.main=0.7)
@@ -198,16 +213,10 @@ abline(v=mean(female$trait,na.rm=T)+SD*sd(female$trait,na.rm=T),lty=2)
 qqnorm(female$trait, main=paste("raw ",trait_var," (females, N=", length(which(!is.na(female$trait))),"; shapiroP=",signif(as.numeric(shapiro.test(female$trait)[2]),2),")",sep=""),cex.main=0.6)
 qqline(female$trait)
 
-#remove outliers
-outlierm <- which(male$trait<(mean(male$trait,na.rm=T)-SD*sd(male$trait,na.rm=T)) | male$trait> (mean(male$trait,na.rm=T)+SD*sd(male$trait,na.rm=T)))
-if (length(outlierm)>0){male<-male[-outlierm,]}
 outlierf <- which(female$trait<(mean(female$trait,na.rm=T)-SD*sd(female$trait,na.rm=T)) | female$trait> (mean(female$trait,na.rm=T)+SD*sd(female$trait,na.rm=T)))
 if (length(outlierf)>0){female<-female[-outlierf,]}
 
-#transform
-male$trait <-qnorm((rank(male$trait,na.last="keep")-0.5)/sum(!is.na(male$trait)))
 female$trait<-qnorm((rank(female$trait,na.last="keep")-0.5)/sum(!is.na(female$trait)))
-male$trait_smokadj<-male$trait
 female$trait_smokadj<-female$trait
 #adjust for covariates
 
@@ -315,6 +324,7 @@ qqline(outdata$trait_smokadj)
 }
 outdata.all<-cbind(outdata.all,outdata$trait)
 outdata.all2<-cbind(outdata.all2,outdata$trait_smokadj)
+}
 }
 dev.off()
 

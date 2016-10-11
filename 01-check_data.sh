@@ -190,12 +190,12 @@ then
 	section_message "summary"
 
 
-	Rscript resources/datacheck/collect_descriptives.R \
+		Rscript resources/datacheck/collect_descriptives.R \
 		${genetic_descriptives} \
 		${methylation_descriptives} \
 		${covariate_descriptives} \
 		${phenotype_descriptives} \
-		${cnv_descriptives}	\
+		${cnv_descriptives} \
 		${cohort_descriptives}
 fi
 
