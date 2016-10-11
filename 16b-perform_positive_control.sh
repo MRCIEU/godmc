@@ -24,35 +24,35 @@ fi
 
 echo "Perform GWAS on ${positive_control_cpg}"
 
-echo "CpG" "CHR" "SNP" "BP" "EA" "NEA" "EAF" "BETA" "SE" "P" | perl -pe 's/ /\t/g' > ${section_16_dir}/gcta.${positive_control_cpg}.positive.control
+echo "Chr" "SNP" "bp" "A1" "A2" "Freq" "b" "se"	"p" > gcta.${positive_control_cpg}.positive.control
 
-for chr in `seq 1 23`;
+for chr in `seq 1 22`;
+do
+
+echo "chromosome $chr"
+
 ${gcta} \
 	--bfile ${bfile} \
 	--mlma \
-	--reml-no-constrain \
-    --grm ${grmfile_all}_minus_chr${chrno} \
-	--reml-no-constrain \
+	--grm ${grmfile_all}_minus_chr${positive_control_snp_chr} \
 	--pheno ${methylation_processed_dir}/gcta.methylation.subset.1e-05_cg07[5-9].ge1.2.txt \
-	--mpheno $colno
+	--mpheno $colno \
 	--qcovar ${covariates_combined}.gcta.numeric \
 	--covar ${covariates_combined}.gcta.factor \
-	--out ${section_16_dir}/gcta.${positive_control_cpg}.positive.control.chr$chr \
 	--chr $chr
+	--out ${section_16_dir}/gcta.${positive_control_cpg}.positive.control.chr$chr \
 	--thread-num ${nthreads}
 
 tail -n +2 ${section_16_dir}/gcta.${positive_control_cpg}.positive.control.chr$chr >> ${section_16_dir}/gcta.${positive_control_cpg}.positive.control
-rm ${section_16_dir}/gcta.${positive_control_cpg}.positive.control.chr$chr
+
 fi
 
-
-tr -s " " < ${section_16_dir}/gcta.${positive_control_cpg}.positive.control.mlma | gzip -c > ${section_16_dir}/gcta.${positive_control_cpg}.positive.control.mlma.gz
-rm ${section_16_dir}/gcta.${positive_control_cpg}.positive.control.mlma
+tr -s " " < ${section_16_dir}/gcta.${positive_control_cpg}.positive.control | gzip -c > ${section_16_dir}/gcta.${positive_control_cpg}.positive.control.gz
 
 # make manhattan and qq plots
 
 Rscript resources/genetics/plot_gwas.R \
-	${section_16_dir}/gcta.${positive_control_cpg}.positive.control.mlma.gz \
+	${section_16_dir}/gcta.${positive_control_cpg}.positive.control.gz \
 	9 \
 	1 \
 	3 \

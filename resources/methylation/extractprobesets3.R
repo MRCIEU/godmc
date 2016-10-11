@@ -43,12 +43,13 @@ rntransform <- function(x)
 
 	methylationfile <- arguments[1]
 	cov_file <- arguments[2]
-	no.probesets <- as.numeric(arguments[3])
-    probedir<-arguments[4]
-    methylationdir <-arguments[5]
-    fam_file <- arguments[6]
-    cov_out <-arguments[7]
-    nthreads<-as.numeric(arguments[8])
+	mpcs <- arguments[3]
+    no.probesets <- as.numeric(arguments[4])
+    probedir<-arguments[5]
+    methylationdir <-arguments[6]
+    fam_file <- arguments[7]
+    cov_out <-arguments[8]
+    nthreads<-as.numeric(arguments[9])
   
 
     message("Reading methylation data...")
@@ -63,11 +64,19 @@ rntransform <- function(x)
 	covs <- subset(covs, IID %in% colnames(norm.beta), select=-c(IID))
     norm.beta <- norm.beta[, colnames(norm.beta) %in% rownames(covs)]
 
+    mpcs <- read.table(mpcs, he=T)
+    index <- apply(mpcs, 1, function(x) any(is.na(x) | is.nan(x) | is.infinite(x)))
+    mpcs <- mpcs[!index, ]
+    rownames(mpcs) <- mpcs$IID
+    mpcs <- subset(mpcs, IID %in% colnames(norm.beta), select=-c(IID))
+    norm.beta <- norm.beta[, colnames(norm.beta) %in% rownames(mpcs)]
+
     fam <- read.table(fam_file, he=F)
 	names(fam)[1:2]<-c("FID","IID")
 	rownames(fam)<-fam$IID
 	fam <- subset(fam, IID %in% colnames(norm.beta), select=-c(V3,V4,V5,V6))
     norm.beta <- norm.beta[, colnames(norm.beta) %in% fam$IID]
+    
     m<-match(fam$IID,colnames(norm.beta))
     norm.beta<-norm.beta[,m]
     n<-colnames(norm.beta)
@@ -133,6 +142,9 @@ rntransform <- function(x)
     message("Successfully extracted probes from beta matrix for probeset ",p)
     }
     
+    m<-match(row.names(covs),row.names(mpcs))
+    covs<-data.frame(covs,mpcs[m,])
+
     g1<-grep("genetic_pc",names(covs))
     covs<-covs[,-g1]
     
