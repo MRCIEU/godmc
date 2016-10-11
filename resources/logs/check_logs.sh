@@ -365,5 +365,44 @@ check_logs_15 () {
 }
 
 
+check_logs_16 () {
+
+	compare_version "16a"
+	if grep -i -q "success" ${section_16a_logfile}*; then
+		echo "16a-preparegctafiles.sh completed successfully."
+	else
+		echo "Problem: 16a-preparegctafiles.sh did not complete successfully"
+		exit 1
+	fi
+
+	compare_version "16a"
+	if grep -i -q "success" ${section_16b_logfile}*; then
+		echo "16b-perform_positive_control.sh completed successfully."
+	else
+		echo "Problem: 16b-perform_positive_control.sh did not complete successfully"
+		exit 1
+	fi
+
+	compare_version "16"
+	nbatch=`ls -l ${methylation_processed_dir}/methylation.subset*ge1.2.txt | wc -l`
+	nsuccess=`tail ${section_16c_logfile}* | grep -i "success" | wc -l`
+	if [ "${nbatch}" = "${nsuccess}" ]; then
+		echo "16-gcta.sh completed successfully for all batches"
+	else
+		echo "Problem: 16-gcta.sh only ${nsuccess} of ${nbatch} mQTL batches completed"
+		exit 1
+	fi
+
+	compare_version "16c"
+	if grep -i -q "success" ${section_16d_logfile}*; then
+		echo "16d-methQTL.plink.sh completed successfully."
+	else
+		echo "Problem: 16d-methQTL.plink.sh did not complete successfully"
+		exit 1
+	fi
+
+
+}
+
 
 
