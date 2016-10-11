@@ -375,7 +375,7 @@ check_logs_16 () {
 		exit 1
 	fi
 
-	compare_version "16a"
+	compare_version "16b"
 	if grep -i -q "success" ${section_16b_logfile}*; then
 		echo "16b-perform_positive_control.sh completed successfully."
 	else
@@ -383,17 +383,17 @@ check_logs_16 () {
 		exit 1
 	fi
 
-	compare_version "16"
+	compare_version "16c"
 	nbatch=`ls -l ${methylation_processed_dir}/methylation.subset*ge1.2.txt | wc -l`
 	nsuccess=`tail ${section_16c_logfile}* | grep -i "success" | wc -l`
 	if [ "${nbatch}" = "${nsuccess}" ]; then
-		echo "16-gcta.sh completed successfully for all batches"
+		echo "16c-gcta.sh completed successfully for all batches"
 	else
-		echo "Problem: 16-gcta.sh only ${nsuccess} of ${nbatch} mQTL batches completed"
+		echo "Problem: 16c-gcta.sh only ${nsuccess} of ${nbatch} mQTL batches completed"
 		exit 1
 	fi
 
-	compare_version "16c"
+	compare_version "16d"
 	if grep -i -q "success" ${section_16d_logfile}*; then
 		echo "16d-methQTL.plink.sh completed successfully."
 	else
