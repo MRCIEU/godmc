@@ -24,7 +24,7 @@ fi
 
 echo "Perform GWAS on ${positive_control_cpg}"
 
-echo "Chr" "SNP" "bp" "A1" "A2" "Freq" "b" "se"	"p" > gcta.${positive_control_cpg}.positive.control
+echo "Chr" "SNP" "bp" "A1" "A2" "Freq" "b" "se"	"p" > ${section_16_dir}/gcta.${positive_control_cpg}.positive.control
 
 for chr in `seq 1 22`;
 do
@@ -34,18 +34,18 @@ echo "chromosome $chr"
 ${gcta} \
 	--bfile ${bfile} \
 	--mlma \
-	--grm ${grmfile_all}_minus_chr${positive_control_snp_chr} \
+	--grm ${grmfile_all}_minus_chr$chr \
 	--pheno ${methylation_processed_dir}/gcta.methylation.subset.1e-05_cg07[5-9].ge1.2.txt \
 	--mpheno $colno \
 	--qcovar ${covariates_combined}.gcta.numeric \
 	--covar ${covariates_combined}.gcta.factor \
-	--chr $chr
+	--chr $chr \
 	--out ${section_16_dir}/gcta.${positive_control_cpg}.positive.control.chr$chr \
 	--thread-num ${nthreads}
 
 tail -n +2 ${section_16_dir}/gcta.${positive_control_cpg}.positive.control.chr$chr >> ${section_16_dir}/gcta.${positive_control_cpg}.positive.control
 
-fi
+done
 
 tr -s " " < ${section_16_dir}/gcta.${positive_control_cpg}.positive.control | gzip -c > ${section_16_dir}/gcta.${positive_control_cpg}.positive.control.gz
 
