@@ -18,33 +18,33 @@ i="1e-05"
 no="1.2"
 
 
-#	sftp ${sftp_username}@${sftp_address}:${sftp_path}/resources/phase2 <<EOF
-#mget cis_trans.1e-05_*.ge${no}.allcohorts.txt.gz
-#mget cis_trans.1e-05_*.ge${no}.allcohorts.probes
-#EOF
+	sftp ${sftp_username}@${sftp_address}:${sftp_path}/resources/phase2 <<EOF
+mget cis_trans.1e-05_*.ge${no}.allcohorts.txt.gz
+mget cis_trans.1e-05_*.ge${no}.allcohorts.probes
+EOF
 
-#	mv cis_trans.1e-05_*.ge${no}.allcohorts.txt.gz ${home_directory}/resources/phase2
-#	mv cis_trans.1e-05_*.ge${no}.allcohorts.probes ${home_directory}/resources/phase2
+	mv cis_trans.1e-05_*.ge${no}.allcohorts.txt.gz ${home_directory}/resources/phase2
+	mv cis_trans.1e-05_*.ge${no}.allcohorts.probes ${home_directory}/resources/phase2
 
 
 
-#for i in `seq 1 22`; do
+for i in `seq 1 22`; do
 
-#echo "Creating kinship matrices minus chromosome ${i}"
-#zcat ${hm3_snps} | grep -v -w chr${i} |sort -u > $genetic_processed_dir/grm_minus_chr${i}.snps
+echo "Creating kinship matrices minus chromosome ${i}"
+zcat ${hm3_snps} | grep -v -w chr${i} |sort -u > $genetic_processed_dir/grm_minus_chr${i}.snps
 
-#${plink} \
-#	--bfile ${bfile} \
-#	--extract $genetic_processed_dir/grm_minus_chr${i}.snps \
-#	--maf ${grm_maf_cutoff} \
-#	--make-grm-bin \
-#	--out ${grmfile_all}_minus_chr${i} \
-#	--threads ${nthreads} \
-#	--autosome
+${plink} \
+	--bfile ${bfile} \
+	--extract $genetic_processed_dir/grm_minus_chr${i}.snps \
+	--maf ${grm_maf_cutoff} \
+	--make-grm-bin \
+	--out ${grmfile_all}_minus_chr${i} \
+	--threads ${nthreads} \
+	--autosome
 
-#rm $genetic_processed_dir/grm_minus_chr${i}.snps
+rm $genetic_processed_dir/grm_minus_chr${i}.snps
 
-#done
+done
 
 echo "Creating files for gcta"
 
@@ -59,21 +59,21 @@ echo "Creating files for gcta"
 	${covariates_combined}.gcta \
 	${nthreads}
 
-#echo "Creating files for plink"
-#Rscript ./resources/methylation/convertbetamatrix.R \
-#	${methylation_adjusted_pcs}.RData \
-#	${#cpgs[@]} \
-#	${methylation_processed_dir} \
-#	./resources/phase2 \
-#	${bfile}.fam
+echo "Creating files for plink"
+Rscript ./resources/methylation/convertbetamatrix.R \
+	${methylation_adjusted_pcs}.RData \
+	${#cpgs[@]} \
+	${methylation_processed_dir} \
+	./resources/phase2 \
+	${bfile}.fam
 
-#echo "Calculating MAF"
-#${plink} \
-#    --bfile ${bfile} \
-#    --freq gz \
-#    --out ${section_16_dir}/data
+echo "Calculating MAF"
+${plink} \
+    --bfile ${bfile} \
+    --freq gz \
+    --out ${section_16_dir}/data
 
-#zcat ${section_16_dir}/data.frq.gz | sed -e 's/[[:space:]]\+/ /g' |perl -pe 's/^ //g'|perl -pe 's/ /\t/g'|awk -v OFS='\t' '{ if(NR>1) print $1,$2,$3,$4,$5,$6/2; else print $0;}'|perl -pe 's/A1/EA/g' |perl -pe 's/A2/NEA/g' |perl -pe 's/MAF/EAF/g'|perl -pe 's/NCHROBS/N/g' |perl -pe 's/ /\t/g'>${section_16_dir}/data.frq.tmp
+zcat ${section_16_dir}/data.frq.gz | sed -e 's/[[:space:]]\+/ /g' |perl -pe 's/^ //g'|perl -pe 's/ /\t/g'|awk -v OFS='\t' '{ if(NR>1) print $1,$2,$3,$4,$5,$6/2; else print $0;}'|perl -pe 's/A1/EA/g' |perl -pe 's/A2/NEA/g' |perl -pe 's/MAF/EAF/g'|perl -pe 's/NCHROBS/N/g' |perl -pe 's/ /\t/g'>${section_16_dir}/data.frq.tmp
 
 echo "Successfully completed script 16a"
 
