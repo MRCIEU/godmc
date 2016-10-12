@@ -98,12 +98,12 @@ par(mfrow=c(2,2))
 colors <- 1:length(sex_names)
 plot(density( data$trait[which(data$Sex_factor==sex_names[1])],na.rm=T),xlab="",main=paste(trait_var," density plot by Sex",sep=""), col=colors[1])
 for (j in 2:3) { ## a maximum of 3 types of Sex including unknown
-	subset <- data$trait[which(data$Sex_factor==sex_names[j] & !is.na(data$trait))]
-	if (length(sex_names) >=j & length(subset) >0) {
-		lines(density(subset,na.rm=T),xlab="",col=colors[j], main="")
-	}
+    subset <- data$trait[which(data$Sex_factor==sex_names[j] & !is.na(data$trait))]
+    if (length(sex_names) >=j & length(subset) >0) {
+        lines(density(subset,na.rm=T),xlab="",col=colors[j], main="")
+    }
 }
-legend("topright",sex_names,col=colors,lty=1)	
+legend("topright",sex_names,col=colors,lty=1)   
 }
 
 #### plot the distribution of raw phenotypes
