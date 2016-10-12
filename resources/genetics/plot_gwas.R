@@ -18,7 +18,7 @@ main <- function()
 
 	message("Reading in GWAS results")
 	a <- as.data.frame(fread(paste("zcat", in_file), header=header), stringsAsFactors=FALSE)
-
+	
 	if(length(unique(a[,chr_column])) > 30)
 	{
 		stop("Wrong chromosome column specified")
@@ -34,14 +34,20 @@ main <- function()
 		stop("Negative values in position column")
 	}
 
-	if(length(which(a[,pval_column]==0)))
+	if(any(a[, pval_column] == 0))
 	{
 		w<-which(a[,pval_column]==0)
 		a[w,pval_column]<-as.numeric(.Machine$double.xmin)
 	}
 
+	w<-which(a$CHR!=control_chr)
+	a_minuschr<-a[w,]
+
 	message("Generating QQ-plot")
 	lambda <- qqplot_pval(a[,pval_column], plot=TRUE, filename=paste0(out, "_qqplot.png"))
+
+	message("Generating QQ-plot without cis chromosome")
+	lambda <- qqplot_pval(a_minuschr[,pval_column], plot=TRUE, filename=paste0(out,"_without_chr" ,control_chr,"_qqplot.png"))
 
 	message("Generating Manhattan plot")
 	manhattan_plot(a[,pval_column], a[,chr_column], a[,pos_column], filename=paste0(out, "_manhattan.png"))

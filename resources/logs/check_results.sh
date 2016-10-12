@@ -296,5 +296,18 @@ check_results_15 () {
 
 }
 
+check_results_16 () {
+
+	nbatch=`ls -l ${methylation_processed_dir}/methylation.subset*ge1.2.txt | wc -l`
+	nsuccess=`ls -l ${section_16_dir}/gcta*.txt | wc -l`
+	if [ "${nsuccess}" = "${nbatch}" ]; then
+		echo "All GCTA results present"
+	else
+		echo "Problem: Only ${nsuccess} of ${nbatch} GCTA mQTL results files are present"
+		exit 1
+	fi
+
+}
+
 
 
