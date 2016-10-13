@@ -51,7 +51,7 @@ do
     echo $probe
     zcat ${home_directory}/resources/phase2/cis_trans.${i}\_${j}.ge${no}.allcohorts.txt.gz |fgrep $probe |awk '{print $2}' > ${genetic_processed_dir}/cis_trans.${i}\_${probe}.ge${no}.allcohorts.snps
 
-        probes=`grep -w $probe ${methylation_processed_dir}/methylation.subset.${i}\_${j}.ge${no}.txt | wc -l`
+        probes=`grep -w $probe ${methylation_processed_dir}/plink.methylation.subset.${i}\_${j}.ge${no}.txt | wc -l`
 
         if [ "$probes" -gt "0" ]   
         then
@@ -64,7 +64,7 @@ do
             
             #check whether right probes are selected from methylation matrix
             probecheck=`expr $Counter + 2`
-            probecheck2=`head -n1 ${methylation_processed_dir}/gcta.methylation.subset.${i}\_${j}.ge${no}.txt | cut -f $probecheck -d" "` 
+            probecheck2=`head -n1 ${methylation_processed_dir}/plink.methylation.subset.${i}\_${j}.ge${no}.txt | cut -f $probecheck -d" "` 
 
             echo "$probe is $probecheck2"
             
