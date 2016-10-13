@@ -20,11 +20,13 @@ then
 	
 fi
 
+colno=$((colno - 2))
+
 # Perform gcta
 
 echo "Perform GWAS on ${positive_control_cpg}"
 
-echo "Chr" "SNP" "bp" "A1" "A2" "Freq" "b" "se"	"p" > ${section_16_dir}/gcta.${positive_control_cpg}.positive.control
+echo "Chr" "SNP" "bp" "A1" "A2" "Freq" "b" "se"	"p" |perl -pe 's/ /\t/g' > ${section_16_dir}/gcta.${positive_control_cpg}.positive.control
 
 for chr in `seq 1 22`;
 do
@@ -51,7 +53,7 @@ tr -s " " < ${section_16_dir}/gcta.${positive_control_cpg}.positive.control | gz
 
 # make manhattan and qq plots
 
-Rscript resources/genetics/plot_gwas.R \
+echo Rscript resources/genetics/plot_gwas.R \
 	${section_16_dir}/gcta.${positive_control_cpg}.positive.control.gz \
 	9 \
 	1 \
