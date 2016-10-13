@@ -39,8 +39,7 @@ main <- function()
 		w<-which(a[,pval_column]==0)
 		a[w,pval_column]<-as.numeric(.Machine$double.xmin)
 	}
-
-	w<-which(a$CHR!=control_chr)
+	w<-which(a[,chr_column]!=control_chr)
 	a_minuschr<-a[w,]
 
 	message("Generating QQ-plot")
