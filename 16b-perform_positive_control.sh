@@ -43,7 +43,7 @@ ${gcta} \
 	--out ${section_16_dir}/gcta.${positive_control_cpg}.positive.control.chr$chr \
 	--thread-num ${nthreads}
 
-tail -n +2 ${section_16_dir}/gcta.${positive_control_cpg}.positive.control.chr$chr >> ${section_16_dir}/gcta.${positive_control_cpg}.positive.control
+tail -n +2 ${section_16_dir}/gcta.${positive_control_cpg}.positive.control.chr$chr.mlma >> ${section_16_dir}/gcta.${positive_control_cpg}.positive.control
 
 done
 
