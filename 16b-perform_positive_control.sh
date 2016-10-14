@@ -67,9 +67,12 @@ Rscript resources/genetics/plot_gwas.R \
 
 
 
+if [ -f "${section_16_dir}/gcta.${positive_control_cpg}.positive.control.gz" ]
+then 
+rm ${section_16_dir}/gcta.${positive_control_cpg}.positive.control.chr*.mlma
+fi
 
-
-
+echo "Successfully completed script 16b"
 
 
 
