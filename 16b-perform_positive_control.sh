@@ -53,7 +53,7 @@ tr -s " " < ${section_16_dir}/gcta.${positive_control_cpg}.positive.control | gz
 
 # make manhattan and qq plots
 
-echo Rscript resources/genetics/plot_gwas.R \
+Rscript resources/genetics/plot_gwas.R \
 	${section_16_dir}/gcta.${positive_control_cpg}.positive.control.gz \
 	9 \
 	1 \
