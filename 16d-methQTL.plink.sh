@@ -82,6 +82,7 @@ do
                 --pheno ${methylation_processed_dir}/plink.methylation.subset.${i}\_${j}.ge${no}.txt \
                 --mpheno $Counter \
                 --out ${section_16_dir}/plink.${i}\_${probe}.ge${no} \
+                --allow-no-sex \
                 --assoc \
                 --threads ${nthreads}
 
