@@ -60,6 +60,11 @@ rntransform <- function(x)
     covs <- read.table(cov_file, he=T)
 	index <- apply(covs, 1, function(x) any(is.na(x) | is.nan(x) | is.infinite(x)))
 	covs <- covs[!index, ]
+
+    index <- sapply(covs, var, na.rm=T) == 0
+    index[is.na(index)] <- FALSE
+    covs <- covs[,!index]
+
 	rownames(covs) <- covs$IID
 	covs <- subset(covs, IID %in% colnames(norm.beta), select=-c(IID))
     norm.beta <- norm.beta[, colnames(norm.beta) %in% rownames(covs)]
@@ -144,6 +149,8 @@ rntransform <- function(x)
     
     m<-match(row.names(covs),row.names(mpcs))
     covs<-data.frame(covs,mpcs[m,])
+
+    
 
     g1<-grep("genetic_pc",names(covs))
     covs<-covs[,-g1]
