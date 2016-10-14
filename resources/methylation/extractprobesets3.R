@@ -60,6 +60,12 @@ rntransform <- function(x)
     covs <- read.table(cov_file, he=T)
 	index <- apply(covs, 1, function(x) any(is.na(x) | is.nan(x) | is.infinite(x)))
 	covs <- covs[!index, ]
+
+    # Find all covariates that are invariate and remove
+    index <- sapply(covs, var, na.rm=T) == 0
+    index[is.na(index)] <- FALSE
+    covs <- covs[,!index]
+
 	rownames(covs) <- covs$IID
 	covs <- subset(covs, IID %in% colnames(norm.beta), select=-c(IID))
     norm.beta <- norm.beta[, colnames(norm.beta) %in% rownames(covs)]
