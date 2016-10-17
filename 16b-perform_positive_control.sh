@@ -39,8 +39,8 @@ ${gcta} \
 	--grm ${grmfile_all}_minus_chr$chr \
 	--pheno ${methylation_processed_dir}/gcta.methylation.subset.1e-05_cg07[5-9].ge1.2.txt \
 	--mpheno $colno \
-	--qcovar ${covariates_combined}.gcta.factor \
-	--covar ${covariates_combined}.gcta.numeric \
+	--qcovar ${covariates_combined}.gcta.numeric \
+	--covar ${covariates_combined}.gcta.factor \
 	--chr $chr \
 	--out ${section_16_dir}/gcta.${positive_control_cpg}.positive.control.chr$chr \
 	--thread-num ${nthreads}
