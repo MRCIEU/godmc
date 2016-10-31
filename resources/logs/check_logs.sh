@@ -195,11 +195,20 @@ check_logs_05 () {
 	nbatch=`ls -l ${tabfile}.tab.* | wc -l`
 	nsuccess=`tail ${section_05_logfile}* | grep -i "success" | wc -l`
 	if [ "${nbatch}" = "${nsuccess}" ]; then
-		echo "05-mqtl.sh completed successfully for all batches"
+		echo "check1: 05-mqtl.sh completed successfully for all batches"
 	else
-		echo "Problem: 05-mqtl.sh only ${nsuccess} of ${nbatch} mQTL batches completed"
+		echo "Problem check1: 05-mqtl.sh only ${nsuccess} of ${nbatch} mQTL batches completed"
 		exit 1
 	fi
+
+	ncomplete=`tail ${section_05_logfile}* | grep -i "100.00% done" | wc -l`
+	if [ "${nbatch}" = "${ncomplete}" ]; then
+		echo "check2: 05-mqtl.sh completed successfully for all batches"
+	else
+		echo "Problem check2: 05-mqtl.sh only ${ncomplete} of ${nbatch} mQTL batches completed"
+		exit 1
+	fi
+
 
 }
 
