@@ -127,7 +127,7 @@ if (length(outlier)>0){data<-data[-outlier,]}
 data$trait <- qnorm((rank(data$trait,na.last="keep")-0.5)/sum(!is.na(data$trait)))
 data$trait_smokadj<-data$trait
 #adjust for age
-if(length(which(names(data)%in%c("Age_numeric")))==1){
+if(length(which(names(data)%in%c("Age_numeric")))==1 & var(data$Age_numeric,na.rm=T)!=0){
 
 fit1<- lm(trait ~ Age_numeric, data=data)
 fit2<- lm(trait ~ Age_numeric+I(Age_numeric^2), data=data)
@@ -153,7 +153,13 @@ if(length(table(na.omit(data$Age_numeric)))==1){
 data$trait_smokadj<-resid(fit5)
 }
 
-}
+}else{
+        fit5<- lm(trait ~ Smoking, data=data) # Age is invariant, only fit smoking 
+        if(length(table(na.omit(data$Age_numeric)))==1){
+          data$trait_smokadj<-resid(fit5)
+        }
+      }
+	  
 #standardise
 nmiss<-which(!is.na(data[,"trait"]))
 data[nmiss,"trait"]<-(data[nmiss,"trait"]-mean(data[nmiss,"trait"]))/sd(data[nmiss,"trait"])
@@ -220,7 +226,7 @@ female$trait<-qnorm((rank(female$trait,na.last="keep")-0.5)/sum(!is.na(female$tr
 female$trait_smokadj<-female$trait
 #adjust for covariates
 
-if(length(which(names(data)%in%"Age_numeric"))>0){
+if(length(which(names(data)%in%"Age_numeric"))>0 & var(data$Age_numeric,na.rm=T)!=0){
 
 fit1<- lm(trait ~ Age_numeric, data=male)
 fit2<- lm(trait ~ Age_numeric+I(Age_numeric^2), data=male)
@@ -270,7 +276,19 @@ female$trait_smokadj<-resid(fit5)
 if(length(table(na.omit(female$Age_numeric)))==1){
 female$trait_smokadj<-resid(fit5)
 }
-}
+}else{
+        
+        fit5<- lm(trait ~ Smoking, data=male) # Age is invariant, only fit smoking
+        if(length(table(na.omit(male$Age_numeric)))==1){
+          male$trait_smokadj<-resid(fit5)
+          
+        }
+        fit5<- lm(trait ~ Smoking, data=female) # Age is invariant, only fit smoking
+        if(length(table(na.omit(female$Age_numeric)))==1){
+          female$trait_smokadj<-resid(fit5)
+          
+        }
+      }
 
 #standardise
 nmiss_male<-which(!is.na(male[,"trait"]))
