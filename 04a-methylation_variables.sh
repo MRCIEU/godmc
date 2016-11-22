@@ -52,7 +52,7 @@ elif [ -f "${predicted_cellcounts}" ] && [ "${predicted_cellcounts_type}" != "ho
 then
 	echo "Your study will not be used for the cellcounts GWA meta-analysis - only Houseman predicted cellcounts are used"
 else
-	echo "Warning: The predicted cellcounts file ${predicted_cellcounts} or measured cellcounts file ${measured_cellcounts} doesn't exist. You have specified that cell counts are required. Please set 'predicted_cellcounts' to NULL if you want them to be estimated now, or specify a path to a file with the pre-specified cell counts."		
+	echo "Warning: The predicted cellcounts file ${predicted_cellcounts} doesn't exist. You have specified that cell counts are required. Please set 'predicted_cellcounts' to NULL if you want them to be estimated now, or specify a path to a file with the pre-specified cell counts."		
 fi
 	
 if [ -f "${cellcounts_gwa}" ]
