@@ -46,7 +46,6 @@ section_15_logfile="${section_15_dir}/logs/log.txt"
 section_16a_logfile="${section_16_dir}/logs_a/log.txt"
 section_16b_logfile="${section_16_dir}/logs_b/log.txt"
 section_16c_logfile="${section_16_dir}/logs_c/log.txt"
-section_16d_logfile="${section_16_dir}/logs_d/log.txt"
 
 # ID lists
 meth_ids="${home_directory}/processed_data/ids/meth_ids.txt"
@@ -178,6 +177,13 @@ resname="res"
 height_snps_wood="${home_directory}/resources/genetics/wood.height.snps_af0.1"
 height_snps="${home_directory}/processed_data/genetic_data/height"
 height_plot="${section_03_dir}/heightcor_plot.pdf"
+
+
+# Phase 2
+phase2_dir="${home_directory}/processed_data/phase2"
+phase2_assoclist="${phase2_dir}/assoclist"
+phase2_betas="${phase2_dir}/betas/subset_"
+
 
 
 # SFTP details
