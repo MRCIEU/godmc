@@ -35,8 +35,9 @@ message("Extracting CpGs from ", n_sets," probe sets")
 
 for (i in 1:n_sets)
 {
+	fn <- file.path(probedir, paste0("assoclist_", i, ".probes"))
 	message(i, " of ", n_sets)
-	probes <- scan(file.path(probedir, file_list[i]), what="character")
+	probes <- scan(fn, what="character")
 	m <- t(norm.beta[rownames(norm.beta) %in% probes, ])
 	nom <- colnames(m)
 	m <- matrix(as.character(m), nrow(m), ncol(m))
