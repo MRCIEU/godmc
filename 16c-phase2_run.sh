@@ -55,7 +55,7 @@ touch ${outfile}
 
 i=0
 nprobe=`cat ${phase2_assoclist}/assoclist_${batch_number}.probes | wc -l`
-for probe in `head ${phase2_assoclist}/assoclist_${batch_number}.probes`
+for probe in `cat ${phase2_assoclist}/assoclist_${batch_number}.probes`
 do
     i=$((i + 1))
 
@@ -136,7 +136,7 @@ do
 
         # Sort this file out
 
-        grep -w "ADD" ${phase2_scratch}/${probe}_trans.assoc.linear | awk -v probe="$probe" '{ print probe, $2, $6, $7, $7/$8, $9, "t" }' > ${phase2_scratch}/${probe}_trans.txt
+        grep -w "ADD" ${phase2_scratch}/${probe}_trans.assoc.linear | awk -v probe="$probe" '{ if ($7 != "NA") { print probe, $2, $6, $7, $7/$8, $9, "t" }}' > ${phase2_scratch}/${probe}_trans.txt
         cat ${phase2_scratch}/${probe}_trans.txt >> ${outfile}
 
     fi
