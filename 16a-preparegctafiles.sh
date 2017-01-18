@@ -8,13 +8,21 @@ print_version
 
 # Extract the SNP-CpG lists
 
-	sftp ${sftp_username}@${sftp_address}:${sftp_path}/resources/phase2 <<EOF
-mget cis_trans.1e-05_*.ge${no}.allcohorts.txt.gz
-mget cis_trans.1e-05_*.ge${no}.allcohorts.probes
+echo "Downloading list of putative associations"
+
+sftp ${sftp_username}@${sftp_address}:${sftp_path}/resources/phase2 <<EOF
+get phase2_list.tar
+get phase2_list.tar.md5sum
 EOF
 
-	mv cis_trans.1e-05_*.ge${no}.allcohorts.txt.gz ${home_directory}/resources/phase2
-	mv cis_trans.1e-05_*.ge${no}.allcohorts.probes ${home_directory}/resources/phase2
+echo "Checking download integrity"
+
+md5sum -c phase2_list.tar.md5sum
+
+echo "Extracting"
+
+tar xf phase2_list.tar -C ${phase2_assoclist}
+rm phase2_list.tar*
 
 
 # Create beta matrix for Plink
