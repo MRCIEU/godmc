@@ -298,14 +298,22 @@ check_results_15 () {
 
 check_results_16 () {
 
-	nbatch=`ls -l ${methylation_processed_dir}/methylation.subset*ge1.2.txt | wc -l`
-	nsuccess=`ls -l ${section_16_dir}/gcta*.txt | wc -l`
+	nbatch=`ls -l ${phase2_assoclist}/*.gz | wc -l`
+	nsuccess=`ls -l ${section_16_dir}/batch*gz | wc -l`
 	if [ "${nsuccess}" = "${nbatch}" ]; then
-		echo "All GCTA results present"
+		echo "All phase 2 results present"
 	else
-		echo "Problem: Only ${nsuccess} of ${nbatch} GCTA mQTL results files are present"
+		echo "Problem: Only ${nsuccess} of ${nbatch} phase 2 mQTL results files are present"
 		exit 1
 	fi
+
+	if [ -f "${section_16_dir}/control/cg07959070_without_chr22_qqplot.png" ]; then
+		echo "Control results present"
+	else 
+		echo "16b control not completed"
+		exit 1
+	fi
+
 
 }
 
