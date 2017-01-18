@@ -22,20 +22,39 @@ EOF
 echo "Creating files for plink"
 
 # Subset the adjusted beta matrix from 04d per probe set 
-Rscript ./resources/phase2/extract_relevant_probes.R \
+Rscript resources/phase2/extract_relevant_probes.R \
 	${methylation_adjusted_pcs}.RData \
 	${bfile}.fam \
 	${phase2_assoclist} \
 	${phase2_betas}
 
-echo "Calculating MAF"
+cut -d " " -f 1-2 ${phase2_betas}1 | sed 1d > keeplist.txt
+
+norig=`cat ${bfile}.fam | wc -l`
+nnow=`cat keeplist.txt | wc -l`
+
+echo "${norig} samples in original genotype file"
+echo "${nnow} samples with both genotype and methylation data"
+
 ${plink} \
-    --bfile ${bfile} \
+	--bfile ${bfile} \
+	--keep keeplist.txt \
+	--maf 0.01 \
+	--make-bed \
+	--out ${bfile}_phase2
+
+
+echo "Calculating MAF for individuals with CpG data"
+
+${plink} \
+    --bfile ${bfile}_phase2 \
     --freq gz \
     --out ${section_16_dir}/data
 
-zcat ${section_16_dir}/data.frq.gz | awk '{ print $1,$2,$3,$4,$5,$6 }' | gzip -c > temp
-mv temp ${section_16_dir}/data.frq.gz
+zcat ${section_16_dir}/data.frq.gz | awk '{ print $1,$2,$3,$4,$5,$6/2 }' | sed 1d | gzip -c > temp.gz
+zcat temp.gz | awk '{ print $2 }' | gzip > ${section_16_dir}/snplist.txt.gz
+mv temp.gz ${section_16_dir}/data.frq.gz
+rm keeplist.txt
 
 
 echo "Successfully completed script 16a"
