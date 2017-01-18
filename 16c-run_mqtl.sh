@@ -65,7 +65,7 @@ do
 
     # Get SNP list from assoc list
 
-    zgrep -w ${probe} ${phase2_assoclist}/assoclist_${batch_number}.gz > ${phase2_scratch}/${probe}.list
+    zgrep -w ${probe} ${phase2_assoclist}/assoclist_${batch_number}.gz | cat > ${phase2_scratch}/${probe}.list
     awk '{ if($4 == "c") { print $2 }}' ${phase2_scratch}/${probe}.list > ${phase2_scratch}/${probe}.cis_all
     awk '{ if($4 == "t") { print $2 }}' ${phase2_scratch}/${probe}.list > ${phase2_scratch}/${probe}.trans_all
 
@@ -110,7 +110,11 @@ do
 
         # Get best cis SNP and create covariate file
 
-        bestcis=`sort -gk 5 ${phase2_scratch}/${probe}_cis.txt | head -n 1 | awk '{ print $2 }'`
+        sort -gk 6 ${phase2_scratch}/${probe}_cis.txt | head -n 1 | awk '{ print $2, $6 }' > ${phase2_scratch}/${probe}.bestcis
+        echo "Best cis SNP:"
+        cat ${phase2_scratch}/${probe}.bestcis
+
+        bestcis=`awk '{ print $1 }' ${phase2_scratch}/${probe}.bestcis`
         plink --bfile ${bfile}_phase2 \
             --snp ${bestcis} \
             --recode A \

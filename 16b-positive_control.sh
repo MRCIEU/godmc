@@ -6,131 +6,123 @@ exec &> >(tee ${section_16b_logfile})
 print_version
 
 # Get the control CPG - in parameters file
-#positive_control_cpg="cg07959070"
-#positive_control_snp_chr="22"
-#positive_control_snp_pos="50053871"
-#positive_control_snp_window="100000"
-#positive_control_threshold="0.001"
 
-# subset of positive control
-pos_sub ="cg07[5-9]"
+# 1. Do GWAS on cg07959070 using just the cis markers
+# 2. Keep the best one, create covariate
+# 3. Check that it has p < 0.001
+# 4. Create covariate, do GWAS and create manhattan plot, calculate lambda
 
-# 128 subsets
-colno=`awk -F' ' ' { for (i = 1; i <= NF; ++i) print i, $i; exit } ' < ${methylation_processed_dir}/plink.methylation.subset.1e-05_${pos_sub}.ge1.2.txt |grep -w ${positive_control_cpg} |awk '{print $1}'`
+echo "Running positive control"
+echo "Testing cis-region of "
 
-if [ ! "$colno" -gt "2" ];
-then
-	echo "The positive control CPG ${positive_control_cpg} appears to be missing. Please check."
-	
+probe="cg07959070"
+batch_number="157"
+probe_chr="22"
+probe_pos="50053871"
+window_size="100000"
+pval_threshold="0.001"
+
+
+
+echo "Running positive control - This involves testing the cis-region of ${probe}, extracting the top hit and performing GWAS with the cis-hit fitted as a covariate"
+echo "There should be a strong signal at the cis region, and no evidence for population stratification in the GWAS"
+
+mkdir -p ${section_16_dir}/control
+
+
+# Get SNP list from assoc list
+
+zgrep -w ${probe} ${phase2_assoclist}/assoclist_${batch_number}.gz | cat > ${phase2_scratch}/${probe}.list
+
+
+
+awk '{ if($4 == "c") { print $2 }}' ${phase2_scratch}/${probe}.list > ${phase2_scratch}/${probe}.cis_all
+
+
+# Find SNPs present in current study
+
+zfgrep -wf ${phase2_scratch}/${probe}.cis_all ${section_16_dir}/snplist.txt.gz | cat > ${phase2_scratch}/${probe}.cis
+
+
+ncis=`cat ${phase2_scratch}/${probe}.cis | wc -l`
+
+if [ "$ncis" -gt "0" ]; then
+	echo "${probe}: ${ncis} cis SNPs"
+else 
+	echo "error: No cis SNPs identified. This is a problem, please contact developers."
+	exit 1
 fi
 
-colno=$((colno - 2))
-
-#find index cisSNP
-echo "Find cisindexSNP for ${positive_control_cpg}"
-
-#i="1e-05"
-#no="1.2"
-
-# GWAS of positive control probe
-${plink} \
-    --bfile ${bfile} \
-    --extract ${genetic_processed_dir}/cis_trans.1e-05_${pos_sub}.ge1.2.allcohorts.snps \
-    --pheno ${methylation_processed_dir}/plink.methylation.subset.1e-05_${pos_snp}.ge1.2.txt \
-    --mpheno $colno \
-    --out ${section_16_dir}/plink.${positive_control_cpg}.positive.control.chr$positive_control_snp_chr \
-    --allow-no-sex \
-    --assoc \
-    --threads ${nthreads}
-
-# Plink ouput: Chr   SNP  bp     A1         A2       Freq b       se     p
-
-# Extract most strongly associated cis SNP to positive control
-minp=`awk '{print $9}' <${section_16_dir}/plink.${positive_control_cpg}.positive.control.chr$positive_control_snp_chr.qassoc |sort -g |tail -2 |head -1`
-cissnp=`awk '$9=='$minp'{print $2}' <${section_16_dir}/plink.${positive_control_cpg}.positive.control.chr$positive_control_snp_chr.qassoc > ${section_16_dir}/plink.${positive_control_cpg}.positive.control.chr$positive_control_snp_chr.cissnp`
-
-echo "extract cissnp"
+# Do GWAS on cis SNPs
 
 ${plink} \
-	--bfile ${bfile} \
-	--allow-no-sex \
-	--extract ${section_16_dir}/plink.${positive_control_cpg}.positive.control.chr$positive_control_snp_chr.cissnp \
+	--bfile ${bfile}_phase2 \
+	--extract ${phase2_scratch}/${probe}.cis \
+	--assoc \
+	--pheno ${phase2_betas}${batch_number} \
+	--pheno-name ${probe} \
+	--out ${phase2_scratch}/${probe}_cis 
+
+sed 1d ${phase2_scratch}/${probe}_cis.qassoc | awk -v probe="$probe" '{ print probe, $2, $4, $5, $6, $9, "c" }' | sort -gk 6 > ${section_16_dir}/control/${probe}_cis.txt
+
+
+# Is the top hit p-value < threshold?
+
+nsig=`awk -v thresh="${pval_threshold}" '{ if($6 < thresh) { print $0 }}' ${section_16_dir}/control/${probe}_cis.txt | wc -l`
+
+head -n 1 ${section_16_dir}/control/${probe}_cis.txt | awk '{ print $2, $6 }' > ${phase2_scratch}/${probe}.bestcis
+echo "Best cis SNP:"
+cat ${phase2_scratch}/${probe}.bestcis
+
+echo "${nsig} SNP(s) with p-value < ${pval_threshold}"
+
+if [ "$nsig" -eq "0" ]; then
+	echo ""
+	echo ""
+	echo "WARNING: Control probe has not found a strong association"
+	echo "WARNING: Please contact developers"
+fi
+
+
+
+
+bestcis=`awk '{ print $1 }' ${phase2_scratch}/${probe}.bestcis`
+plink --bfile ${bfile}_phase2 \
+	--snp ${bestcis} \
 	--recode A \
-	--out ${section_16_dir}/plink.${positive_control_cpg}.positive.control.chr$positive_control_snp_chr
+	--out ${phase2_scratch}/${probe}
+sed 1d ${phase2_scratch}/${probe}.raw | awk '{ print $1, $2, $7 }' > ${phase2_scratch}/${probe}.cov
 
-# Include cisSNP as a covariate in reg
-	
-	echo "include cisSNP in GWAS of positive control"
+echo "Running GWAS with cis-SNP fitted as covariate"
 
-# Gen covar file? --covar
-# Condition on SNP? --condition
-	
-######### COME BACK TO THIS	- written for covar files of GCTA
-awk 'NR>1 {print $7}' < ${section_16_dir}/plink.${positive_control_cpg}.positive.control.chr$positive_control_snp_chr.raw > ${section_16_dir}/plink.${positive_control_cpg}.positive.control.chr$positive_control_snp_chr.cissnp.tmp
-paste ${covariates_combined}.plink ${section_16_dir}/plink.${positive_control_cpg}.positive.control.chr$positive_control_snp_chr.tmp |perl -pe 's/\t/ /g' > ${covariates_combined}.plink.cis
+plink \
+	--bfile ${bfile}_phase2 \
+	--linear \
+	--pheno ${phase2_betas}${batch_number} \
+	--pheno-name ${probe} \
+	--covar ${phase2_scratch}/${probe}.cov \
+	--out ${section_16_dir}/control/${probe}
 
-echo "Chr" "SNP" "bp" "A1" "A2" "Freq" "b" "se"	"p" |perl -pe 's/ /\t/g' > ${section_16_dir}/plink.${positive_control_cpg}.positive.control.cis
-########
+rm -f ${section_16_dir}/control/${probe}.assoc.linear.gz
 
-# Perform GWAS on positive control
+grep -w "ADD" ${section_16_dir}/control/${probe}.assoc.linear | gzip -c > ${section_16_dir}/control/${probe}.assoc.linear.gz
 
-echo "Perform GWAS on ${positive_control_cpg}"
+rm ${section_16_dir}/control/${probe}.assoc.linear
 
-${plink} \
-    --bfile ${bfile} \
-    --extract ${genetic_processed_dir}/cis_trans.1e-05_${pos.sub}.ge1.2.allcohorts.snps \
-    --pheno ${methylation_processed_dir}/plink.methylation.subset.1e-05_${pos_snp}.ge1.2.txt \
-    --mpheno $colno \
-	--
-    --out plink.${positive_control_cpg}.positive.control.chr$positive_control_snp_chr.cis \
-    --allow-no-sex \
-    --assoc \
-    --threads ${nthreads}
-
-
-# Format Results
-
-############# Amend this - from 16c-run_mqtl.sh
-sed 's/^/'$probe'/' <${section_16_dir}/plink.${i}\_${probe}.ge${no}.qassoc | perl -pe 's/  \+/ /g'  >${methylation_processed_dir}/plink.${i}\_${probe}.ge${no}.qassoc.tmp
-            tail -n +2 ${methylation_processed_dir}/plink.${i}\_${probe}.ge${no}.qassoc.tmp >>${section_16_dir}/plink.${i}\_${j}.ge${no}.txt
-        
-            rm ${methylation_processed_dir}/plink.${i}\_${probe}.ge${no}.qassoc.tmp
-            rm ${section_16_dir}/plink.${i}\_${probe}.ge${no}.qassoc
-            rm ${section_16_dir}/plink.${i}\_${probe}.ge${no}.log
-            rm ${genetic_processed_dir}/cis_trans.${i}\_${probe}.ge${no}.allcohorts.snps	
-
-tail -n +2 ${section_16_dir}/gcta.${positive_control_cpg}.positive.control.chr$chr.cis.mlma >> ${section_16_dir}/gcta.${positive_control_cpg}.positive.control.cis
-###############
-
-# Compress
-tr -s " " < ${section_16_dir}/plink.${positive_control_cpg}.positive.control.cis | gzip -c > ${section_16_dir}/plink.${positive_control_cpg}.positive.control.cis.gz
-
-# make manhattan and qq plots
 
 Rscript resources/genetics/plot_gwas.R \
-	${section_16_dir}/gcta.${positive_control_cpg}.positive.control.cis.gz \
+	${section_16_dir}/control/${probe}.assoc.linear.gz \
 	9 \
 	1 \
 	3 \
-	TRUE \
-	${positive_control_snp_chr} \
-	${positive_control_snp_pos} \
-	${positive_control_snp_window} \
-	${positive_control_threshold} \
-	${section_16_dir}/plink.${positive_control_cpg}.positive.control.cis
+	FALSE \
+	${probe_chr} \
+	${probe_pos} \
+	${window_size} \
+	${pval_threshold} \
+	${section_16_dir}/control/${probe}
 
 
-######### I think this is here to remove non cis effect positive control? (GCTA)
-if [ -f "${section_16_dir}/plink.${positive_control_cpg}.positive.control.gz" ]
-then 
-rm ${section_16_dir}/gcta.${positive_control_cpg}.positive.control.chr*.mlma
-fi
-#########
 
 echo "Successfully completed script 16b"
-
-
-
-
-
 

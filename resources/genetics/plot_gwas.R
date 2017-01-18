@@ -34,13 +34,13 @@ main <- function()
 		stop("Negative values in position column")
 	}
 
-	if(any(a[, pval_column] == 0))
+	if(any(a[, pval_column] == 0, na.rm=TRUE))
 	{
-		w<-which(a[,pval_column]==0)
-		a[w,pval_column]<-as.numeric(.Machine$double.xmin)
+		w <- which(a[,pval_column]==0)
+		a[w,pval_column] <- as.numeric(.Machine$double.xmin)
 	}
-	w<-which(a[,chr_column]!=control_chr)
-	a_minuschr<-a[w,]
+	w <- which(a[,chr_column]!=control_chr)
+	a_minuschr <- a[w,]
 
 	message("Generating QQ-plot")
 	lambda <- qqplot_pval(a[,pval_column], plot=TRUE, filename=paste0(out, "_qqplot.png"))
