@@ -53,8 +53,31 @@ fi
 
 touch ${outfile}
 
+
+
 i=0
 nprobe=`cat ${phase2_assoclist}/assoclist_${batch_number}.probes | wc -l`
+
+zcat ${phase2_assoclist}/assoclist_${batch_number}.gz | cut -d " " -f 2 | sort -u > ${phase2_assoclist}/assoclist_${batch_number}.snps
+
+${plink} --noweb \
+    --bfile ${bfile}_phase2 \
+    --extract ${phase2_assoclist}/assoclist_${batch_number}.snps \
+    --recode A \
+    --out ${phase2_scratch}/geno_${batch_number}
+
+gzip -f ${phase2_scratch}/geno_${batch_number}.raw
+
+
+Rscript phase2_analysis.R \
+    ${phase2_scratch}/geno_${batch_number}.raw.gz \
+    ${phase2_betas}${batch_number} \
+    ${phase2_assoclist}/assoclist_${batch_number}.gz \
+    ${outfile}
+
+
+snplist=`
+
 for probe in `cat ${phase2_assoclist}/assoclist_${batch_number}.probes`
 do
     i=$((i + 1))
@@ -88,7 +111,7 @@ do
 
         # Do GWAS
 
-        ${plink} \
+        ${plink} --noweb \
             --bfile ${bfile}_phase2 \
             --extract ${phase2_scratch}/${probe}.cis \
             --assoc \
@@ -115,7 +138,8 @@ do
         cat ${phase2_scratch}/${probe}.bestcis
 
         bestcis=`awk '{ print $1 }' ${phase2_scratch}/${probe}.bestcis`
-        plink --bfile ${bfile}_phase2 \
+        ${plink} --noweb \
+            --bfile ${bfile}_phase2 \
             --snp ${bestcis} \
             --recode A \
             --out ${phase2_scratch}/${probe}
@@ -124,7 +148,7 @@ do
 
         # Run linear regression on trans snps
 
-        ${plink} \
+        ${plink} --noweb \
             --bfile ${bfile}_phase2 \
             --extract ${phase2_scratch}/${probe}.trans \
             --linear \
@@ -146,7 +170,7 @@ do
 
     if [ "$ncis" -eq "0" ] && [ "$ntrans" -gt "0" ]; then
 
-        ${plink} \
+        ${plink} --noweb \
             --bfile ${bfile}_phase2 \
             --extract ${phase2_scratch}/${probe}.trans \
             --assoc \

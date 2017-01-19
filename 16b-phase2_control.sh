@@ -55,7 +55,7 @@ fi
 
 # Do GWAS on cis SNPs
 
-${plink} \
+${plink} --noweb \
 	--bfile ${bfile}_phase2 \
 	--extract ${phase2_scratch}/${probe}.cis \
 	--assoc \
@@ -87,7 +87,8 @@ fi
 
 
 bestcis=`awk '{ print $1 }' ${phase2_scratch}/${probe}.bestcis`
-plink --bfile ${bfile}_phase2 \
+${plink} --noweb \
+	--bfile ${bfile}_phase2 \
 	--snp ${bestcis} \
 	--recode A \
 	--out ${phase2_scratch}/${probe}
@@ -95,7 +96,7 @@ sed 1d ${phase2_scratch}/${probe}.raw | awk '{ print $1, $2, $7 }' > ${phase2_sc
 
 echo "Running GWAS with cis-SNP fitted as covariate"
 
-plink \
+${plink} --noweb \
 	--bfile ${bfile}_phase2 \
 	--linear \
 	--pheno ${phase2_betas}${batch_number} \

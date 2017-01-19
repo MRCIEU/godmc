@@ -44,7 +44,7 @@ nnow=`cat keeplist.txt | wc -l`
 echo "${norig} samples in original genotype file"
 echo "${nnow} samples with both genotype and methylation data"
 
-${plink} \
+${plink} --noweb \
 	--bfile ${bfile} \
 	--keep keeplist.txt \
 	--maf 0.01 \
@@ -54,7 +54,7 @@ ${plink} \
 
 echo "Calculating MAF for individuals with CpG data"
 
-${plink} \
+${plink} --noweb \
     --bfile ${bfile}_phase2 \
     --freq gz \
     --out ${section_16_dir}/data
