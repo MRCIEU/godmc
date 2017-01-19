@@ -65,6 +65,6 @@ Rscript resources/phase2/run_analysis.R \
     ${section_16_dir}/data.frq.gz \
     ${outfile}
 
-rm ${phase2_scratch}/geno_${batch_number}.raw.gz
+rm -f ${phase2_scratch}/geno_${batch_number}.*
 
 echo "Successfully completed batch"

@@ -29,9 +29,16 @@ freq_file <- arguments[4]
 out_file <- arguments[5]
 
 
+message("Reading SNP data")
 snp <- fread(paste0("zcat ", snp_file))
+
+message("Reading CPG data")
 cpg <- fread(cpg_file)
+
+message("Reading association list")
 assoc <- fread(paste0("zcat ", assoc_file))
+
+message("Reading SNP frequencies")
 freq <- fread(paste0("zcat ", freq_file))
 
 # SNP
@@ -81,6 +88,13 @@ assoc$y <- match(assoc$V3, colnames(cpg))
 all(colnames(snp)[assoc$x] == assoc$V2)
 all(colnames(cpg)[assoc$y] == assoc$V3)
 
+
+message("\n\n")
+message("Number of individuals: ", nrow(cpg))
+message("Number of CpGs: ", ncol(cpg))
+message("Number of SNPs: ", ncol(snp))
+message("Number of associations: ", nrow(assoc))
+message("\n\n")
 
 
 # ASSOC for CIS
