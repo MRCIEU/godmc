@@ -59,6 +59,7 @@ ${plink} --noweb \
 	--bfile ${bfile}_phase2 \
 	--extract ${phase2_scratch}/${probe}.cis \
 	--assoc \
+	--allow-no-sex \
 	--pheno ${phase2_betas}${batch_number} \
 	--pheno-name ${probe} \
 	--out ${phase2_scratch}/${probe}_cis 
@@ -99,6 +100,7 @@ echo "Running GWAS with cis-SNP fitted as covariate"
 ${plink} --noweb \
 	--bfile ${bfile}_phase2 \
 	--linear \
+	--allow-no-sex \
 	--pheno ${phase2_betas}${batch_number} \
 	--pheno-name ${probe} \
 	--covar ${phase2_scratch}/${probe}.cov \

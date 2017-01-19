@@ -115,6 +115,7 @@ do
             --bfile ${bfile}_phase2 \
             --extract ${phase2_scratch}/${probe}.cis \
             --assoc \
+            --allow-no-sex \
             --pheno ${phase2_betas}${batch_number} \
             --pheno-name ${probe} \
             --out ${phase2_scratch}/${probe}_cis 
@@ -152,6 +153,7 @@ do
             --bfile ${bfile}_phase2 \
             --extract ${phase2_scratch}/${probe}.trans \
             --linear \
+            --allow-no-sex \
             --pheno ${phase2_betas}${batch_number} \
             --pheno-name ${probe} \
             --covar ${phase2_scratch}/${probe}.cov \
@@ -174,6 +176,7 @@ do
             --bfile ${bfile}_phase2 \
             --extract ${phase2_scratch}/${probe}.trans \
             --assoc \
+            --allow-no-sex \
             --pheno ${phase2_betas}${batch_number} \
             --pheno-name ${probe} \
             --out ${phase2_scratch}/${probe}_trans
