@@ -34,166 +34,37 @@ fi
 
 echo "Performing section ${batch_number} of ${nbatch}"
 
-outfile="${section_16_dir}/batch_${batch_number}"
+outfile="${section_16_dir}/results_${batch_number}.gz"
 
 if [ -a "${outfile}" ]; then
-    echo "Warning! Partial output file already exists:"
+    echo "Warning! Output file already exists:"
     echo "${outfile}"
-    echo "Deleting old file before proceeding"
-    rm ${outfile}
+    echo "This will be overwritten"
 fi
 
-if [ -a "${outfile}.gz" ]; then
-    echo "Warning! Complete outfile already exists:"
-    echo "${outfile}.gz"
-    echo "Please delete this file to re-run the analysis"
-    exit 1
-fi
+echo ""
+echo "Extracting relevant SNPs"
 
-touch ${outfile}
-
-
-i=0
-nprobe=`cat ${phase2_assoclist}/assoclist_${batch_number}.probes | wc -l`
-
-zcat ${phase2_assoclist}/assoclist_${batch_number}.gz | cut -d " " -f 2 | sort -u > ${phase2_assoclist}/assoclist_${batch_number}.snps
+zcat ${phase2_assoclist}/assoclist_${batch_number}.gz | cut -d " " -f 2 | sort -u > ${phase2_scratch}/geno_${batch_number}.snplist
 
 ${plink} --noweb \
     --bfile ${bfile}_phase2 \
-    --extract ${phase2_assoclist}/assoclist_${batch_number}.snps \
+    --extract ${phase2_scratch}/geno_${batch_number}.snplist \
     --recode A \
     --out ${phase2_scratch}/geno_${batch_number}
 
 gzip -f ${phase2_scratch}/geno_${batch_number}.raw
+rm ${phase2_scratch}/geno_${batch_number}.snplist
 
-for probe in `cat ${phase2_assoclist}/assoclist_${batch_number}.probes`
-do
-    i=$((i + 1))
+echo "Starting analysis"
 
-    echo ""
-    echo ""
-    echo "${i} of ${nprobe}"
+Rscript resources/phase2/run_analysis.R \
+    ${phase2_scratch}/geno_${batch_number}.raw.gz \
+    ${phase2_betas}${batch_number} \
+    ${phase2_assoclist}/assoclist_${batch_number}.gz \
+    ${section_16_dir}/data.frq.gz \
+    ${outfile}
 
-    # Get SNP list from assoc list
+rm ${phase2_scratch}/geno_${batch_number}.gz
 
-    zgrep -w ${probe} ${phase2_assoclist}/assoclist_${batch_number}.gz | cat > ${phase2_scratch}/${probe}.list
-    awk '{ if($4 == "c") { print $2 }}' ${phase2_scratch}/${probe}.list > ${phase2_scratch}/${probe}.cis_all
-    awk '{ if($4 == "t") { print $2 }}' ${phase2_scratch}/${probe}.list > ${phase2_scratch}/${probe}.trans_all
-
-    # Find SNPs present in current study
-
-    zfgrep -wf ${phase2_scratch}/${probe}.cis_all ${section_16_dir}/snplist.txt.gz | cat > ${phase2_scratch}/${probe}.cis
-
-
-    zfgrep -wf ${phase2_scratch}/${probe}.trans_all ${section_16_dir}/snplist.txt.gz | cat > ${phase2_scratch}/${probe}.trans
-
-
-    ncis=`cat ${phase2_scratch}/${probe}.cis | wc -l`
-    ntrans=`cat ${phase2_scratch}/${probe}.trans | wc -l`
-
-    echo "  ${probe}: ${ncis} cis and ${ntrans} trans"
-
-    # If there are any cis SNPs...
-
-    if [ "$ncis" -gt "0" ]; then
-
-        # Do GWAS
-
-        ${plink} --noweb \
-            --bfile ${bfile}_phase2 \
-            --extract ${phase2_scratch}/${probe}.cis \
-            --assoc \
-            --allow-no-sex \
-            --pheno ${phase2_betas}${batch_number} \
-            --pheno-name ${probe} \
-            --out ${phase2_scratch}/${probe}_cis 
-
-        # Sort this file out
-        # snp, nmiss, beta, se, p
-        sed 1d ${phase2_scratch}/${probe}_cis.qassoc | awk -v probe="$probe" '{ print probe, $2, $4, $5, $6, $9, "c" }' > ${phase2_scratch}/${probe}_cis.txt
-        cat ${phase2_scratch}/${probe}_cis.txt >> ${outfile}
-
-    fi
-
-
-    # If there are cis and trans SNPs, get the best cis SNP and make covariate
-
-    if [ "$ncis" -gt "0" ] && [ "$ntrans" -gt "0" ]; then
-
-        # Get best cis SNP and create covariate file
-
-        sort -gk 6 ${phase2_scratch}/${probe}_cis.txt | head -n 1 | awk '{ print $2, $6 }' > ${phase2_scratch}/${probe}.bestcis
-        echo "Best cis SNP:"
-        cat ${phase2_scratch}/${probe}.bestcis
-
-        bestcis=`awk '{ print $1 }' ${phase2_scratch}/${probe}.bestcis`
-        ${plink} --noweb \
-            --bfile ${bfile}_phase2 \
-            --snp ${bestcis} \
-            --recode A \
-            --out ${phase2_scratch}/${probe}
-        sed 1d ${phase2_scratch}/${probe}.raw | awk '{ print $1, $2, $7 }' > ${phase2_scratch}/${probe}.cov
-
-
-        # Run linear regression on trans snps
-
-        ${plink} --noweb \
-            --bfile ${bfile}_phase2 \
-            --extract ${phase2_scratch}/${probe}.trans \
-            --linear \
-            --allow-no-sex \
-            --pheno ${phase2_betas}${batch_number} \
-            --pheno-name ${probe} \
-            --covar ${phase2_scratch}/${probe}.cov \
-            --out ${phase2_scratch}/${probe}_trans
-
-
-        # Sort this file out
-
-        grep -w "ADD" ${phase2_scratch}/${probe}_trans.assoc.linear | awk -v probe="$probe" '{ if ($7 != "NA") { print probe, $2, $6, $7, $7/$8, $9, "t" }}' > ${phase2_scratch}/${probe}_trans.txt
-        cat ${phase2_scratch}/${probe}_trans.txt >> ${outfile}
-
-    fi
-
-
-    # If there are only trans SNPs...
-
-    if [ "$ncis" -eq "0" ] && [ "$ntrans" -gt "0" ]; then
-
-        ${plink} --noweb \
-            --bfile ${bfile}_phase2 \
-            --extract ${phase2_scratch}/${probe}.trans \
-            --assoc \
-            --allow-no-sex \
-            --pheno ${phase2_betas}${batch_number} \
-            --pheno-name ${probe} \
-            --out ${phase2_scratch}/${probe}_trans
-
-
-        # Sort this file out
-        sed 1d ${phase2_scratch}/${probe}_trans.qassoc | awk -v probe="$probe" '{ print probe, $2, $4, $5, $6, $9, "t" }' > ${phase2_scratch}/${probe}_trans.txt
-        cat ${phase2_scratch}/${probe}_trans.txt >> ${outfile}
-
-    fi
-
-    rm -f ${phase2_scratch}/${probe}*
-
-done
-
-
-# Merge full results with SNP allele info etc
-
-echo ""
-echo ""
-echo "Converting results to GWAMA format"
-
-Rscript resources/phase2/create_gwama.R \
-    ${outfile} \
-    ${section_16_dir}/data.frq.gz
-
-# Gzip
-gzip ${outfile}
-
-
-echo "Successfully completed"
-
+echo "Successfully completed batch"
