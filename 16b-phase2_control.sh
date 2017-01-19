@@ -24,8 +24,28 @@ pval_threshold="0.001"
 
 
 
+echo ""
+echo ""
+echo ""
 echo "Running positive control - This involves testing the cis-region of ${probe}, extracting the top hit and performing GWAS with the cis-hit fitted as a covariate"
+echo ""
 echo "There should be a strong signal at the cis region, and no evidence for population stratification in the GWAS"
+echo ""
+echo ""
+echo ""
+
+# Check that control probe is present
+
+pres=`zgrep -w ${probe} ${phase2_betas}${batch_number} | wc -l`
+
+if [ "$pres" -eq "1" ]; then
+	echo "Probe is available in the data"
+else
+	echo ""
+	echo "WARNING: Probe is not present in the data."
+	echo "WARNING: Please contact developers before continuing"
+	# exit 1
+fi
 
 mkdir -p ${section_16_dir}/control
 
