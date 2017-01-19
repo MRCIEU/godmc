@@ -50,9 +50,7 @@ if [ -a "${outfile}.gz" ]; then
     exit 1
 fi
 
-
 touch ${outfile}
-
 
 
 i=0
@@ -67,16 +65,6 @@ ${plink} --noweb \
     --out ${phase2_scratch}/geno_${batch_number}
 
 gzip -f ${phase2_scratch}/geno_${batch_number}.raw
-
-
-Rscript phase2_analysis.R \
-    ${phase2_scratch}/geno_${batch_number}.raw.gz \
-    ${phase2_betas}${batch_number} \
-    ${phase2_assoclist}/assoclist_${batch_number}.gz \
-    ${outfile}
-
-
-snplist=`
 
 for probe in `cat ${phase2_assoclist}/assoclist_${batch_number}.probes`
 do
