@@ -299,7 +299,7 @@ check_results_15 () {
 check_results_16 () {
 
 	nbatch=`ls -l ${phase2_assoclist}/*.gz | wc -l`
-	nsuccess=`ls -l ${section_16_dir}/batch*gz | wc -l`
+	nsuccess=`ls -l ${section_16_dir}/results_*gz | wc -l`
 	if [ "${nsuccess}" = "${nbatch}" ]; then
 		echo "All phase 2 results present"
 	else
