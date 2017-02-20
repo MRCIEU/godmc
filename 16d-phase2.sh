@@ -27,7 +27,7 @@ fi
 geno="${tabfile}.tab.${batch_number}"
 phen="${methylation_adjusted_pcs}.txt"
 cov="NULL"
-threshold="0.5"
+threshold="1"
 out="temp.RData"
 
 head -n 5001 ${geno} > tempgeno.tab
