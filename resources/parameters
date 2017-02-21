@@ -185,8 +185,8 @@ phase2_assoclist="${phase2_dir}/assoclist"
 phase2_list_17="${phase2_dir}/list_17"
 phase2_betas="${phase2_dir}/betas/subset_"
 phase2_scratch="${phase2_dir}/scratch"
-cpglist17="${phase2_scratch}/cpgtab"
-snplist17="${phase2_scratch}/snptab"
+cpgfile17="${phase2_scratch}/cpgtab"
+snpfile17="${phase2_scratch}/snptab"
 
 
 # SFTP details

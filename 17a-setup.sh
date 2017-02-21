@@ -11,13 +11,13 @@ print_version
 echo "Downloading list of putative associations"
 
 sftp ${sftp_username}@${sftp_address}:${sftp_path}/resources/phase2 <<EOF
-get list_17.tgz
-get list_17.tgz.md5sum
+get lists_17.tgz
+get lists_17.tgz.md5sum
 EOF
 
 echo "Checking download integrity"
 
-md5sum -c list_17.tgz.md5sum
+md5sum -c lists_17.tgz.md5sum
 
 echo "Extracting"
 
