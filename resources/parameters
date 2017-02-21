@@ -182,9 +182,11 @@ height_plot="${section_03_dir}/heightcor_plot.pdf"
 # Phase 2
 phase2_dir="${home_directory}/processed_data/phase2"
 phase2_assoclist="${phase2_dir}/assoclist"
+phase2_list_17="${phase2_dir}/list_17"
 phase2_betas="${phase2_dir}/betas/subset_"
 phase2_scratch="${phase2_dir}/scratch"
-
+cpglist17="${phase2_scratch}/cpgtab"
+snplist17="${phase2_scratch}/snptab"
 
 
 # SFTP details
