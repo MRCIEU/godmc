@@ -318,4 +318,17 @@ check_results_16 () {
 }
 
 
+check_results_17 () {
+
+	nbatch=`ls -l ${phase2_list_17}/cpglits_*.txt | wc -l`
+	nsuccess=`ls -l ${section_17_dir}/results_*gz | wc -l`
+	if [ "${nsuccess}" = "${nbatch}" ]; then
+		echo "All results present for section 17"
+	else
+		echo "Problem: Only ${nsuccess} of ${nbatch} are present for section 17"
+		exit 1
+	fi
+
+}
+
 

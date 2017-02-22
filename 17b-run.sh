@@ -37,7 +37,9 @@ cov="NULL"
 threshold="1"
 out="${section_17_dir}/results_${i}.txt.gz"
 
-nbatch=(${tabfile}.tab.*)
+
+
+nbatch=(${phase2_list_17}/cpglits_*.txt)
 nbatch=${#nbatch[@]}
 
 echo "Performing meQTL analysis batch ${i} of ${nbatch}"

@@ -378,17 +378,17 @@ check_logs_16 () {
 
 	compare_version "16a"
 	if grep -i -q "success" ${section_16a_logfile}*; then
-		echo "16a-phase2_mqtl_setup.sh completed successfully."
+		echo "16a-setup.sh completed successfully."
 	else
-		echo "Problem: 16a-phase2_mqtl_setup.sh did not complete successfully"
+		echo "Problem: 16a-setup.sh did not complete successfully"
 		exit 1
 	fi
 
 	compare_version "16b"
 	if grep -i -q "success" ${section_16b_logfile}*; then
-		echo "16b-phase2_control.sh completed successfully."
+		echo "16b-control.sh completed successfully."
 	else
-		echo "Problem: 16b-phase2_control.sh did not complete successfully"
+		echo "Problem: 16b-control.sh did not complete successfully"
 		exit 1
 	fi
 
@@ -396,13 +396,35 @@ check_logs_16 () {
 	nbatch=`ls -l ${phase2_assoclist}/*.gz | wc -l`
 	nsuccess=`tail ${section_16c_logfile}* | grep -i "success" | wc -l`
 	if [ "${nbatch}" = "${nsuccess}" ]; then
-		echo "16c-phase2_run.sh completed successfully for all batches"
+		echo "16c-run.sh completed successfully for all batches"
 	else
-		echo "Problem: 16c-phase2_run.sh only ${nsuccess} of ${nbatch} mQTL batches completed"
+		echo "Problem: 16c-run.sh only ${nsuccess} of ${nbatch} mQTL batches completed"
 		exit 1
 	fi
 
 }
 
+
+check_logs_17 () {
+
+	compare_version "17a"
+	if grep -i -q "success" ${section_17a_logfile}*; then
+		echo "17a-setup.sh completed successfully."
+	else
+		echo "Problem: 17a-setup.sh did not complete successfully"
+		exit 1
+	fi
+
+	compare_version "17b"
+	nbatch=`ls -l ${phase2_list_17}/cpglits_*.txt | wc -l`
+	nsuccess=`tail ${section_17b_logfile}* | grep -i "success" | wc -l`
+	if [ "${nbatch}" = "${nsuccess}" ]; then
+		echo "17b-run.sh completed successfully for all batches"
+	else
+		echo "Problem: 17b-run.sh only ${nsuccess} of ${nbatch} mQTL batches completed"
+		exit 1
+	fi
+
+}
 
 

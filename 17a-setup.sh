@@ -46,8 +46,8 @@ rm -f ${snpfile17}_temp
 touch ${snpfile17}_temp
 for i in $(seq 1 $nbatch)
 do
-echo "Extracting SNPs from batch ${i} of ${nbatch}"
-fgrep -wf ${phase2_list_17}/snplist.txt ${tabfile}.tab.${i} >> ${snpfile17}_temp
+	echo "Extracting SNPs from batch ${i} of ${nbatch}"
+	fgrep -wf ${phase2_list_17}/snplist.txt ${tabfile}.tab.${i} >> ${snpfile17}_temp
 done
 head -n 1 ${tabfile}.tab.1 > ${snpfile17}_head
 cat ${snpfile17}_head ${snpfile17}_temp > ${snpfile17}
