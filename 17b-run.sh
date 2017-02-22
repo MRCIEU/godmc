@@ -40,16 +40,16 @@ out="${section_17_dir}/results_${i}.txt.gz"
 nbatch=(${tabfile}.tab.*)
 nbatch=${#nbatch[@]}
 
-echo "Performing meQTL analysis batch ${batch_number} of ${nbatch}"
+echo "Performing meQTL analysis batch ${i} of ${nbatch}"
 
 Rscript resources/genetics/matrixeqtl_small.R \
-	${geno} \
-	${phen} \
-	${cov} \
-	${threshold} \
-	${cpglist} \
-	${snplist} \
-    ${section_16_dir}/data.frq.gz \
-	${out}
+${geno} \
+${phen} \
+${cov} \
+${threshold} \
+${cpglist} \
+${snplist} \
+${section_16_dir}/data.frq.gz \
+${out}
 
 echo "Successfully completed ${batch_number} of ${nbatch}"

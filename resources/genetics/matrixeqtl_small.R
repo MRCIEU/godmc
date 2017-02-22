@@ -4,6 +4,7 @@ library(MatrixEQTL)
 main <- function()
 {
 	arguments <- commandArgs(T)
+	print(arguments)
 	geno_file <- arguments[1]
 	phen_file <- arguments[2]
 	cov_file <- arguments[3]
@@ -86,9 +87,6 @@ main <- function()
 	)
 
 	save_results(me, cpglist, snplist, freq, out_file)
-
-
-	save(me, file=out_file)
 }
 
 
