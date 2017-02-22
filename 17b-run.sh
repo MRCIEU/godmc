@@ -43,13 +43,15 @@ nbatch=${#nbatch[@]}
 echo "Performing meQTL analysis batch ${i} of ${nbatch}"
 
 Rscript resources/genetics/matrixeqtl_small.R \
-${geno} \
-${phen} \
-${cov} \
-${threshold} \
-${cpglist} \
-${snplist} \
-${section_16_dir}/data.frq.gz \
-${out}
+	${geno} \
+	${phen} \
+	${cov} \
+	${threshold} \
+	${phase2_list_17}/cpglits_${i}.txt \
+	${phase2_list_17}/snplist.txt \
+	${section_16_dir}/data.frq.gz \
+	${out}
+
+rm ${phen}
 
 echo "Successfully completed ${batch_number} of ${nbatch}"

@@ -81,26 +81,32 @@ main <- function()
 		useModel = useModel, 
 		errorCovariance = errorCovariance, 
 		verbose = TRUE,
-		pvalue.hist = TRUE,
+		pvalue.hist = FALSE,
 		min.pv.by.genesnp = FALSE,
 		noFDRsaveMemory = FALSE
 	)
 
-	save_results(me, cpglist, snplist, freq, out_file)
+	message("Saving results")
+	save_results(me$all$eqtls, cpglist, snplist, freq, out_file)
 }
 
 
 save_results <- function(dat, cpglist, snplist, freq, out_file)
 {
-	dat$cpgid <- cpglist$cpgid[match(a$PHENOTYPE, cpglist$CPG)]
-	dat$snpid <- snplist$snpid[match(a$PHENOTYPE, snplist$SNP)]
+	dat$cpgid <- cpglist$cpgid[match(dat$gene, cpglist$CPG)]
+	dat$snpid <- snplist$snpid[match(dat$snps, snplist$SNP)]
 	dat$MARKERNAME <- paste0(dat$cpgid, "_", dat$snpid)
-	dat$SE <- abs(dat$beta / dat$statistic)
-	dat$BETA <- dat$beta
-	dat <- merge(dat, freq, by="snps")
+	dat$SE <- round(abs(dat$beta / dat$statistic), 6)
+	dat$BETA <- round(dat$beta, 6)
+	index <- match(dat$snps, freq$snps)
+	dat$EA <- freq$EA[index]
+	dat$NEA <- freq$NEA[index]
+	dat$EAF <- freq$EAF[index]
 	dat <- subset(dat, select=c(MARKERNAME, EA, NEA, EAF, BETA, SE))
+	message("Writing")
 	con <- gzfile(out_file, "w")
 	write.table(dat, con, row=FALSE, col=TRUE, qu=FALSE)
+	close(con)
 }
 
 main()
