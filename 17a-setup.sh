@@ -21,6 +21,7 @@ md5sum -c lists_17.tgz.md5sum
 
 echo "Extracting"
 
+rm -rf ${phase2_list_17}
 mkdir -p ${phase2_list_17}
 tar xzf lists_17.tgz -C ${phase2_list_17}
 rm lists_17.tgz*

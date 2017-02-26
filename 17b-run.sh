@@ -16,14 +16,18 @@ print_version
 
 i=${batch_number}
 
+nbatch=(${phase2_list_17}/cpglist_*.txt)
+nbatch=${#nbatch[@]}
+
 
 # Create cpg files
 
 head -n 1 ${methylation_adjusted_pcs}.txt > ${cpgfile17}_head_${i}.txt
 
-c1=`cat ${phase2_list_17}/cpglits_${i}.txt | wc -l`
-echo "${i} of 100 - Extracting ${c1} probes"
-fgrep -wf ${phase2_list_17}/cpglits_${i}.txt ${methylation_adjusted_pcs}.txt > ${cpgfile17}_temp${i}.txt
+c1=`cat ${phase2_list_17}/cpglist_${i}.txt | wc -l`
+echo "Performing ${i} of ${nbatch}"
+echo "Extracting ${c1} probes"
+fgrep -wf ${phase2_list_17}/cpglist_${i}.txt ${methylation_adjusted_pcs}.txt > ${cpgfile17}_temp${i}.txt
 cat ${cpgfile17}_head_${i}.txt ${cpgfile17}_temp${i}.txt > ${cpgfile17}_list17_${i}.txt
 
 c2=`cat ${cpgfile17}_temp${i}.txt | wc -l`
@@ -38,11 +42,7 @@ threshold="1"
 out="${section_17_dir}/results_${i}.txt.gz"
 
 
-
-nbatch=(${phase2_list_17}/cpglits_*.txt)
-nbatch=${#nbatch[@]}
-
-echo "Performing meQTL analysis batch ${i} of ${nbatch}"
+echo "Performing meQTL analysis"
 
 Rscript resources/genetics/matrixeqtl_small.R \
 	${geno} \
