@@ -57,5 +57,14 @@ c2=`cat ${snpfile17}_temp | wc -l`
 echo "Found ${c2} out of ${c1} SNPs"
 rm ${snpfile17}_temp ${snpfile17}_head
 
+
+echo "Creating SNP info file"
+
+${plink} --bfile ${bfile} \
+	--freq gz \
+	--extract ${phase2_list_17}/snplist.txt \
+	--out ${phase2_list_17}/snpinfo
+
+
 echo "Successfully completed script 17a"
 

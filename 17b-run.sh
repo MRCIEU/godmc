@@ -49,9 +49,7 @@ Rscript resources/genetics/matrixeqtl_small.R \
 	${phen} \
 	${cov} \
 	${threshold} \
-	${phase2_list_17}/cpglits_${i}.txt \
-	${phase2_list_17}/snplist.txt \
-	${section_16_dir}/data.frq.gz \
+	${phase2_list_17}/snpinfo.frq.gz \
 	${out}
 
 rm ${phen}
