@@ -416,7 +416,7 @@ check_logs_17 () {
 	fi
 
 	compare_version "17b"
-	nbatch=`ls -l ${phase2_list_17}/cpglits_*.txt | wc -l`
+	nbatch=`ls -l ${phase2_list_17}/cpglist_*.txt | wc -l`
 	nsuccess=`tail ${section_17b_logfile}* | grep -i "success" | wc -l`
 	if [ "${nbatch}" = "${nsuccess}" ]; then
 		echo "17b-run.sh completed successfully for all batches"
