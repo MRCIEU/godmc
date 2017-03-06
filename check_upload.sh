@@ -45,7 +45,7 @@ if [ "$2" = "upload" ]
 then
 
 	echo ""
-	temp=`which sshpassadsf | wc -l`
+	temp=`which sshpass 2>/dev/null | wc -l`
 
 	if [ ! "${temp}" = "0" ]
 	then
