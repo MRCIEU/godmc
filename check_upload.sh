@@ -43,6 +43,24 @@ echo "Section $1 has been successfully completed!"
 
 if [ "$2" = "upload" ]
 then
+
+	echo ""
+	temp=`which sshpassadsf | wc -l`
+
+	if [ ! "${temp}" = "0" ]
+	then
+		read -s -p "Enter SFTP password: " mypassword
+		export SSHPASS=${mypassword}
+		echo "Testing connection"
+		sshpass -e sftp -oBatchMode=no -b - ${sftp_username}@${sftp_address}:${sftp_path}/${sftp_username} << !
+bye
+!
+		echo "Connection established"
+	else
+		echo "sshpass is not installed."
+		echo "The results will now be archived, once that is done they will be uploaded to the server"
+	fi
+
 	echo ""
 	echo "Tarring results and log files"
 	tar czf results/${study_name}_${1}.tgz config resources/parameters results/${1}
@@ -52,11 +70,29 @@ then
 	
 	echo ""
 
+if [ ! "${temp}" = "0" ]
+then
+
+export SSHPASS=${mypassword}
+sshpass -e sftp -oBatchMode=no -b - ${sftp_username}@${sftp_address}:${sftp_path}/${sftp_username} << !
+   dir
+   put results/${study_name}_${1}.md5sum
+   put results/${study_name}_$1.tgz
+   bye
+!
+
+else
+
+read -s -p "Ready to upload? Press enter to continue: " anykey
+
 sftp ${sftp_username}@${sftp_address}:${sftp_path}/${sftp_username} <<EOF
 dir
 put results/${study_name}_${1}.md5sum
 put results/${study_name}_$1.tgz
 EOF
+
+fi
+
 
 fi
 
