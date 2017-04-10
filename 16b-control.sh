@@ -16,7 +16,7 @@ echo "Running positive control"
 echo "Testing cis-region of "
 
 probe="cg07959070"
-batch_number="202"
+batch_number="304"
 probe_chr="22"
 probe_pos="50053871"
 window_size="100000"
