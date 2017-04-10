@@ -200,7 +200,8 @@ sftp_address="filetrn-scmv-d0.epi.bris.ac.uk"
 
 if [ "$sftp_username" = "gh13047" ] || [ "$sftp_username" = "epzjlm" ] || [ "$sftp_username" = "godmc" ] || [ "$sftp_username" = "epwkb" ]
 then
-	sftp_path="/srv/sftponly/GoDMC"
+	#sftp_path="/srv/sftponly/GoDMC"
+	sftp_path="/GoDMC"
 else
 	sftp_path="/GoDMC"
 fi
