@@ -49,6 +49,20 @@ fi
 
 mkdir -p ${section_16_dir}/control
 
+#check N from 2 against 16
+
+n_02=`awk 'NR==2 {print $6}' < /panfs/panasas01/shared-godmc/godmc_phase2_analysis/scratch/frq/${study_name}.frq.tmp`
+n_16=`zcat ${section_16_dir}/data.frq.gz | awk 'NR==1 { print $6 }'`
+
+if [ "$n_02" -eq "$n_16" ]; then
+	echo "Same individuals used in script 2 as in script 16"
+else
+	echo ""
+	echo "ERROR: $n_02 individuals used in 02 and $n_16 individuals used in 16"
+	
+	exit 1
+fi
+
 
 # Get SNP list from assoc list
 

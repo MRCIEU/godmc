@@ -84,6 +84,13 @@ main <- function()
 		message("Please upload this section and contact GoDMC analysts before continuing.\n\n")
 	}
 
+	if(lambda$estimate < 0.9)
+	{
+		message("WARNING!")
+		message("The median lambda value is lower than expected here")
+		message("Please upload this section and contact GoDMC analysts before continuing.\n\n")
+	}
+
 }
 
 manhattan_plot <- function(p, chr, pos, filename=NULL, width=15, height=7, threshold=-log10(0.05/1000000), maxval=20)
