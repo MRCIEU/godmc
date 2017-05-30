@@ -63,11 +63,19 @@ bye
 
 	echo ""
 	echo "Tarring results and log files"
-	tar czf results/${study_name}_${1}.tgz config resources/parameters results/${1}
-	echo "Successfully created results archives"
-	echo "Generating md5 checksum"
-	md5sum results/${study_name}_${1}.tgz > results/${study_name}_${1}.md5sum
-	
+
+	if [ "${1}" = "17" ]
+	then
+		tar cf results/${study_name}_${1}.tar config resources/parameters results/${1}
+		echo "Successfully created results archives"
+		echo "Generating md5 checksum"
+		md5sum results/${study_name}_${1}.tar > results/${study_name}_${1}.md5sum
+	else
+		tar czf results/${study_name}_${1}.tgz config resources/parameters results/${1}
+		echo "Successfully created results archives"
+		echo "Generating md5 checksum"
+		md5sum results/${study_name}_${1}.tgz > results/${study_name}_${1}.md5sum
+	fi
 	echo ""
 
 if [ ! "${temp}" = "0" ]
