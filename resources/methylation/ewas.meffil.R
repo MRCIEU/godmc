@@ -83,7 +83,7 @@ main <- function()
     
     message("\nPerforming EWAS for ", phen_name)
     ewas.ret <- meffil.ewas(norm.beta, variable=phen[,1], covariates=covs,winsorize.pct = NA,most.variable = min(nrow(norm.beta), 20000))
-    ewas.parameters <- meffil.ewas.parameters(sig.threshold=1e-7, max.plots=100,qq.inflation.method="regression",model="isva1")
+    ewas.parameters <- meffil.ewas.parameters(sig.threshold=1e-7, max.plots=100,qq.inflation.method="regression",model="isva")
 
     ewas.summary<-meffil.ewas.summary(ewas.ret,norm.beta,parameters=ewas.parameters)                              
 
@@ -95,8 +95,8 @@ main <- function()
 	message("Generating Q-Q plot")
 	qqplot_pval(res$none, file=paste(qqplot_file,"nocovs.png",sep="."))
     qqplot_pval(res$all, file=paste(qqplot_file,"allcovs.png",sep="."))
-    qqplot_pval(res$isva0, file=paste(qqplot_file,"isva0.png",sep="."))
-    qqplot_pval(res$isva1, file=paste(qqplot_file,"isva1.png",sep="."))	
+    qqplot_pval(res$isva, file=paste(qqplot_file,"isva.png",sep="."))
+    qqplot_pval(res$sva, file=paste(qqplot_file,"sva.png",sep="."))	
 
 	message("Saving results")
 	save(ewas.ret, file=out_file)

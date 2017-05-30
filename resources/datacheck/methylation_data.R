@@ -4,6 +4,7 @@ warninglist <- list()
 
 library(data.table)
 suppressMessages(library(matrixStats))
+library(meffil)
 
 args <- (commandArgs(TRUE));
 betas_file <- as.character(args[1]);
@@ -90,6 +91,20 @@ message("All values are within 0-1")
 if(any(grepl("rs", rownames(norm.beta))))
 {
 	msg <- paste0("there are SNPs in the methylation data. Please remove all rows with rs IDs.")
+	errorlist <- c(errorlist, msg)
+	warning("ERROR: ", msg)
+}
+
+feat <- meffil.get.features()
+#486425
+xy<-which(feat$chromosome%in%c("chrX","chrY"))
+probes_xy<-as.character(feat[xy,"name"])
+xy_overlap<-intersect(row.names(norm.beta),probes_xy)
+n.xy_overlap <- length(xy_overlap)
+no.overlap<-0.95*length(probes_xy)
+if(n.xy_overlap < no.overlap)
+{
+	msg <- paste0("fewer than 95% chrx and chry probes. Please include chrx and y probes")
 	errorlist <- c(errorlist, msg)
 	warning("ERROR: ", msg)
 }

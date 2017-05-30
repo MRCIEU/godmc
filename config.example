@@ -84,7 +84,7 @@ pca_sd="7"
 # Methylation PCs (see 04c).
 n_meth_pcs="20"
 meth_pc_cutoff="0.8"
-meth_pc_threshold="1e-6"
+meth_pc_threshold="1e-7"
 
 # Matrixeqtl parameters
 soft_threshold="1e-5"
