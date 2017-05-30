@@ -66,16 +66,16 @@ bye
 
 	if [ "${1}" = "17" ]
 	then
-		tar cf results/${study_name}_${1}.tar config resources/parameters results/${1}
-		echo "Successfully created results archives"
-		echo "Generating md5 checksum"
-		md5sum results/${study_name}_${1}.tar > results/${study_name}_${1}.md5sum
+		suff="tar"
+		flags="cf"
 	else
-		tar czf results/${study_name}_${1}.tgz config resources/parameters results/${1}
-		echo "Successfully created results archives"
-		echo "Generating md5 checksum"
-		md5sum results/${study_name}_${1}.tgz > results/${study_name}_${1}.md5sum
+		suff="tgz"
+		cmd="czf"
 	fi
+	tar ${flags} results/${study_name}_${1}.${suff} config resources/parameters results/${1}
+	echo "Successfully created results archives"
+	echo "Generating md5 checksum"
+	md5sum results/${study_name}_${1}.${suff} > results/${study_name}_${1}.md5sum
 	echo ""
 
 if [ ! "${temp}" = "0" ]
@@ -85,7 +85,7 @@ export SSHPASS=${mypassword}
 sshpass -e sftp -oBatchMode=no -b - ${sftp_username}@${sftp_address}:${sftp_path}/${sftp_username} << !
    dir
    put results/${study_name}_${1}.md5sum
-   put results/${study_name}_$1.tgz
+   put results/${study_name}_$1.${suff}
    bye
 !
 
@@ -96,7 +96,7 @@ read -s -p "Ready to upload? Press enter to continue: " anykey
 sftp ${sftp_username}@${sftp_address}:${sftp_path}/${sftp_username} <<EOF
 dir
 put results/${study_name}_${1}.md5sum
-put results/${study_name}_$1.tgz
+put results/${study_name}_$1.${suff}
 EOF
 
 fi
