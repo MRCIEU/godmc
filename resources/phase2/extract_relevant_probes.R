@@ -25,7 +25,7 @@ fam <- fam[index,]
 stopifnot(all(fam$IID == colnames(norm.beta)))
 fam <- as.matrix(fam)
 
-
+write.table(fam[,1:2],paste(probedir,"/keeplist.txt",sep=""),quote=F,row.names=F,col.names=F)
 # Get the probe lists
 
 file_list <- list.files(probedir, pattern=".probes")
