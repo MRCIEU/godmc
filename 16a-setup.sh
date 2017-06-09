@@ -43,10 +43,10 @@ nrow_old=`cat ${intersect_ids_plink}| wc -l`
 nnow=`cat ${phase2_assoclist}/keeplist.txt | wc -l`
 
 echo "${norig} samples in original genotype file"
-echo "${nrow_old} samples with both genotype and methylation data in in 02"
+echo "${nrow_old} samples with genotype data in 02"
 echo "${nnow} samples with both genotype and methylation data"
 
-if [ "${nrow_old} " -eq "$nnow" ]; then
+if [ "${nrow_old} " -eq "$norig" ]; then
 	echo "Same individuals used in script 2 as in script 16"
 else
 	echo ""
