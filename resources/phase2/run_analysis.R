@@ -63,9 +63,12 @@ snpinfo <- dplyr::select(snpinfo, MARKERNAME=SNP, EA=EA, NEA=V4, EAF=V5)
 
 message("Organising CpG data")
 
+message("dimcpg: ", dim(cpg), ", length: ", length(cpg))
 iid <- cpg$IID
 cpg <- cpg[, c("FID", "IID"):=NULL]
+message("dimcpg: ", dim(cpg), ", length: ", length(cpg))
 cpg <- as.matrix(cpg)
+message("dimcpg: ", dim(cpg), ", length: ", length(cpg))
 rownames(cpg) <- iid
 
 message("SNP dim: ", dim(snp))
