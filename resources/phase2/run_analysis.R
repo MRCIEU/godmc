@@ -68,12 +68,20 @@ cpg <- cpg[, c("FID", "IID"):=NULL]
 cpg <- as.matrix(cpg)
 rownames(cpg) <- iid
 
+message("SNP dim: ", dim(snp))
+print(snp[1:10,1:10])
 snp <- snp[rownames(snp) %in% rownames(cpg), ]
+message("SNP dim: ", dim(snp))
+print(snp[1:10,1:10])
 stopifnot(all(rownames(cpg) %in% rownames(snp)))
 stopifnot(all(rownames(snp) %in% rownames(cpg)))
 
+message("CpG dim: ", dim(cpg))
+print(cpg[1:10,1:10])
 cpg <- cpg[match(rownames(snp), rownames(cpg)), ]
 
+message("CpG dim: ", dim(cpg))
+print(cpg[1:10,1:10])
 stopifnot(all(rownames(cpg) == rownames(snp)))
 
 

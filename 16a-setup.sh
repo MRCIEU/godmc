@@ -36,17 +36,28 @@ Rscript resources/phase2/extract_relevant_probes.R \
 	${phase2_assoclist} \
 	${phase2_betas}
 
-cut -d " " -f 1-2 ${phase2_betas}1 | sed 1d > keeplist.txt
+#cut -d " " -f 1-2 ${phase2_betas}1 | sed 1d > keeplist.txt
 
 norig=`cat ${bfile}.fam | wc -l`
-nnow=`cat keeplist.txt | wc -l`
+nrow_old=`cat ${intersect_ids_plink}| wc -l`
+nnow=`cat ${phase2_assoclist}/keeplist.txt | wc -l`
 
 echo "${norig} samples in original genotype file"
+echo "${nrow_old} samples with genotype data in 02"
 echo "${nnow} samples with both genotype and methylation data"
+
+if [ "${nrow_old} " -eq "$norig" ]; then
+	echo "Same individuals used in script 2 as in script 16"
+else
+	echo ""
+	echo "ERROR: ${nrow_old} individuals used in 02 and ${nnow} individuals used in 16"
+	
+	exit 1
+fi
 
 ${plink} --noweb \
 	--bfile ${bfile} \
-	--keep keeplist.txt \
+	--keep ${phase2_assoclist}/keeplist.txt \
 	--maf 0.01 \
 	--make-bed \
 	--out ${bfile}_phase2
@@ -62,7 +73,7 @@ ${plink} --noweb \
 zcat ${section_16_dir}/data.frq.gz | awk '{ print $1,$2,$3,$4,$5,$6/2 }' | sed 1d | gzip -c > temp.gz
 zcat temp.gz | awk '{ print $2 }' | gzip > ${section_16_dir}/snplist.txt.gz
 mv temp.gz ${section_16_dir}/data.frq.gz
-rm keeplist.txt
+rm ${phase2_assoclist}/keeplist.txt
 
 
 echo "Successfully completed script 16a"
