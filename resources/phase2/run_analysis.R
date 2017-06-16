@@ -64,6 +64,13 @@ snpinfo <- dplyr::select(snpinfo, MARKERNAME=SNP, EA=EA, NEA=V4, EAF=V5)
 message("Organising CpG data")
 
 message("dimcpg: ", dim(cpg), ", length: ", length(cpg))
+if(ncol(cpg) == 2)
+{
+	message("No CpGs available for this chunk")
+	write.table(NULL, file=out_file, row=F, col=F, qu=F)
+	q()
+}
+
 iid <- cpg$IID
 cpg <- cpg[, c("FID", "IID"):=NULL]
 message("dimcpg: ", dim(cpg), ", length: ", length(cpg))
