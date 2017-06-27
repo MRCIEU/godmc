@@ -50,9 +50,10 @@ if [ "${nrow_old} " -eq "$norig" ]; then
 	echo "Same individuals used in script 2 as in script 16"
 else
 	echo ""
-	echo "ERROR: ${nrow_old} individuals used in 02 and ${nnow} individuals used in 16"
+	echo "WARNING: ${nrow_old} individuals used in 02 and ${nnow} individuals used in 16"
+	echo "Did something change since running 05?"
 	
-	exit 1
+	# exit 1
 fi
 
 ${plink} --noweb \
