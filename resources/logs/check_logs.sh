@@ -395,10 +395,13 @@ check_logs_16 () {
 	compare_version "16c"
 	nbatch=`ls -l ${phase2_assoclist}/*.gz | wc -l`
 	nsuccess=`tail ${section_16c_logfile}* | grep -i "success" | wc -l`
+  missing_file=`grep -iL "success" ${section_16c_logfile}*`
 	if [ "${nbatch}" = "${nsuccess}" ]; then
 		echo "16c-run.sh completed successfully for all batches"
 	else
 		echo "Problem: 16c-run.sh only ${nsuccess} of ${nbatch} mQTL batches completed"
+    echo "The following batches are missing:"    
+    echo "${missing_file}"
 		exit 1
 	fi
 
@@ -418,11 +421,14 @@ check_logs_17 () {
 	compare_version "17b"
 	nbatch=`ls -l ${phase2_list_17}/cpglist_*.txt | wc -l`
 	nsuccess=`tail ${section_17b_logfile}* | grep -i "success" | wc -l`
+  missing_file=`grep -iL "success" ${section_17b_logfile}*`
 	if [ "${nbatch}" = "${nsuccess}" ]; then
 		echo "17b-run.sh completed successfully for all batches"
 	else
 		echo "Problem: 17b-run.sh only ${nsuccess} of ${nbatch} mQTL batches completed"
-		exit 1
+    echo "The following batches are missing:"    
+    echo "${missing_file}"
+    exit 1
 	fi
 
 }
