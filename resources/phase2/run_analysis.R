@@ -63,35 +63,17 @@ snpinfo <- dplyr::select(snpinfo, MARKERNAME=SNP, EA=EA, NEA=V4, EAF=V5)
 
 message("Organising CpG data")
 
-message("dimcpg: ", dim(cpg), ", length: ", length(cpg))
-if(ncol(cpg) == 2)
-{
-	message("No CpGs available for this chunk")
-	write.table(NULL, file=out_file, row=F, col=F, qu=F)
-	q()
-}
-
 iid <- cpg$IID
 cpg <- cpg[, c("FID", "IID"):=NULL]
-message("dimcpg: ", dim(cpg), ", length: ", length(cpg))
 cpg <- as.matrix(cpg)
-message("dimcpg: ", dim(cpg), ", length: ", length(cpg))
 rownames(cpg) <- iid
 
-message("SNP dim: ", dim(snp))
-print(snp[1:10,1:10])
 snp <- snp[rownames(snp) %in% rownames(cpg), ]
-message("SNP dim: ", dim(snp))
-print(snp[1:10,1:10])
 stopifnot(all(rownames(cpg) %in% rownames(snp)))
 stopifnot(all(rownames(snp) %in% rownames(cpg)))
 
-message("CpG dim: ", dim(cpg))
-print(cpg[1:10,1:10])
 cpg <- cpg[match(rownames(snp), rownames(cpg)), ]
 
-message("CpG dim: ", dim(cpg))
-print(cpg[1:10,1:10])
 stopifnot(all(rownames(cpg) == rownames(snp)))
 
 

@@ -12,14 +12,6 @@ covariates_file <- as.character(args[3])
 cohort_descriptives_file <- as.character(args[4])
 
 
-if(cnv_file == "NULL") 
-{
-	msg <- paste0("No CNV data have been provided.\nWARNING: CNV analysis will not be performed.")
-	warninglist <- c(warninglist, msg)
-	message("WARNING: ", msg)
-	q()
-} 
-
 
 message("Checking CNV data: ", cnv_file)
 load(cnv_file)

@@ -28,9 +28,8 @@ c1=`cat ${phase2_list_17}/cpglist_${i}.txt | wc -l`
 echo "Performing ${i} of ${nbatch}"
 echo "Extracting ${c1} probes"
 fgrep -wf ${phase2_list_17}/cpglist_${i}.txt ${methylation_adjusted_pcs}.txt > ${cpgfile17}_temp${i}.txt
-echo "Formatting file"
 cat ${cpgfile17}_head_${i}.txt ${cpgfile17}_temp${i}.txt > ${cpgfile17}_list17_${i}.txt
-echo "Counting probes"
+
 c2=`cat ${cpgfile17}_temp${i}.txt | wc -l`
 echo "Found ${c2} probes."
 rm ${cpgfile17}_temp${i}.txt ${cpgfile17}_head_${i}.txt

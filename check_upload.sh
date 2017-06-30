@@ -64,13 +64,13 @@ bye
 	echo ""
 	echo "Tarring results and log files"
 
-	if [ "$1" = "17" ]
+	if [ "${1}" = "17" ]
 	then
 		suff="tar"
 		flags="cf"
 	else
 		suff="tgz"
-		flags="czf"
+		cmd="czf"
 	fi
 	tar ${flags} results/${study_name}_${1}.${suff} config resources/parameters results/${1}
 	echo "Successfully created results archives"

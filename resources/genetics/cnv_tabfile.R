@@ -1,16 +1,9 @@
 arguments <- commandArgs(T)
 
-cnvfile <- as.character(arguments[1])
+cnvfile <- arguments[1]
 tabfile <- arguments[2]
 id_file <- arguments[3]
 nchunks <- as.numeric(arguments[4])
-
-if(cnvfile == "NULL") 
-{
-	msg <- paste0("No CNV data have been provided.\nWARNING: CNV analysis will not be performed.")
-	message("WARNING: ", msg)
-	q()
-} 
 
 message("Loading CNV data")
 load(cnvfile)

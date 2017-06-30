@@ -1,6 +1,5 @@
 suppressMessages(library(SNPRelate))
 suppressMessages(library(GENESIS))
-suppressMessages(library(GWASTools))
 
 arguments <- commandArgs(T)
 bfile <- arguments[1]
