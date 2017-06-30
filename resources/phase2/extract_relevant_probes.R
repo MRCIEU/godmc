@@ -25,7 +25,7 @@ fam <- fam[index,]
 stopifnot(all(fam$IID == colnames(norm.beta)))
 fam <- as.matrix(fam)
 
-
+write.table(fam[,1:2],paste(probedir,"/keeplist.txt",sep=""),row.names=F,col.names=F,sep=" ",quote=F)
 # Get the probe lists
 
 file_list <- list.files(probedir, pattern=".probes")
@@ -50,4 +50,14 @@ for (i in 1:n_sets)
 }
 
 message("Successfully extracted probes from beta matrix")
+
+
+
+
+
+
+
+
+
+
  
