@@ -58,7 +58,7 @@ fi
 
 ${plink} --noweb \
 	--bfile ${bfile} \
-	--keep keeplist.txt \
+	--keep ${phase2_assoclist}/keeplist.txt \
 	--maf 0.01 \
 	--make-bed \
 	--out ${bfile}_phase2
