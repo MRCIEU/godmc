@@ -70,7 +70,7 @@ bye
 		flags="cf"
 	else
 		suff="tgz"
-		cmd="czf"
+		flags="czf"
 	fi
 	tar ${flags} results/${study_name}_${1}.${suff} config resources/parameters results/${1}
 	echo "Successfully created results archives"
