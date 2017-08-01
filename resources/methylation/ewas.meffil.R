@@ -80,9 +80,11 @@ main <- function()
     
     covs <- covs[match(colnames(norm.beta), rownames(covs)), , drop=FALSE]
 	covs<-covs[,which(colnames(covs)%in%c("IID")==F)]
-    
-    message("\nPerforming EWAS for ", phen_name)
-    ewas.ret <- meffil.ewas(norm.beta, variable=phen[,1], covariates=covs,winsorize.pct = NA,most.variable = min(nrow(norm.beta), 20000))
+    nr<-nrow(norm.beta)
+    nc<-ncol(norm.beta)
+    message("\nPerforming EWAS for ", phen_name, "on ",nc," individuals and ",nr," CpGs")
+    save.image("~/repo/godmc/EWAS.height.RData")	
+    ewas.ret <- meffil.ewas(norm.beta, variable=phen[,1], covariates=covs,winsorize.pct = NA,most.variable = min(nrow(norm.beta), 20000),sva=F)
     ewas.parameters <- meffil.ewas.parameters(sig.threshold=1e-7, max.plots=100,qq.inflation.method="regression",model="isva")
 
     ewas.summary<-meffil.ewas.summary(ewas.ret,norm.beta,parameters=ewas.parameters)                              
@@ -96,7 +98,9 @@ main <- function()
 	qqplot_pval(res$none, file=paste(qqplot_file,"nocovs.png",sep="."))
     qqplot_pval(res$all, file=paste(qqplot_file,"allcovs.png",sep="."))
     qqplot_pval(res$isva, file=paste(qqplot_file,"isva.png",sep="."))
-    qqplot_pval(res$sva, file=paste(qqplot_file,"sva.png",sep="."))	
+    
+    if(length(which(names(res)%in%c("sva")))>0)
+    {qqplot_pval(res$sva, file=paste(qqplot_file,"sva.png",sep="."))	}
 
 	message("Saving results")
 	save(ewas.ret, file=out_file)
