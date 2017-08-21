@@ -54,13 +54,23 @@ if(d1 < nid_meth)
 message("Data is a correctly oriented matrix")
 
 # are individuals unique
+if(nid_meth < 100)
+
+{
+	msg <- paste0("Number of individuals with methylation is less than ", nid_meth," please contact developers")
+	errorlist <- c(errorlist, msg)
+	warning("ERROR: ", msg)
+}
+message("More than 100 individuals with methylation data")
+
+#number of individuals
 if(any(duplicated(colnames(norm.beta))))
 {
 	msg <- paste0("please remove duplicate samples from methylation data")
 	errorlist <- c(errorlist, msg)
 	warning("ERROR: ", msg)
 }
-message("No duplicate IDs")
+m
 
 # check for NAs in beta matrix
 if(any(is.na(norm.beta)))
@@ -109,12 +119,23 @@ if(n.xy_overlap < no.overlap)
 	warning("ERROR: ", msg)
 }
 
+#
+probes<-unique(feat$name)
+p.overlap<-intersect(row.names(norm.beta),probes)
+no.overlap<-0.95*length(probes)
+if(length(p.overlap) < no.overlap)
+{
+	msg <- paste0("fewer than 95% of 450k probes. Pleae include more probes.")
+	errorlist <- c(errorlist, msg)
+	warning("ERROR: ", msg)
+}
+
 # extract list of individuals with geno+methylation data
 overlap <- intersect(colnames(norm.beta),fam[,2])
 n.overlap <- length(overlap)
-if(n.overlap < 50)
+if(n.overlap < 100)
 {
-	msg <- paste0("fewer than 50 subjects with methylation and genotype data")
+	msg <- paste0("fewer than 100 subjects with methylation and genotype data")
 	errorlist <- c(errorlist, msg)
 	warning("ERROR: ", msg)
 }
