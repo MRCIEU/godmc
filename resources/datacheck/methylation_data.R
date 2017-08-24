@@ -70,7 +70,6 @@ if(any(duplicated(colnames(norm.beta))))
 	errorlist <- c(errorlist, msg)
 	warning("ERROR: ", msg)
 }
-m
 
 # check for NAs in beta matrix
 if(any(is.na(norm.beta)))
