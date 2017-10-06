@@ -74,7 +74,7 @@ ${plink} --noweb \
 zcat ${section_16_dir}/data.frq.gz | awk '{ print $1,$2,$3,$4,$5,$6/2 }' | sed 1d | gzip -c > temp.gz
 zcat temp.gz | awk '{ print $2 }' | gzip > ${section_16_dir}/snplist.txt.gz
 mv temp.gz ${section_16_dir}/data.frq.gz
-rm keeplist.txt
+rm ${phase2_assoclist}/keeplist.txt
 
 
 echo "Successfully completed script 16a"
