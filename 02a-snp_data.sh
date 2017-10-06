@@ -257,14 +257,15 @@ mv ./processed_data/genetic_data/easyQC.multi.AFCHECK.png ./results/02
 mv ./processed_data/genetic_data/easyQC.rep ./results/02
 
 # Remove mismatched SNPs and flip misaligned SNPs
+echo "Remove mismatched SNPs and NO FLIPPING"
 
 ${plink} \
 	--bfile ${bfile} \
 	--exclude ${easyQC}.mismatch_afcheck.failed.SNPs.txt \
 	--make-bed \
-	--flip ${easyQC}.flipped.SNPs.txt \
 	--out ${bfile} \
 	--threads ${nthreads}
+
 
 # From here on, we have clean data
 
