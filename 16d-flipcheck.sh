@@ -22,44 +22,11 @@ source ./config
 	cp processed_data/genetic_data/data.easyqc.flipped.SNPs.txt processed_data/genetic_data/${study_name}_data.easyqc.flipped.SNPs.txt
 
 	echo ""
-	temp=`which sshpass 2>/dev/null | wc -l`
 
-	if [ ! "${temp}" = "0" ]
-	then
-		read -s -p "Enter SFTP password: " mypassword
-		export SSHPASS=${mypassword}
-		echo "Testing connection"
-		sshpass -e sftp -oBatchMode=no -b - ${sftp_username}@${sftp_address}:${sftp_path}/${sftp_username} << !
-bye
-!
-		echo "Connection established"
-	else
-		echo "sshpass is not installed."
-	fi
-
-	echo ""
-
-	echo ""
-
-if [ ! "${temp}" = "0" ]
-then
-
-export SSHPASS=${mypassword}
-sshpass -e sftp -oBatchMode=no -b - ${sftp_username}@${sftp_address}:${sftp_path}/${sftp_username} << !
-   dir
-   put processed_data/genetic_data/${study_name}_data.easyqc.flipped.SNPs.txt   
-   bye
-!
-
-else
-
-read -s -p "Ready to upload? Press enter to continue: " anykey
-
-sftp ${sftp_username}@${sftp_address}:${sftp_path}/${sftp_username} <<EOF
-dir
+	        sftp ${sftp_username}@${sftp_address}:${sftp_path}/resources <<EOF
 put processed_data/genetic_data/${study_name}_data.easyqc.flipped.SNPs.txt
 EOF
 
-fi
+
 
 
