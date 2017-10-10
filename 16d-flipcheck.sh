@@ -35,7 +35,6 @@ bye
 		echo "Connection established"
 	else
 		echo "sshpass is not installed."
-		echo "The results will now be archived, once that is done they will be uploaded to the server"
 	fi
 
 	echo ""
