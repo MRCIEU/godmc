@@ -23,7 +23,7 @@ source ./config
 
 	echo ""
 
-	        sftp ${sftp_username}@${sftp_address}:${sftp_path}/resources <<EOF
+	        sftp ${sftp_username}@${sftp_address}:${sftp_path}/${sftp_username} <<EOF
 put processed_data/genetic_data/${study_name}_data.easyqc.flipped.SNPs.txt
 EOF
 
