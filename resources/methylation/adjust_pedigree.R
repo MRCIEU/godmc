@@ -37,15 +37,19 @@ main <- function()
 	norm.beta <- norm.beta[, colnames(norm.beta) %in% rownames(covs)]
 
 	g <- grep("_factor",names(covs))
-    if (length(g)>0){
-	for (i in 1:length(g))
+	if(length(g) > 0)
 	{
-	covs[,g[i]]<-as.factor(covs[,g[i]])
-    }
-    }
+		for (i in 1:length(g))
+		{
+			covs[,g[i]]<-as.factor(covs[,g[i]])
+		}
+	}
 	grm <- readGRM(grmfile)
 	kin <- makeGRMmatrix(grm)
 	kin <- kin[rownames(kin) %in% colnames(norm.beta), colnames(kin) %in% colnames(norm.beta)]
+
+	message("Kinship matrix is ", nrow(kin), " by ", nrow(kin))
+
 	index <- match(rownames(kin), colnames(norm.beta))
 	norm.beta <- norm.beta[,index]
 	covs <- covs[match(colnames(norm.beta), rownames(covs)), ]
@@ -72,6 +76,9 @@ main <- function()
 	tmp <- t(relmat)
 	relmat[upper.tri(relmat)] <- tmp[upper.tri(tmp)]
 	eig <- eigen(relmat, symmetric=TRUE)
+	message(class(eig))
+	print(str(eig))
+
 	rm(tmp, relmat)
 
 
