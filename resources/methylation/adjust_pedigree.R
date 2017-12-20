@@ -240,7 +240,7 @@ adjust.relatedness <- function(B, covs, kin, eig, mc.cores=mc.cores)
 		res <- mclapply(ii, function(i)
 		{
 			# if( i %% 100 == 0) message("Probe ", i, " of ", nrow(B))
-			message("Probe ", i, " of ", nrow(B))
+			message("Probe ", i, " (", rownames(B)[i], ") of ", nrow(B))
 			out <- adjust.relatedness.fast.1(B[i,], covs, kin, eig)
 		}, mc.cores=mc.cores)
 		a <- do.call(rbind, lapply(res, function(x) x$x))
@@ -262,7 +262,7 @@ adjust.relatedness.fast <- function(B, covs, kin, eig, mc.cores=mc.cores)
 	res <- mclapply.safe(1:nrow(B), function(i)
 	{
 		# if( i %% 100 == 0) message("Probe ", i, " of ", nrow(B))
-		message("Probe ", i, " of ", nrow(B))
+		message("Probe ", i, " (", rownames(B)[i], ") of ", nrow(B))
 		adjust.relatedness.fast.1(B[i,], covs, kin, eig)
 	}, mc.cores=mc.cores)
 
