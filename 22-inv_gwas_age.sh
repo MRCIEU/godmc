@@ -2,7 +2,7 @@
 
 set -e
 source ./config
-exec &> >(tee ${section_22a_logfile})
+exec &> >(tee ${section_22_logfile})
 print_version
 
 #age=`awk '{print $3}' <${gwas_covariates}.aar.numeric |sort -u |wc -l`

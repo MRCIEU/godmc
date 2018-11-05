@@ -331,4 +331,158 @@ check_results_17 () {
 
 }
 
+check_results_20 () {
 
+	if [ -f "${section_20_dir}/badInversions.txt" ]; then
+		echo "Removed inversions file present"
+	else
+		echo "Problem: Removed inversions file is absent"
+		exit 1
+	fi
+
+	if [ -f "${section_20_dir}/inversionsSummary.txt" ]; then
+		echo "Inversion frequency file present"
+	else
+		echo "Problem: Inversion frequency file is absent"
+		exit 1
+	fi
+
+	if [ -f "${inv_processed_dir}/inversions.bed" ]; then
+		echo "Inversion bed file present"
+	else
+		echo "Problem: Inversion bed file is absent"
+		exit 1
+	fi
+
+
+	if [ -f "${inv_processed_dir}/inversions.bed" ]; then
+		echo "Inversion bed file present"
+	else
+		echo "Problem: Inversion bed file is absent"
+		exit 1
+	fi
+	
+	if [ -f "${inv_processed_dir}/inversions.bim" ]; then
+		echo "Inversion bim file present"
+	else
+		echo "Problem: Inversion bim file is absent"
+		exit 1
+	fi
+	
+	if [ -f "${inv_processed_dir}/inversions.fam" ]; then
+		echo "Inversion fam file present"
+	else
+		echo "Problem: Inversion fam file is absent"
+		exit 1
+	fi
+
+	if [ -f "${inv_processed_dir}/inversionQTL.txt" ]; then
+		echo "Inversion QTL file present"
+	else
+		echo "Problem: Inversion QTL file is absent"
+		exit 1
+	fi
+
+}
+
+check_results_21 () {
+
+	if [ -f "${section_21_dir}/invmeqtl.txt.gz" ]; then
+		echo "meQTL results present"
+	else
+		echo "Problem: meQTL results is absent"
+		exit 1
+	fi
+}
+
+
+check_results_22 () {
+
+	if grep -l -q "loco" ${section_22_dir}/*; then
+		echo "AAR GWAS results present"
+	else
+		echo "Problem: AAR GWAS results absent"
+		exit 1
+	fi
+
+}
+
+check_results_23 () {
+
+	if [ -f "${section_10_dir}/gwas_list.txt" ]; then
+		echo "GWAS list annotation present"
+	else
+		echo "Problem: GWAS list is absent"
+		exit 1
+	fi
+
+	IFS=$'\r\n' GLOBIGNORE='*' command eval  'pheno=($(cat ${section_10_dir}/gwas_list.txt))'
+
+	for phen in ${pheno[@]}
+	do
+		if [ -f "${section_23_dir}/${phen}.loco.mlma.gz" ]; then
+			echo "GWAS for ${phen} complete"
+		else
+			echo "problem: GWAS did not complete for ${phen}."
+			exit 1
+		fi
+	done
+
+}
+
+check_results_24 () {
+
+	if grep -l -q "loco" ${section_24_dir}/*; then
+		echo "Cellcount entropy GWAS results present"
+	else
+		echo "Problem: Cellcount entropy GWAS results absent"
+		exit 1
+	fi
+
+}
+
+
+check_results_25 () {
+
+	if [ -f "${section_12_dir}/cellcounts_columns.txt" ]; then
+		echo "Cellcount annotation present"
+	else
+		echo "Problem: Cellcount annotation is absent"
+		exit 1
+	fi
+
+	ncellcounts=`wc -l ${section_12_dir}/cellcounts_columns.txt | awk '{ print $1 }'`
+	for i in $(seq 1 $ncellcounts);
+	do
+		if [ -f "${section_25_dir}/cellcount_${i}.loco.mlma.gz" ]; then
+			echo "GWAS for cell type ${i} of ${ncellcounts} complete"
+		else
+			echo "problem: GWAS did not complete for cell type ${i}"
+			exit 1
+		fi
+	done
+
+}
+
+
+check_results_26 () {
+
+	if grep -l -q "loco" ${section_26_dir}/*; then
+		echo "Height GWAS results present"
+	else
+		echo "Problem: Height GWAS results absent"
+		exit 1
+	fi
+
+}
+
+check_results_27 () {
+
+	if grep -l -q "loco" ${section_27_dir}/*; then
+		echo "BMI GWAS results present"
+	else
+		echo "Problem: BMI GWAS results absent"
+		exit 1
+	fi
+
+}

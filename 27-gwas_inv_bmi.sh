@@ -2,7 +2,7 @@
 
 set -e
 source ./config
-exec &> >(tee ${section_22f_logfile})
+exec &> >(tee ${section_27_logfile})
 print_version
 
 
@@ -21,11 +21,11 @@ else
 	--mlma-loco \
 	--pheno ${inv_processed_dir}/BMI.plink \
 	--autosome \
-	--out ${section_22_dir}/BMI \
+	--out ${section_27_dir}/BMI \
 	--thread-num ${nthreads}
 fi
 
 echo "Compressing results"
-gzip -f ${section_22_dir}/BMI.loco.mlma
+gzip -f ${section_27_dir}/BMI.loco.mlma
 
 echo "Successfully performed BMI EWAS"

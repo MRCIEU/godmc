@@ -31,7 +31,7 @@ echo "${1}. ${pheno[${batch}]}"
 pheno_file="${methylation_processed_dir}/${pheno[${batch}]}.plink"
 pheno=${pheno[${batch}]}
 cov=`echo ${pheno/#smoking_prediction/}`
-exec &> >(tee ${section_22b_logfile}${1})
+exec &> >(tee ${section_23_logfile}${1})
 print_version
 
 age=`awk '{print $3}' <processed_data/genetic_data/gwas_covariates${cov}.smoking.numeric |sort -u |wc -l`
@@ -49,7 +49,7 @@ ${gcta} \
 	--qcovar processed_data/genetic_data/gwas_covariates${cov}.smoking.numeric \
 	--covar processed_data/genetic_data/gwas_covariates${cov}.smoking.factor \
 	--autosome \
-	--out ${section_22_dir}/${pheno} \
+	--out ${section_23_dir}/${pheno} \
 	--thread-num ${nthreads}
 fi
 
@@ -62,7 +62,7 @@ ${gcta} \
 	--pheno ${pheno_file} \
 	--qcovar processed_data/genetic_data/gwas_covariates${cov}.smoking.numeric \
 	--autosome \
-	--out ${section_22_dir}/${pheno} \
+	--out ${section_23_dir}/${pheno} \
 	--thread-num ${nthreads}
 fi
 
@@ -75,11 +75,11 @@ ${gcta} \
 	--pheno ${pheno_file} \
 	--covar processed_data/genetic_data/gwas_covariates${cov}.smoking.factor \
 	--autosome \
-	--out ${section_22_dir}/${pheno} \
+	--out ${section_23_dir}/${pheno} \
 	--thread-num ${nthreads}
 fi
 
 echo "Compressing results"
-gzip -f ${section_22_dir}/${pheno}.loco.mlma
+gzip -f ${section_23_dir}/${pheno}.loco.mlma
 
 echo "Successfully performed GWAS"

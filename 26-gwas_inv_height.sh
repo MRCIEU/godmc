@@ -2,7 +2,7 @@
 
 set -e
 source ./config
-exec &> >(tee ${section_22e_logfile})
+exec &> >(tee ${section_26_logfile})
 print_version
 
 
@@ -21,11 +21,11 @@ else
 	--mlma-loco \
 	--pheno ${inv_processed_dir}/Height.plink \
 	--autosome \
-	--out ${section_22_dir}/Height \
+	--out ${section_26_dir}/Height \
 	--thread-num ${nthreads}
 fi
 
 echo "Compressing results"
-gzip -f ${section_22_dir}/Height.loco.mlma
+gzip -f ${section_26_dir}/Height.loco.mlma
 
 echo "Successfully performed Height EWAS"

@@ -19,6 +19,14 @@ section_14_dir="${home_directory}/results/14"
 section_15_dir="${home_directory}/results/15"
 section_16_dir="${home_directory}/results/16"
 section_17_dir="${home_directory}/results/17"
+section_20_dir="${home_directory}/results/20"
+section_21_dir="${home_directory}/results/21"
+section_22_dir="${home_directory}/results/22"
+section_23_dir="${home_directory}/results/23"
+section_24_dir="${home_directory}/results/24"
+section_25_dir="${home_directory}/results/25"
+section_26_dir="${home_directory}/results/26"
+section_27_dir="${home_directory}/results/27"
 
 section_01_logfile="${section_01_dir}/logs/log.txt"
 section_02a_logfile="${section_02_dir}/logs_a/log.txt"
@@ -49,6 +57,14 @@ section_16b_logfile="${section_16_dir}/logs_b/log.txt"
 section_16c_logfile="${section_16_dir}/logs_c/log.txt"
 section_17a_logfile="${section_17_dir}/logs_a/log.txt"
 section_17b_logfile="${section_17_dir}/logs_b/log.txt"
+section_20_logfile="${section_20_dir}/logs/log.txt"
+section_21_logfile="${section_21_dir}/logs/log.txt"
+section_22_logfile="${section_22_dir}/logs/log.txt"
+section_23_logfile="${section_23_dir}/logs/log.txt"
+section_24_logfile="${section_24_dir}/logs/log.txt"
+section_25_logfile="${section_25_dir}/logs/log.txt"
+section_26_logfile="${section_26_dir}/logs/log.txt"
+section_27_logfile="${section_27_dir}/logs/log.txt"
 
 # ID lists
 meth_ids="${home_directory}/processed_data/ids/meth_ids.txt"
@@ -102,6 +118,12 @@ genetic_processed_dir="${home_directory}/processed_data/genetic_data"
 
 # CNV file
 tabcnv="${home_directory}/processed_data/cnv_data/tabfile/data"
+
+# Inversions files
+inv_processed_dir="${home_directory}/processed_data/inversions"
+tabinv="${home_directory}/processed_data/inversions/data"
+inv_snps="${home_directory}/resources/inversions/mapSNPs.tab"
+bfile_inv="${home_directory}/processed_data/inversions/inversions"
 
 # Kinship files
 grmfile_all="${home_directory}/processed_data/genetic_data/data"

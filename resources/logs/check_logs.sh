@@ -428,3 +428,104 @@ check_logs_17 () {
 }
 
 
+check_logs_20 () {
+
+	compare_version "20"
+	if grep -i -q "success" ${section_20_logfile}; then
+		echo "20-genotypeInversion.sh completed successfully."
+	else
+		echo "Problem: 20-genotypeInversion.sh did not complete successfully"
+		exit 1
+	fi
+
+}
+
+check_logs_21 () {
+
+	compare_version "21"
+	if grep -i -q "success" ${section_21_logfile}; then
+		echo "21-inversionmeQTL.sh completed successfully."
+	else
+		echo "Problem: 21-inversionmeQTL.sh did not complete successfully"
+		exit 1
+	fi
+
+}
+
+
+check_logs_22 () {
+
+
+	compare_version "22"
+	if grep -i -q "success" ${section_22_logfile}; then
+		echo "22-inv_gwas_age.sh completed successfully."
+	else
+		echo "Problem: 22-inv_gwas_age.sh did not complete successfully"
+		exit 1
+	fi
+
+}
+
+
+check_logs_23 () {
+
+	compare_version "23"
+	nbatch=`wc -l ${section_10_dir}/gwas_list.txt | awk '{ print $1 }'`
+	nsuccess=`tail ${section_23_logfile}* | grep -i "success" | wc -l`
+	if [ "${nbatch}" = "${nsuccess}" ]; then
+		echo "23-inv_gwas_smoking.sh completed successfully."
+	else
+		echo "Problem: 23-inv_gwas_smoking.sh did not complete successfully"
+		exit 1
+	fi
+
+}
+
+check_logs_24 () {
+
+	compare_version "24"
+	if grep -i -q "success" ${section_24_logfile}; then
+		echo "24-inv_gwas_cellcount_entropy.sh completed successfully."
+	else
+		echo "Problem: 24-inv_gwas_cellcount_entropy.sh did not complete successfully"
+		exit 1
+	fi
+
+}
+
+
+check_logs_25 () {
+	
+	compare_version "25"
+	if grep -i -q "success" ${section_25_logfile}; then
+		echo "25-inv_gwas_cellcounts.sh completed successfully."
+	else
+		echo "Problem: 25-inv_gwas_cellcounts.sh did not complete successfully"
+		exit 1
+	fi
+	
+}
+
+
+check_logs_26 () {	
+	
+	compare_version "26"
+	if grep -i -q "success" ${section_26_logfile}; then
+		echo "26-gwas_inv_height.sh completed successfully."
+	else
+		echo "Problem: 26-gwas_inv_height.sh did not complete successfully"
+		exit 1
+	fi
+}
+
+
+check_logs_27 () {
+  
+	compare_version "27"
+	if grep -i -q "success" ${section_27_logfile}; then
+		echo "27-gwas_inv_bmi.sh completed successfully."
+	else
+		echo "Problem: 27-gwas_inv_bmi.sh did not complete successfully"
+		exit 1
+	fi
+}

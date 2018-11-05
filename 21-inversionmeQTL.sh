@@ -11,6 +11,6 @@ phen="${methylation_adjusted_pcs}.txt"
 out="${section_21_dir}/invmeqtl.txt.gz"
 
 echo "Performing inversion meQTL analysis"
-Rscript resources/inversions/run_analysis_inversions.R ${geno} ${phen} ${out}
+Rscript resources/inversions/run_analysis_inversions.R ${geno} ${phen} ${out} ${nthreads}
 
 echo "Successfully completed inversion meQTL analysis"

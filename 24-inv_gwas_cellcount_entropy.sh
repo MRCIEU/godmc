@@ -2,7 +2,7 @@
 
 set -e
 source ./config
-exec &> >(tee ${section_22c_logfile})
+exec &> >(tee ${section_24_logfile})
 print_version
 
 if [ ! -f ${cellcounts_gwa} ]
@@ -26,7 +26,7 @@ ${gcta} \
 	--qcovar ${gwas_covariates}.cellcounts.numeric \
 	--covar ${gwas_covariates}.cellcounts.factor \
 	--autosome \
-	--out ${section_22_dir}/cellcount_entropy \
+	--out ${section_24_dir}/cellcount_entropy \
 	--thread-num ${nthreads}
 fi
 
@@ -38,7 +38,7 @@ ${gcta} \
 	--pheno ${cellcounts_tf}.entropy.plink \
 	--qcovar ${gwas_covariates}.cellcounts.numeric \
 	--autosome \
-	--out ${section_22_dir}/cellcount_entropy \
+	--out ${section_24_dir}/cellcount_entropy \
 	--thread-num ${nthreads}
 fi
 
@@ -50,12 +50,12 @@ ${gcta} \
 	--pheno ${cellcounts_tf}.entropy.plink \
 	--covar ${gwas_covariates}.cellcounts.factor \
 	--autosome \
-	--out ${section_22_dir}/cellcount_entropy \
+	--out ${section_24_dir}/cellcount_entropy \
 	--thread-num ${nthreads}
 fi
 
 echo "Compressing results"
-gzip -f ${section_22_dir}/cellcount_entropy.loco.mlma
+gzip -f ${section_24_dir}/cellcount_entropy.loco.mlma
 
 
 echo "Successfully performed GWAS"
