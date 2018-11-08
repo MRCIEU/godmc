@@ -317,7 +317,6 @@ check_results_16 () {
 
 }
 
-
 check_results_17 () {
 
 	nbatch=`ls -l ${phase2_list_17}/cpglist_*.txt | wc -l`
