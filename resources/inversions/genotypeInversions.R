@@ -19,7 +19,7 @@ invs <- names(inversionGR)
 ## Remove inversion in Chr X
 invs <- invs[invs != "invX_006"]
 
-snps <- read.plink(plink)
+snps <- read.plink(plink, na.strings = "")
 snps <- checkSNPs(snps)$genos
 
 invstat<-lapply(invs, function (inv) {
@@ -80,11 +80,13 @@ annot$chr <- gsub("chr", "", as.character(annot$seqnames))
 
 write.plink(snps = mat, file.base = paste0(out_folder, "/inversions"), na.code = NA,
             subject.data = snps$fam,
-             chromosome = annot$chr, position = annot$start,
+            pedigree =   as.character(pedigree),
+            id = as.character(member), father = as.character(father), 
+            mother = as.character(mother), sex = as.numeric(sex), 
+            phenotype = as.numeric(affected),
+            chromosome = annot$chr, position = annot$start,
             allele.1 = annot$allele.1, allele.2 = annot$allele.2, 
             genetic.distance = annot$genetic.distance)
-# save(invstat, invsDF, file = "invsCalling.Rdata")
-
 
 df <- data.frame(inversions = c(errorInvs, snpInvs, genoInvs), 
                  Reason = rep(c("Error", "Not enough SNPs", "Bad genotyping"), 
