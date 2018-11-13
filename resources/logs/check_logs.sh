@@ -497,13 +497,16 @@ check_logs_24 () {
 check_logs_25 () {
 	
 	compare_version "25"
-	if grep -i -q "success" ${section_25_logfile}; then
-		echo "25-inv_gwas_cellcounts.sh completed successfully."
-	else
-		echo "Problem: 25-inv_gwas_cellcounts.sh did not complete successfully"
-		exit 1
-	fi
 	
+
+    nbatch=`wc -l ${gwas_cellcounts_dir}/cellcounts_columns.txt | awk '{ print $1 }'`
+	nsuccess=`tail ${section_25_logfile}* | grep -i "success" | wc -l`
+	if [ "${nbatch}" = "${nsuccess}" ]; then
+		echo "25-inv_gwas_cellcounts.sh completed successfully for all cell types"
+	else
+		echo "problem: 25-inv_gwas_cellcounts.sh only complete for ${nsuccess} of ${nbatch} cell types"
+		exit 1
+	fi	
 }
 
 
