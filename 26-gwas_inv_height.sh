@@ -14,7 +14,7 @@ else
 	echo "Performing Height IWAS"
 	echo ""
 
-  Rscript resources/inversions/adapt_pheno.R ${ewastransformed} Height ${inv_processed_dir}/
+  Rscript resources/inversions/adapt_pheno.R ${ewastransformed} ${ewas_plink} Height ${inv_processed_dir}/
 
 	${gcta} \
 	--bfile ${bfile_inv} \

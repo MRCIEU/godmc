@@ -14,7 +14,7 @@ else
 	echo "Performing BMI IWAS"
 	echo ""
 
-  Rscript resources/inversions/adapt_pheno.R ${ewastransformed} BMI ${inv_processed_dir}/
+  Rscript resources/inversions/adapt_pheno.R ${ewastransformed} ${ewas_plink} BMI ${inv_processed_dir}/
 
 	${gcta} \
 	--bfile ${bfile_inv} \
