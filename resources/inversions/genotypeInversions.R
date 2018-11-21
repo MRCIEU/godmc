@@ -25,14 +25,16 @@ snps <- checkSNPs(snps)$genos
 invstat<-lapply(invs, function (inv) {
   print(inv)
   result <- tryCatch(scoreInvHap(snps, BPPARAM = MulticoreParam(threads), inv=inv),
-                     error = function(e) NULL)
+                     error = function(e) as.character(e))
                      }
 )
 names(invstat) <- invs
-invstat <- invstat[lengths(invstat) == 1]
 
-errorInvs <- invs[!invs %in% names(invstat)]
+## Extract inversions with genotyping errors
+errors <- unlist(invstat[sapply(invstat, class) == "character"])
+errorInvs <- names(errors)
 
+invstat <- invstat[sapply(invstat, class) == "scoreInvHapRes"]
 invstat2 <- invstat[sapply(invstat, function(x) max(numSNPs(x))) > 3 ]
 snpInvs <- names(invstat)[!names(invstat) %in% names(invstat2)]
   
@@ -89,12 +91,12 @@ write.plink(snps = mat, file.base = paste0(out_folder, "/inversions"), na.code =
             genetic.distance = annot$genetic.distance)
 
 df <- data.frame(inversions = c(errorInvs, snpInvs, genoInvs), 
-                 Reason = rep(c("Error", "Not enough SNPs", "Bad genotyping"), 
-                              c(length(errorInvs), length(snpInvs), length(genoInvs))))
+                 Reason = c(errors, rep(c("Not enough SNPs", "Bad genotyping"), 
+                              c(length(snpInvs), length(genoInvs)))))
 write.table(df, file = paste0(res_folder, "/badInversions.txt"), sep = "\t",
             row.names = FALSE, col.names = TRUE, quote = FALSE)
 
-invFreqs <- round(colMeans(invsDF, na.rm = TRUE)/2*100, 2)
+invFreqs <- round(rowMeans(invsDF, na.rm = TRUE)/2*100, 2)
 df <- data.frame(inversion = names(invFreqs), freq = invFreqs)
 write.table(df, file = paste0(res_folder, "/inversionsSummary.txt"), sep = "\t",
             row.names = FALSE, col.names = TRUE, quote = FALSE)
