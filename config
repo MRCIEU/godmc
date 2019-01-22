@@ -1,0 +1,98 @@
+#!/usr/bin/env bash
+
+
+# General details
+
+# Please make sure this is alphanumeric (underscores allowed)
+study_name="INMA"
+
+# Analyst's name
+analyst_name="Carlos Ruiz"
+
+# Analyst's email address
+analyst_email="carlos.ruiz@isglobal.org"
+
+# This should be provided to you from the GoDMC developers (along with a password)
+sftp_username="mbustamante"
+
+# Please put the full path to this directory
+# e.g. you can find this by using the pwd command in the terminal
+home_directory="/home/isglobal.lan/cruiz/data/WS_INMA/GoDMC/godmc"
+
+# Input data files
+betas="${home_directory}/input_data/norm.beta.pc10.Robj"
+cnvs="${home_directory}/input_data/cnv.RData"
+bfile_raw="${home_directory}/input_data/data_filtered_meth"
+covariates="${home_directory}/input_data/covars.txt"
+phenotypes="${home_directory}/input_data/pheno.txt"
+
+# Imputation quality scores
+# This should be a file with three columns, SNP, MAF and quality scores
+quality_scores="${home_directory}/input_data/data_filtered_meth.info"
+
+# The software used to to estimate imputation quality. eg. impute2 or minimac
+quality_type="impute2"
+
+# Cellcounts
+# Please specify whether or not cell counts are needed in the model (yes if you have e.g. blood, no if you have e.g. LCLs)
+cellcounts_required="yes"
+
+# Set this to the file name if you have predicted cell counts already
+# Otherwise leave it as NULL. The predicted_cellcounts_type can be set to houseman or something else. 
+predicted_cellcounts="${home_directory}/input_data/cellcounts.txt"
+
+# This is a description of the type of cellcount prediction used if you are providing your own predicted cellcounts (e.g. houseman)
+# If you don't have predicted_cellcounts eg. predicted_cellcounts="NULL", you need to set predicted_cellcounts_type to "NULL"
+predicted_cellcounts_type="cord"
+
+#Set this to the file name if you have directly measured cellcounts. These will be used as covariates only.
+measured_cellcounts="NULL"
+
+# Relatedness
+# Are the samples related? e.g. Complex family data, twin data etc. If so set this to "yes"
+# If these samples are expected to be unrelated set this to "no" (even if there may be cryptic relatedness)
+related="no"
+
+# Parallelisation parameters
+# Number of threads to use per node
+nthreads="16"
+
+# Number of chunks to split genetic data during inversion calling
+# See 20
+inversion_chunks="50"
+
+# Number of chunks to split methylation data during normalisation
+# See 04b and 04d
+meth_chunks="100"
+
+# Number of chunks to split genetic data during mQTL and cellcount GWAS
+# See 06a, 06b and 07e
+genetic_chunks="100"
+
+# SNP filtering
+# HWE threshold, minor allele frequency, SNP missingness, individual missingness.
+# See 02a
+snp_hwe="1e-6"
+snp_maf="0.01"
+snp_miss="0.05"
+snp_imiss="0.05"
+
+# GRM parameters (see 02a).
+rel_cutoff="0.125"
+grm_maf_cutoff="0.01"
+
+# PCA paramaters (see 02a).
+n_pcs="20"
+pca_sd="7"
+
+# Methylation PCs (see 04c).
+n_meth_pcs="20"
+meth_pc_cutoff="0.8"
+meth_pc_threshold="1e-7"
+
+# Matrixeqtl parameters
+soft_threshold="1e-5"
+soft_threshold_cnv="1e-5"
+
+# DO NOT MODIFY
+source ${home_directory}/resources/parameters
